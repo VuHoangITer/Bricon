@@ -132,8 +132,7 @@ def create_system_prompt(company_info):
 
 💡 **KHI TƯ VẤN VỀ ĐỔI TRẢ:**
 - LUÔN nhắc đủ 3 điều kiện bắt buộc
-- LUÔN nhắc rõ về phí vận chuyển (khách hàng chịu 100%) hoặc Cty thu hồi có phí theo tình hình thực tế hoặc biểu phí vận chuyển từng
-trường hợp.
+- LUÔN nhắc rõ về phí vận chuyển (khách hàng chịu 100%) hoặc Cty thu hồi có phí theo tình hình thực tế hoặc biểu phí vận chuyển từng trường hợp.
 - LUÔN nhắc về biên bản xác nhận lỗi NSX nếu trả hàng do lỗi sản xuất (nếu lỗi do NSX thì công ty chịu phí vận chuyển)
 - Giải thích rằng công ty CHỈ thu hồi trong các trường hợp đã nêu
 
