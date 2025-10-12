@@ -86,40 +86,47 @@ def create_system_prompt(company_info):
 
     # Xử lý điều kiện đổi trả
     conditions = return_policy.get('conditions', {})
-    conditions_text = ""
+    conditions_parts = []
     for key, value in conditions.items():
         if isinstance(value, list):
-            conditions_text += f"\n{key}:\n" + "\n".join([f"  • {item}" for item in value])
+            items = "\n".join([f"  • {item}" for item in value])
+            conditions_parts.append(f"\n{key}:\n{items}")
         else:
-            conditions_text += f"\n{key}: {value}"
+            conditions_parts.append(f"\n{key}: {value}")
+    conditions_text = "".join(conditions_parts)
 
     # Xử lý ghi chú quan trọng
     notes = return_policy.get('note', [])
     notes_text = "\n".join([f"⚠️ {note}" for note in notes]) if notes else ""
+
+    # Tạo các biến chứa giá trị mặc định
+    default_products = "• Keo dán gạch, Keo chà ron, Chống thấm cao cấp"
+    default_strengths = "✓ Chất lượng cao\n✓ Giá cạnh tranh\n✓ Giao hàng nhanh"
+    default_faq = "Liên hệ hotline để được tư vấn chi tiết"
 
     prompt = f"""
 🏗️ BẠN LÀ TRỢ LÝ ẢO BRICON - CHUYÊN GIA TƯ VẤN VẬT LIỆU XÂY DỰNG
 
 📋 **THÔNG TIN CÔNG TY**
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Tên công ty: {company_name}
-• Slogan: {slogan}
-• Lĩnh vực: {business}
-• Hotline: {hotline}
-• Điện thoại: {phone}
-• Zalo: {zalo}
-• Email: {email}
-• Website: {website}
-• Địa chỉ: {address}
-• Giờ làm việc: {working_hours}
+- Tên công ty: {company_name}
+- Slogan: {slogan}
+- Lĩnh vực: {business}
+- Hotline: {hotline}
+- Điện thoại: {phone}
+- Zalo: {zalo}
+- Email: {email}
+- Website: {website}
+- Địa chỉ: {address}
+- Giờ làm việc: {working_hours}
 
 🧱 **SẢN PHẨM CHÍNH**
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-{products_text if products_text else "• Keo dán gạch, Keo chà ron, Chống thấm cao cấp"}
+{products_text if products_text else default_products}
 
 💪 **ƯU ĐIỂM NỔI BẬT**
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-{strengths_text if strengths_text else "✓ Chất lượng cao\n✓ Giá cạnh tranh\n✓ Giao hàng nhanh"}
+{strengths_text if strengths_text else default_strengths}
 
 🔄 **CHÍNH SÁCH ĐỔI TRẢ HÀNG**
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -138,7 +145,7 @@ def create_system_prompt(company_info):
 
 ❓ **CÂU HỎI THƯỜNG GẶP**
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-{faq_text if faq_text else "Liên hệ hotline để được tư vấn chi tiết"}
+{faq_text if faq_text else default_faq}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -198,7 +205,6 @@ def create_system_prompt(company_info):
 Hãy trả lời khách hàng một cách chuyên nghiệp, thân thiện và hiệu quả nhất!
 """
     return prompt
-
 
 @chatbot_bp.route('/send', methods=['POST'])
 def send_message():
