@@ -73,49 +73,69 @@ section h2 {
   font-size: 1.2rem !important;
 }
 
-/* Thêm media query cho mobile nhỏ */
+/* ==================== FIX PRODUCT GRID - 4 SẢN PHẨM NGANG TRÊN MOBILE ==================== */
+
+/* Override Bootstrap col-6 trên mobile để hiển thị 4 cột ngang */
 @media (max-width: 576px) {
+  /* Chỉ áp dụng cho trang index - featured products section */
+  section .row.g-4 > .col-6 {
+    flex: 0 0 25% !important; /* 4 cột = 25% mỗi cột */
+    max-width: 25% !important;
+  }
+
+  /* Giảm padding container để fit 4 cột */
+  .container {
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
+  }
+
+  /* Giảm gap giữa các cột */
+  .row.g-4 {
+    --bs-gutter-x: 0.25rem !important;
+    --bs-gutter-y: 0.5rem !important;
+  }
+
+  /* Thu nhỏ product card để fit */
   .product-image {
-    height: 140px !important; /* Giảm height để fit 2 cột */
+    height: 100px !important; /* Giảm từ 140px xuống 100px */
   }
 
   .product-name {
-    font-size: 0.9rem !important; /* Giảm font để fit */
-    -webkit-line-clamp: 2 !important; /* 2 dòng trên mobile để tiết kiệm không gian */
+    font-size: 0.75rem !important; /* Giảm font size */
+    -webkit-line-clamp: 2 !important;
+    line-height: 1.2 !important;
   }
 
   .product-price .price {
-    font-size: 1rem !important; /* Giảm font giá */
+    font-size: 0.85rem !important;
   }
 
   .product-price .old-price {
-    font-size: 0.8rem !important; /* Giảm font giá cũ */
+    font-size: 0.7rem !important;
   }
 
   .product-card .btn {
-    font-size: 0.85rem !important; /* Giảm font nút */
-    padding: 0.4rem 0.8rem !important;
+    font-size: 0.7rem !important;
+    padding: 0.3rem 0.5rem !important;
   }
 
-  .row.g-4 {
-    gap: 0.5rem !important; /* Giảm gutter để fit 2 cột */
-  }
-
-  .container {
-    padding-left: 0.5rem !important;
-    padding-right: 0.5rem !important; /* Đảm bảo không overflow */
+  .card-body {
+    padding: 0.5rem !important;
   }
 }
 
-/* Cập nhật media query hiện có */
-@media (max-width: 768px) {
+/* Màn hình rất nhỏ (< 360px) */
+@media (max-width: 359px) {
   .product-image {
-    height: 160px !important; /* Giảm nhẹ để fit tốt hơn */
+    height: 80px !important;
   }
 
   .product-name {
-    font-size: 0.95rem !important;
-    height: auto !important; /* Loại bỏ height cố định */
+    font-size: 0.7rem !important;
+  }
+
+  .product-price .price {
+    font-size: 0.75rem !important;
   }
 }
 
