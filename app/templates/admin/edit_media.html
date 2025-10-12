@@ -1,0 +1,370 @@
+{% extends "admin/admin_base.html" %}
+
+{% block page_title %}Chỉnh sửa Media{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4><i class="bi bi-pencil"></i> Chỉnh sửa thông tin Media</h4>
+    <a href="{{ url_for('admin.media') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Quay lại
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <!-- Form chỉnh sửa -->
+        <div class="card">
+            <div class="card-header bg-warning">
+                <h6 class="mb-0"><i class="bi bi-pencil-square"></i> Chỉnh sửa thông tin SEO</h6>
+            </div>
+            <div class="card-body">
+            <form method="POST" id="editMediaForm">
+                {{ form.hidden_tag() }}
+
+                <!-- Alt Text -->
+                <div class="mb-4">
+                    <label class="form-label">
+                        Alt Text (văn bản thay thế) *
+                        <i class="bi bi-info-circle text-primary"
+                           data-bs-toggle="tooltip"
+                           title="Mô tả ngắn gọn nội dung ảnh, 30-125 ký tự"></i>
+                    </label>
+                    {{ form.alt_text(class="form-control", id="altTextInput", maxlength="125",
+                       placeholder="VD: Keo dán gạch bla bla bla") }}
+
+                    {% if form.alt_text.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.alt_text.errors %}{{ error }}{% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <div class="d-flex justify-content-between mt-1">
+                        <small class="text-muted">
+                            <i class="bi bi-lightbulb"></i> Giúp SEO và người khiếm thị hiểu nội dung ảnh
+                        </small>
+                        <small class="text-muted" id="altTextCount">{{ (media.alt_text|length) if media.alt_text else 0 }}/125</small>
+                    </div>
+
+                    <!-- Alt Text Quality Check - Real-time -->
+                    <div id="altTextQuality" class="mt-2"></div>
+                </div>
+
+                <!-- Title -->
+                <div class="mb-4">
+                    <label class="form-label">
+                        Title (tiêu đề khi hover)
+                        <i class="bi bi-info-circle text-primary"
+                           data-bs-toggle="tooltip"
+                           title="Hiển thị khi người dùng rê chuột lên ảnh"></i>
+                    </label>
+                    {{ form.title(class="form-control", placeholder="Để trống sẽ dùng Alt Text") }}
+                    <small class="text-muted">
+                        Tùy chọn. Nếu để trống, hệ thống sẽ dùng Alt Text.
+                    </small>
+                </div>
+
+                <!-- Caption -->
+                <div class="mb-4">
+                    <label class="form-label">Caption (chú thích)</label>
+                    {{ form.caption(class="form-control", rows="3",
+                       placeholder="Chú thích chi tiết hơn về hình ảnh, có thể bao gồm thông tin sản phẩm, giá, khuyến mãi...") }}
+                    <small class="text-muted">
+                        Mô tả chi tiết, có thể chứa keywords cho SEO
+                    </small>
+                </div>
+
+                <!-- Album -->
+                <div class="mb-4">
+                    <label class="form-label">Album</label>
+                    <select name="album" class="form-select">
+                        <option value="">-- Không chọn album --</option>
+                        {% for album in albums %}
+                        <option value="{{ album.name if album is mapping else album }}"
+                                {% if (album.name if album is mapping else album) == media.album %}selected{% endif %}>
+                            {{ album.name if album is mapping else album }}
+                            {% if album is mapping and album.count %} ({{ album.count }} files){% endif %}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Live SEO Preview -->
+                <div class="card bg-light mb-4">
+                    <div class="card-body">
+                        <h6 class="card-title">
+                            <i class="bi bi-eye"></i> Preview SEO (Real-time)
+                        </h6>
+                        <div class="progress mb-2" style="height: 25px;">
+                            <div class="progress-bar bg-{{ seo_result.grade_class }}"
+                                 role="progressbar"
+                                 id="liveSeoScore"
+                                 style="width: {{ seo_result.score }}%;">{{ seo_result.score }}%</div>
+                        </div>
+                        <ul id="liveSeoChecklist" class="small mb-0">
+                            {% for status, message in seo_result.checklist %}
+                            <li class="text-{{ status }}">{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    {{ form.submit(class="btn btn-warning btn-lg") }}
+                    <a href="{{ url_for('admin.media') }}" class="btn btn-secondary">Hủy</a>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <!-- Preview ảnh -->
+        <div class="card mb-3">
+            <div class="card-header bg-dark text-white">
+                <h6 class="mb-0"><i class="bi bi-image"></i> Preview</h6>
+            </div>
+            <div class="card-body p-0">
+                <img src="{{ media.filepath }}"
+                     class="img-fluid w-100"
+                     alt="{{ media.alt_text or media.filename }}"
+                     title="{{ media.title or media.alt_text }}"
+                     id="previewImage">
+            </div>
+        </div>
+
+        <!-- Thông tin file -->
+        <div class="card mb-3">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0"><i class="bi bi-info-circle"></i> Thông tin File</h6>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm table-borderless mb-0">
+                    <tr>
+                        <td class="text-muted">Tên file:</td>
+                        <td><strong>{{ media.filename }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Tên gốc:</td>
+                        <td>{{ media.original_filename }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Loại:</td>
+                        <td>
+                            <span class="badge bg-secondary">{{ media.file_type }}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Kích thước:</td>
+                        <td>{{ media.width }} x {{ media.height }}px</td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Dung lượng:</td>
+                        <td>{{ media.get_size_mb() }} MB</td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Upload lúc:</td>
+                        <td>{{ media.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                    </tr>
+                </table>
+
+                <hr>
+
+                <div class="d-grid gap-2">
+                    <button class="btn btn-sm btn-outline-primary"
+                            onclick="copyToClipboard('{{ request.url_root.rstrip('/') }}{{ media.filepath }}')">
+                        <i class="bi bi-clipboard"></i> Copy URL
+                    </button>
+
+                    <a href="{{ media.filepath }}"
+                       class="btn btn-sm btn-outline-secondary"
+                       target="_blank">
+                        <i class="bi bi-box-arrow-up-right"></i> Mở file
+                    </a>
+
+                    <a href="{{ url_for('admin.delete_media', id=media.id) }}"
+                       class="btn btn-sm btn-outline-danger"
+                       onclick="return confirm('Bạn chắc chắn muốn xóa file này?')">
+                        <i class="bi bi-trash"></i> Xóa file
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEO Guidelines -->
+        <div class="card border-success">
+            <div class="card-header bg-success text-white">
+                <h6 class="mb-0"><i class="bi bi-book"></i> Hướng dẫn SEO</h6>
+            </div>
+            <div class="card-body small">
+                <p class="fw-bold mb-2">Alt Text tốt:</p>
+                <ul class="mb-3">
+                    <li>Mô tả chính xác nội dung</li>
+                    <li>30-125 ký tự</li>
+                    <li>Tự nhiên, dễ đọc</li>
+                    <li>Có keywords quan trọng</li>
+                </ul>
+
+                <p class="fw-bold mb-2">Nên tránh:</p>
+                <ul class="mb-3">
+                    <li>❌ "Ảnh sản phẩm"</li>
+                    <li>❌ "Picture 123"</li>
+                    <li>❌ Spam keywords</li>
+                    <li>✅ "Keo dán gạch xám extra bla bla bla"</li>
+                </ul>
+
+                <p class="fw-bold mb-2">Danh sách Keywords</p>
+                <ul class="mb-3">
+                    <li><span class="text-success fw-bold">KW chính:</span> Thiết kế web </li>
+                    <li><span class="text-primary fw-bold">KW phụ:</span> Thiết kế web </li>
+                    <li><span class="text-info fw-bold">Thương hiệu:</span> Hoangvn</li>
+                    <li><span class="text-muted fw-bold">Tổng quan:</span> sản phẩm, thiết bị, dịch vụ</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Initialize tooltips
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl);
+});
+
+// Alt Text character counter
+const altTextInput = document.getElementById('altTextInput');
+const altTextCount = document.getElementById('altTextCount');
+const altTextQuality = document.getElementById('altTextQuality');
+
+function updateAltTextCounter() {
+    const length = altTextInput.value.length;
+    altTextCount.textContent = `${length}/125`;
+
+    // Quality indicator
+    if (length === 0) {
+        altTextQuality.innerHTML = '<div class="alert alert-danger small py-2 mb-0">⚠️ Alt Text bắt buộc cho SEO!</div>';
+    } else if (length < 30) {
+        altTextQuality.innerHTML = '<div class="alert alert-warning small py-2 mb-0">⚠️ Quá ngắn. Nên 30-125 ký tự.</div>';
+    } else if (length >= 30 && length <= 125) {
+        altTextQuality.innerHTML = '<div class="alert alert-success small py-2 mb-0">✓ Độ dài tốt cho SEO!</div>';
+    } else {
+        altTextQuality.innerHTML = '<div class="alert alert-warning small py-2 mb-0">⚠️ Quá dài. Nên 30-125 ký tự.</div>';
+    }
+
+    calculateLiveSEOScore();
+}
+
+altTextInput.addEventListener('input', updateAltTextCounter);
+
+// Live SEO Score Calculator
+function calculateLiveSEOScore() {
+    const altText = document.querySelector('[name="alt_text"]').value;
+    const title = document.querySelector('[name="title"]').value;
+    const caption = document.querySelector('[name="caption"]').value;
+    const album = document.querySelector('[name="album"]').value;
+
+    let score = 0;
+    let checklist = [];
+
+    // Alt Text (50 points)
+    const altLen = altText.length;
+    if (altLen >= 30 && altLen <= 125) {
+        score += 40;
+        checklist.push('<li class="text-success">✓ Alt Text có độ dài tối ưu</li>');
+
+        // Keywords bonus
+        const keywords = ['máy', 'lọc', 'nước', 'sản phẩm', 'thiết bị'];
+        const hasKeywords = keywords.some(kw => altText.toLowerCase().includes(kw));
+        if (hasKeywords) {
+            score += 10;
+            checklist.push('<li class="text-success">✓ Alt Text có keywords</li>');
+        } else {
+            checklist.push('<li class="text-warning">⚠ Nên thêm keywords</li>');
+        }
+    } else if (altLen > 0) {
+        score += 20;
+        checklist.push('<li class="text-warning">⚠ Alt Text chưa tối ưu</li>');
+    } else {
+        checklist.push('<li class="text-danger">✗ Thiếu Alt Text</li>');
+    }
+
+    // Title (15 points)
+    if (title.length > 0) {
+        score += 15;
+        checklist.push('<li class="text-success">✓ Có Title</li>');
+    } else {
+        checklist.push('<li class="text-warning">⚠ Nên thêm Title</li>');
+    }
+
+    // Caption (15 points)
+    if (caption.length > 20) {
+        score += 15;
+        checklist.push('<li class="text-success">✓ Có Caption</li>');
+    } else {
+        checklist.push('<li class="text-warning">⚠ Nên thêm Caption</li>');
+    }
+
+    // Album (10 points)
+    if (album.length > 0) {
+        score += 10;
+        checklist.push('<li class="text-success">✓ Đã phân loại Album</li>');
+    } else {
+        checklist.push('<li class="text-warning">⚠ Nên phân loại Album</li>');
+    }
+
+    // Update progress bar
+    const seoScoreBar = document.getElementById('liveSeoScore');
+    seoScoreBar.style.width = score + '%';
+    seoScoreBar.textContent = score + '%';
+
+    // Color coding
+    if (score >= 80) {
+        seoScoreBar.className = 'progress-bar bg-success';
+    } else if (score >= 60) {
+        seoScoreBar.className = 'progress-bar bg-info';
+    } else if (score >= 40) {
+        seoScoreBar.className = 'progress-bar bg-warning';
+    } else {
+        seoScoreBar.className = 'progress-bar bg-danger';
+    }
+
+    // Update checklist
+    document.getElementById('liveSeoChecklist').innerHTML = checklist.join('');
+}
+
+// Copy URL function
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        const toast = document.createElement('div');
+        toast.className = 'position-fixed top-0 end-0 p-3';
+        toast.style.zIndex = '9999';
+        toast.innerHTML = `
+            <div class="toast show" role="alert">
+                <div class="toast-header bg-success text-white">
+                    <i class="bi bi-check-circle me-2"></i>
+                    <strong class="me-auto">Thành công</strong>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+                </div>
+                <div class="toast-body">
+                    Đã copy URL vào clipboard!
+                </div>
+            </div>
+        `;
+        document.body.appendChild(toast);
+
+        setTimeout(() => toast.remove(), 3000);
+    });
+}
+
+// Real-time preview update
+document.querySelectorAll('input, textarea').forEach(input => {
+    input.addEventListener('input', calculateLiveSEOScore);
+});
+
+// Initialize
+updateAltTextCounter();
+calculateLiveSEOScore();
+</script>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "admin/admin_base.html" %}
+{% block page_title %}Quản lý danh mục{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-4">
+    <h4><i class="bi bi-tag"></i> Danh sách danh mục</h4>
+    <a href="{{ url_for('admin.add_category') }}" class="btn btn-warning">
+        <i class="bi bi-plus-circle"></i> Thêm danh mục
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Tên</th>
+                    <th>Slug</th>
+                    <th>Sản phẩm</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cat in categories.items %}
+                <tr>
+                    <td>{{ cat.id }}</td>
+                    <td><strong>{{ cat.name }}</strong></td>
+                    <td><code>{{ cat.slug }}</code></td>
+                    <td>{{ cat.products.count() }}</td>
+                    <td>
+                        {% if cat.is_active %}
+                        <span class="badge bg-success">Hoạt động</span>
+                        {% else %}
+                        <span class="badge bg-secondary">Ẩn</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('admin.edit_category', id=cat.id) }}" class="btn btn-sm btn-primary">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="{{ url_for('admin.delete_category', id=cat.id) }}" 
+                           class="btn btn-sm btn-danger" 
+                           data-confirm="Xóa danh mục này?">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

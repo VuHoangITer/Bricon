@@ -1,0 +1,310 @@
+{% extends "base.html" %} {% block title %}Câu hỏi thường gặp - {{
+get_setting('website_name', 'BRICON VIỆT NAM') }}{% endblock %} {% block
+meta_description %}{{ get_setting('faq_meta_description', 'Các câu hỏi thường
+gặp về keo dán gạch, chà ron và chống thấm của ' ~ get_setting('website_name',
+'BRICON VIỆT NAM') ~ '. Tìm câu trả lời nhanh chóng cho thắc mắc của bạn.') }}{%
+endblock %} {% block content %}
+<!-- Breadcrumb -->
+<section class="breadcrumb-section py-4 bg-light">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+          <a href="{{ url_for('main.index') }}">Trang chủ</a>
+        </li>
+        <li class="breadcrumb-item active">Câu hỏi thường gặp</li>
+      </ol>
+    </nav>
+  </div>
+</section>
+
+<!-- Page Header -->
+<div class="page-header bg-light py-5">
+  <div class="container text-center">
+    <h1 class="fw-bold mb-3">Câu hỏi thường gặp</h1>
+    <p class="lead text-muted">
+      Tìm câu trả lời nhanh chóng cho những thắc mắc của bạn
+    </p>
+  </div>
+</div>
+
+<!-- FAQ Content -->
+<section class="py-5" itemscope itemtype="https://schema.org/FAQPage">
+  <div class="container">
+    {% if faqs %}
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="accordion" id="faqAccordion">
+          {% for faq in faqs %}
+          <div
+            class="accordion-item border-0 shadow-sm mb-3"
+            itemscope
+            itemprop="mainEntity"
+            itemtype="https://schema.org/Question"
+          >
+            <h2 class="accordion-header" itemprop="name">
+              <button
+                class="accordion-button {% if not loop.first %}collapsed{% endif %} fw-semibold"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#faq{{ faq.id }}"
+                aria-expanded="{% if loop.first %}true{% else %}false{% endif %}"
+                aria-controls="faq{{ faq.id }}"
+              >
+                <i class="bi bi-question-circle text-warning me-2"></i>
+                {{ faq.question }}
+              </button>
+            </h2>
+            <div
+              id="faq{{ faq.id }}"
+              class="accordion-collapse collapse {% if loop.first %}show{% endif %}"
+              data-bs-parent="#faqAccordion"
+              itemscope
+              itemprop="acceptedAnswer"
+              itemtype="https://schema.org/Answer"
+            >
+              <div class="accordion-body" itemprop="text">
+                {{ faq.answer|nl2br|safe }}
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- Contact CTA -->
+        <div class="text-center mt-5 p-5 bg-light rounded">
+          <i class="bi bi-question-circle display-4 text-warning mb-3"></i>
+          <h4 class="fw-bold mb-3">Không tìm thấy câu trả lời?</h4>
+          <p class="text-muted mb-4">
+            Đừng lo lắng! Đội ngũ hỗ trợ BRICON luôn sẵn sàng giúp bạn.
+          </p>
+          <div class="d-flex flex-wrap gap-3 justify-content-center">
+            <a
+              href="{{ url_for('main.contact') }}"
+              class="btn btn-warning btn-lg"
+            >
+              <i class="bi bi-envelope"></i> Liên hệ BRICON
+            </a>
+            <a
+              href="tel:{{ get_setting('hotline', '0901.180.094')|replace('.', '')|replace(' ', '') }}"
+              class="btn btn-outline-warning btn-lg"
+            >
+              <i class="bi bi-telephone"></i> Gọi {{ get_setting('hotline',
+              '0901.180.094') }}
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-lg-4 mt-4 mt-lg-0">
+        <!-- Contact Card -->
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-header bg-warning">
+            <h5 class="mb-0">
+              <i class="bi bi-headset"></i> Hỗ trợ trực tuyến
+            </h5>
+          </div>
+          <div class="card-body">
+            <p class="mb-3 text-center">
+              <i class="bi bi-telephone-fill text-warning me-2"></i>
+              <strong>Hotline:</strong>
+              <a
+                href="tel:{{ get_setting('hotline', '0901.180.094')|replace('.', '')|replace(' ', '') }}"
+                class="text-decoration-none text-primary fw-bold"
+              >
+                {{ get_setting('hotline', '0901.180.094') }}
+              </a>
+            </p>
+            <p class="mb-3 text-center">
+              <i class="bi bi-envelope-fill text-warning me-2"></i>
+              <strong>Email:</strong>
+              <a
+                href="mailto:{{ get_setting('contact_email', 'info@bricon.vn') }}"
+                class="text-decoration-none text-primary fw-bold"
+              >
+                {{ get_setting('contact_email', 'info@bricon.vn') }}
+              </a>
+            </p>
+            <p class="mb-0 text-center">
+              <i class="bi bi-clock-fill text-warning me-2"></i>
+              <strong>Giờ làm việc:</strong>
+              {{ get_setting('working_hours', '8h - 17h30 (Thứ 2 - Thứ 7)') }}
+            </p>
+            <hr />
+            <div class="d-flex gap-2">
+              {% if get_setting('zalo_url') %}
+              <a
+                href="{{ get_setting('zalo_url') }}"
+                target="_blank"
+                class="btn btn-outline-info btn-sm flex-fill"
+                title="Chat Zalo"
+              >
+                <i class="bi bi-chat-dots"></i> Zalo
+              </a>
+              {% endif %} {% if get_setting('facebook_url') %}
+              <a
+                href="{{ get_setting('facebook_url') }}"
+                target="_blank"
+                class="btn btn-outline-primary btn-sm flex-fill"
+                title="Facebook"
+              >
+                <i class="bi bi-facebook"></i> Facebook
+              </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="card border-0 shadow-sm">
+          <div class="card-header bg-light">
+            <h6 class="mb-0">
+              <i class="bi bi-link-45deg"></i> Liên kết hữu ích
+            </h6>
+          </div>
+          <div class="list-group list-group-flush">
+            <a
+              href="{{ url_for('main.about') }}"
+              class="list-group-item list-group-item-action"
+            >
+              <i class="bi bi-info-circle text-warning me-2"></i>
+              Giới thiệu
+            </a>
+            <a
+              href="{{ url_for('main.products') }}"
+              class="list-group-item list-group-item-action"
+            >
+              <i class="bi bi-box-seam text-warning me-2"></i>
+              Sản phẩm
+            </a>
+            <a
+              href="{{ url_for('main.policy') }}"
+              class="list-group-item list-group-item-action"
+            >
+              <i class="bi bi-file-text text-warning me-2"></i>
+              Chính sách
+            </a>
+            <a
+              href="{{ url_for('main.contact') }}"
+              class="list-group-item list-group-item-action"
+            >
+              <i class="bi bi-envelope text-warning me-2"></i>
+              Liên hệ
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <!-- No FAQs -->
+    <div class="text-center py-5">
+      <i class="bi bi-question-circle display-1 text-muted"></i>
+      <h3 class="mt-4">Chưa có câu hỏi nào</h3>
+      <p class="text-muted">
+        Vui lòng quay lại sau hoặc liên hệ với chúng tôi để được hỗ trợ.
+      </p>
+      <a href="{{ url_for('main.contact') }}" class="btn btn-warning mt-3">
+        <i class="bi bi-envelope"></i> Liên hệ ngay
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Popular Topics (Optional) -->
+{% if faqs %}
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="text-center mb-4">
+      <h3 class="fw-bold">Chủ đề phổ biến</h3>
+      <p class="text-muted">Những câu hỏi được quan tâm nhiều nhất</p>
+    </div>
+    <div class="row g-3">
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body text-center">
+            <i class="bi bi-box-seam display-4 text-warning mb-3"></i>
+            <h5>Sản phẩm</h5>
+            <p class="text-muted small">
+              Thông tin về keo dán gạch, chà ron, chống thấm
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body text-center">
+            <i class="bi bi-truck display-4 text-warning mb-3"></i>
+            <h5>Giao hàng</h5>
+            <p class="text-muted small">
+              Chính sách giao hàng, thời gian, phí ship
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body text-center">
+            <i class="bi bi-shield-check display-4 text-warning mb-3"></i>
+            <h5>Bảo hành</h5>
+            <p class="text-muted small">
+              Chính sách bảo hành, đổi trả sản phẩm
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ==================== SCHEMA.ORG - BREADCRUMB ==================== -->
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Trang chủ",
+        "item": "{{ url_for('main.index', _external=True) }}"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Câu hỏi thường gặp",
+        "item": "{{ url_for('main.faq', _external=True) }}"
+      }
+    ]
+  }
+</script>
+{% endblock %} {% block extra_css %}
+<style>
+  .accordion-button:not(.collapsed) {
+    background-color: #fff3cd;
+    color: #856404;
+  }
+
+  .accordion-button:focus {
+    box-shadow: none;
+    border-color: #ffc107;
+  }
+
+  .accordion-item {
+    transition: transform 0.2s;
+  }
+
+  .accordion-item:hover {
+    transform: translateX(5px);
+  }
+</style>
+<style>
+  a.text-primary.fw-bold:hover {
+    color: #004085 !important; /* xanh đậm hơn khi hover */
+    text-decoration: underline; /* nếu anh muốn có gạch chân nhẹ */
+    transition: 0.2s ease;
+  }
+</style>
+{% endblock %}

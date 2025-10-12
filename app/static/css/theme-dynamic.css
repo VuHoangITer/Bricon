@@ -1,0 +1,546 @@
+<!-- ==================== KHỐI 1: ĐỊNH NGHĨA CÁC BIẾN MÀU CĂN BẢN ==================== -->
+<style>
+    :root {
+        /* Màu chính của website (dùng cho tất cả các component quan trọng) */
+        --primary-color: {{ get_setting('primary_color', '#ffc107') }};
+        
+        /* Màu chính khi hover (thêm "dd" để giảm độ sáng 15%) */
+        --primary-hover: {{ get_setting('primary_color', '#ffc107') }}dd;
+        
+        /* Màu chính nhạt (thêm "22" để giảm độ sáng 87%, dùng cho background) */
+        --primary-light: {{ get_setting('primary_color', '#ffc107') }}22;
+        
+        /* Màu chính đậm (thêm "cc" để giảm độ sáng 20%, dùng cho hover đậm hơn) */
+        --primary-dark: {{ get_setting('primary_color', '#ffc107') }}cc;
+    }
+
+    /* ==================== KHỐI 2: THANH NAVIGATION & HEADER ==================== */
+    /* Áp dụng màu chính cho các thành phần header */
+    .bg-warning,
+    .navbar.bg-warning,
+    header.bg-warning {
+        /* Background của navbar/header sẽ dùng màu chính */
+        background-color: var(--primary-color) !important;
+    }
+
+    /* Khi di chuột vào link trong navbar */
+    .navbar .nav-link:hover {
+        /* Background sẽ thay đổi thành màu nhạt hơn */
+        background-color: var(--primary-light) !important;
+    }
+
+    /* Khi link trong navbar được chọn/active */
+    .navbar .nav-link.active {
+        /* Chữ sẽ thành màu đen để contrast tốt */
+        color: #000 !important;
+        /* Background thành màu nhạt */
+        background-color: var(--primary-light) !important;
+    }
+
+    /* ==================== KHỐI 3: VĂN BẢN & BIỂU TƯỢNG ==================== */
+    /* Áp dụng màu chính cho text và icon có class "text-warning" */
+    .text-warning,
+    .bi.text-warning,
+    i.text-warning {
+        /* Tất cả text/icon warning sẽ dùng màu chính */
+        color: var(--primary-color) !important;
+    }
+
+    /* ==================== KHỐI 4: NHÁY NÚT (BUTTON) ==================== */
+    /* Style nút bình thường có class "btn-warning" */
+    .btn-warning {
+        /* Background nút dùng màu chính */
+        background-color: #FFFFFF !important;
+        /* Viền nút cũng dùng màu chính */
+        border-color: #FFFFFF !important;
+        /* Chữ trên nút là đen */
+        color: #6C7B8B !important;
+    }
+
+    /* Style nút khi di chuột (hover), focus, hoặc click (active) */
+    .btn-warning:hover,
+    .btn-warning:focus,
+    .btn-warning:active {
+        /* Background đậm hơn khi hover */
+        background-color: var(--primary-dark) !important;
+        /* Viền cũng đậm hơn */
+        border-color: var(--primary-dark) !important;
+        /* Chữ vẫn là đen */
+        color: #000 !important;
+        /* Thêm bóng để nút nổi lên */
+        box-shadow: 0 4px 12px var(--primary-light) !important;
+    }
+
+    /* Style nút outline (chỉ có viền, không có background) */
+    .btn-outline-warning {
+        /* Chữ dùng màu chính */
+        color: #6C7B8B !important;
+        /* Viền dùng màu chính */
+        border-color: #6C7B8B !important;
+        /* Không có background lúc đầu */
+        background-color: transparent !important;
+    }
+
+    /* Style nút outline khi hover, focus, active */
+    .btn-outline-warning:hover,
+    .btn-outline-warning:focus,
+    .btn-outline-warning:active {
+        /* Background thành màu chính */
+        background-color: var(--primary-color) !important;
+        /* Viền vẫn màu chính */
+        border-color: var(--primary-color) !important;
+        /* Chữ thành đen để contrast tốt */
+        color: #000 !important;
+    }
+
+    /* ==================== KHỐI 5: HƯỚNG DẪN VÀ NHÃN ==================== */
+    /* Style hướng dẫn/badge có class "bg-warning" */
+    .badge.bg-warning {
+        /* Background của badge dùng màu chính */
+        background-color: var(--primary-color) !important;
+        /* Chữ badge thành đen */
+        color: #000 !important;
+    }
+
+    /* Badge dùng cách viết "text-bg-warning" (Bootstrap 5 mới) */
+    .badge.text-bg-warning {
+        /* Background dùng màu chính */
+        background-color: var(--primary-color) !important;
+        /* Chữ thành đen */
+        color: #000 !important;
+    }
+
+    /* ==================== KHỐI 6: TIÊU ĐỀ SECTION VÀ UNDERLINE ==================== */
+    /* Gạch chân dưới tiêu đề section */
+    .title-underline {
+        /* Tạo gradient từ màu chính sang màu đậm */
+        background: linear-gradient(90deg, var(--primary-color), var(--primary-dark)) !important;
+    }
+
+    /* Tiêu đề với class "text-primary" */
+    .text-primary,
+    h6.text-primary,
+    h5.text-primary {
+        /* Text sẽ dùng màu chính */
+        color: var(--primary-color) !important;
+    }
+
+    /* ==================== KHỐI 7: THẺ SẢN PHẨM (PRODUCT CARDS) ==================== */
+    /* Style thẻ sản phẩm khi di chuột */
+    .product-card:hover {
+        /* Viền thẻ thành màu chính */
+        border-color: var(--primary-color) !important;
+        /* Thêm bóng lên thẻ */
+        box-shadow: 0 0.75rem 1.5rem var(--primary-light) !important;
+    }
+
+    /* Tên sản phẩm khi hover */
+    .product-name a:hover,
+    .product-name:hover {
+        /* Chữ tên sản phẩm thành màu chính */
+        color: var(--primary-color) !important;
+    }
+
+    /* ==================== KHỐI 8: THẺ BÀI VIẾT (BLOG CARDS) ==================== */
+    /* Style thẻ bài viết khi di chuột */
+    .blog-card:hover {
+        /* Thêm bóng đậm hơn khi hover */
+        box-shadow: 0 1rem 2rem var(--primary-light) !important;
+    }
+
+    /* Tiêu đề bài viết khi hover */
+    .blog-content h5:hover,
+    .blog-content h5 a:hover {
+        /* Chữ tiêu đề thành màu chính */
+        color: var(--primary-color) !important;
+    }
+
+    /* ==================== KHỐI 9: FOOTER ==================== */
+    /* Tiêu đề trong footer */
+    footer h5,
+    footer h5.text-warning {
+        /* Chữ tiêu đề footer thành màu chính */
+        color: var(--primary-color) !important;
+    }
+
+    /* Gạch chân sau tiêu đề footer (pseudo-element ::after) */
+    footer h5::after {
+        /* Gạch chân dùng màu chính */
+        background: var(--primary-color) !important;
+    }
+
+    /* Link trong footer khi hover */
+    footer a:hover {
+        /* Chữ link thành màu chính */
+        color: var(--primary-color) !important;
+    }
+
+    /* Icon social media trong footer khi hover */
+    footer .social-links a:hover {
+        /* Background thành màu chính */
+        background-color: var(--primary-color) !important;
+        /* Chữ thành màu tối */
+        color: #212529 !important;
+        /* Thêm bóng lên icon */
+        box-shadow: 0 4px 8px var(--primary-light) !important;
+    }
+
+    /* Icon chevron trong footer */
+    footer .bi-chevron-right.text-warning {
+        /* Icon dùng màu chính */
+        color: var(--primary-color) !important;
+    }
+
+    /* ==================== KHỐI 10: PHÂN TRANG (PAGINATION) ==================== */
+    /* Nút trang hiện tại (active) */
+    .pagination .page-item.active .page-link {
+        /* Background thành màu chính */
+        background-color: var(--primary-color) !important;
+        /* Viền thành màu chính */
+        border-color: var(--primary-color) !important;
+        /* Chữ thành đen */
+        color: #000 !important;
+    }
+
+    /* Nút trang khi hover */
+    .pagination .page-link:hover {
+        /* Background thành màu nhạt */
+        background-color: var(--primary-light) !important;
+        /* Viền thành màu chính */
+        border-color: var(--primary-color) !important;
+        /* Chữ thành đen */
+        color: #000 !important;
+    }
+
+    /* Nút trang khi focus (nhấn vào) */
+    .pagination .page-link:focus {
+        /* Thêm bóng focus lên nút */
+        box-shadow: 0 0 0 0.2rem var(--primary-light) !important;
+    }
+
+    /* ==================== KHỐI 11: TAB (Tabs/Navigation) ==================== */
+    /* Tab được chọn (active) */
+    .nav-tabs .nav-link.active {
+        /* Chữ tab thành màu chính */
+        color: var(--primary-color) !important;
+        /* Viền dưới tab thành màu chính (dày 2px) */
+        border-bottom: 2px solid var(--primary-color) !important;
+    }
+
+    /* Tab khi hover */
+    .nav-tabs .nav-link:hover {
+        /* Chữ tab thành màu chính */
+        color: var(--primary-color) !important;
+    }
+
+    /* ==================== KHỐI 12: DROPDOWN MENU ==================== */
+    /* Item trong dropdown khi hover hoặc focus */
+    .dropdown-item:hover,
+    .dropdown-item:focus {
+        /* Background thành màu nhạt */
+        background-color: var(--primary-light) !important;
+        /* Chữ thành đen */
+        color: #000 !important;
+    }
+
+    /* Item trong dropdown khi active (được chọn) */
+    .dropdown-item.active {
+        /* Background thành màu chính */
+        background-color: var(--primary-color) !important;
+        /* Chữ thành đen */
+        color: #000 !important;
+    }
+
+    /* ==================== KHỐI 13: THANH FILTER BÊN CẠNH ==================== */
+    /* Link filter khi hover hoặc active */
+    .filter-sidebar ul li a:hover,
+    .filter-sidebar ul li a.active {
+        /* Background thành màu nhạt */
+        background: var(--primary-light) !important;
+        /* Chữ thành đen */
+        color: #000 !important;
+    }
+
+    /* ==================== KHỐI 14: THÔNG BÁO (ALERTS) ==================== */
+    /* Alert có class "alert-warning" */
+    .alert-warning {
+        /* Viền trái của alert dùng màu chính */
+        border-left-color: var(--primary-color) !important;
+        /* Background thành màu nhạt */
+        background-color: var(--primary-light) !important;
+    }
+
+    /* ==================== KHỐI 15: FORM INPUT ==================== */
+    /* Input/Select khi focus (click vào) */
+    .form-control:focus,
+    .form-select:focus {
+        /* Viền input thành màu chính */
+        border-color: var(--primary-color) !important;
+        /* Thêm bóng focus lên input */
+        box-shadow: 0 0 0 0.2rem var(--primary-light) !important;
+    }
+
+    /* Checkbox/Radio khi được chọn */
+    .form-check-input:checked {
+        /* Background thành màu chính */
+        background-color: var(--primary-color) !important;
+        /* Viền thành màu chính */
+        border-color: var(--primary-color) !important;
+    }
+
+    /* Checkbox/Radio khi focus */
+    .form-check-input:focus {
+        /* Viền thành màu chính */
+        border-color: var(--primary-color) !important;
+        /* Thêm bóng focus */
+        box-shadow: 0 0 0 0.2rem var(--primary-light) !important;
+    }
+
+    /* ==================== KHỐI 16: LINK VĂN BẢN ==================== */
+    /* Link có class "text-warning" khi hover */
+    a.text-warning:hover {
+        /* Chữ link thành màu đậm hơn */
+        color: var(--primary-dark) !important;
+    }
+
+    /* ==================== KHỐI 17: THANH CUỘN (SCROLLBAR) ==================== */
+    /* Thanh cuộn (thumb) của scrollbar */
+    ::-webkit-scrollbar-thumb {
+        /* Gradient từ màu chính sang màu đậm */
+        background: linear-gradient(180deg, var(--primary-color), var(--primary-dark)) !important;
+    }
+
+    /* Thanh cuộn khi hover */
+    ::-webkit-scrollbar-thumb:hover {
+        /* Gradient ngược lại */
+        background: linear-gradient(180deg, var(--primary-dark), var(--primary-color)) !important;
+    }
+
+    /* ==================== KHỐI 18: CAROUSEL BANNER ==================== */
+    /* Chấm indicator của carousel khi active */
+    .carousel-indicators button.active {
+        /* Chấm active thành màu chính */
+        background-color: #d3d7db !important;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        background: transparent !important; /* bỏ nền */
+        border: none;
+        opacity: 0; /* ẩn toàn bộ phần hiển thị */
+        width: 8%; /* vùng click ~8% chiều ngang mỗi bên, có thể chỉnh */
+        transition: none;
+    }
+
+    /* Nút điều khiển carousel (prev/next) khi hover */
+    .carousel-control-prev:hover,
+    .carousel-control-next:hover {
+        /* Background nút thành màu nhạt */
+        background-color: transparent !important;
+        opacity: 0;
+    }
+
+    /* ==================== KHỐI 19: CAROUSEL DỰ ÁN ==================== */
+    /* Chấm navigation của carousel dự án */
+    #featured-projects .dot {
+        /* Chấm bình thường thành xám nhạt */
+        background: #dee2e6;
+    }
+
+    /* Chấm khi hover */
+    #featured-projects .dot:hover {
+        /* Chấm thành màu nhạt */
+        background: var(--primary-light);
+    }
+
+    /* Chấm active */
+    #featured-projects .dot.active {
+        /* Chấm active thành màu chính */
+        background: #d3d7db !important;
+        /* Viền thành màu chính */
+        border-color: var(--primary-color) !important;
+    }
+
+    /* ==================== KHỐI 20: NÚT NỔI (FLOATING BUTTONS) ==================== */
+    /* Hiệu ứng pulse (nhấp nháy) cho nút nổi */
+    @keyframes pulse {
+        /* Trạng thái đầu (0%) và cuối (100%) */
+        0%, 100% {
+            /* Bóng nhẹ */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            /* Kích thước bình thường */
+            transform: scale(1);
+        }
+        /* Trạng thái giữa (50%) */
+        50% {
+            /* Bóng đậm và to */
+            box-shadow: 0 4px 20px var(--primary-light),
+                       0 0 0 8px var(--primary-light);
+            /* Phóng to 5% */
+            transform: scale(1.05);
+        }
+    }
+
+    /* ==================== KHỐI 21: TRẠNG THÁI LOADING ==================== */
+    /* Phần tử đang loading */
+    .loading::after {
+        /* Viền spinner thành màu chính */
+        border-color: var(--primary-color) !important;
+        /* Phần trên cùng spinner transparent (tạo hiệu ứng quay) */
+        border-top-color: transparent !important;
+    }
+
+    /* ==================== KHỐI 22: VIỀN & UNDERLINE ==================== */
+    /* Thành phần có class "border-warning" */
+    .border-warning {
+        /* Viền thành màu chính */
+        border-color: var(--primary-color) !important;
+    }
+
+    /* Underline text (gạch chân dưới chữ) */
+    .text-decoration-underline {
+        /* Gạch chân dùng màu chính */
+        text-decoration-color: var(--primary-color) !important;
+    }
+
+    /* ==================== KHỐI 23: THANH TIẾN ĐỘ (PROGRESS BAR) ==================== */
+    /* Progress bar có class "bg-warning" */
+    .progress-bar.bg-warning {
+        /* Thanh tiến độ dùng màu chính */
+        background-color: var(--primary-color) !important;
+    }
+
+    /* ==================== KHỐI 24: DANH SÁCH NHÓM (LIST GROUP) ==================== */
+    /* Item danh sách khi active */
+    .list-group-item.active {
+        /* Background thành màu chính */
+        background-color: var(--primary-color) !important;
+        /* Viền thành màu chính */
+        border-color: var(--primary-color) !important;
+    }
+
+    /* Item danh sách có class "list-group-item-warning" */
+    .list-group-item-warning {
+        /* Background thành màu nhạt */
+        background-color: var(--primary-light) !important;
+        /* Viền thành màu nhạt */
+        border-color: var(--primary-light) !important;
+    }
+
+    /* ==================== KHỐI 25: HEADER THẺ (CARD HEADER) ==================== */
+    /* Header thẻ có class "bg-warning" */
+    .card-header.bg-warning {
+        /* Background thành màu chính */
+        background-color: var(--primary-color) !important;
+    }
+
+    /* ==================== KHỐI 26: HIỆU ỨNG HOVER ==================== */
+    /* Phần tử có class "hover-warning" */
+    .hover-warning:hover {
+        /* Chữ thành màu chính khi hover */
+        color: var(--primary-color) !important;
+    }
+
+    /* ==================== KHỐI 27: HIỆU ỨNG BÓ (SHADOW EFFECTS) ==================== */
+    /* Phần tử có class "shadow-warning" */
+    .shadow-warning {
+        /* Bóng dùng màu nhạt */
+        box-shadow: 0 0.5rem 1rem var(--primary-light) !important;
+    }
+
+    /* ==================== KHỐI 28: CLASS TÙYCHỈNH ==================== */
+    /* Background màu chính nhạt */
+    .bg-primary-light {
+        /* Background thành màu nhạt */
+        background-color: var(--primary-light) !important;
+    }
+
+    /* Background màu chính hover */
+    .bg-primary-hover {
+        /* Background dùng biến primary-hover */
+        background-color: var(--primary-hover) !important;
+    }
+
+    /* Text màu chính khi hover */
+    .text-primary-hover:hover {
+        /* Chữ thành màu chính khi hover */
+        color: var(--primary-color) !important;
+    }
+
+    /* ==================== KHỐI 29: HEADER THẺ VỚI BG-WARNING CHỨA HEADING ==================== */
+    /* Tất cả heading trong card-header có bg-warning */
+    .card-header.bg-warning h3,
+    .card-header.bg-warning h2,
+    .card-header.bg-warning h4,
+    .card-header.bg-warning h5,
+    .card-header.bg-warning h6 {
+        /* Tất cả heading thành màu đen để contrast tốt */
+        color: #000 !important;
+    }
+
+    /* ==================== KHỐI 30: TEXT-WARNING TRONG HEADING ==================== */
+    /* Span hoặc heading có class "text-warning" */
+    span.text-warning,
+    h1 span.text-warning,
+    h2 span.text-warning,
+    h3 span.text-warning,
+    h4 span.text-warning,
+    h5 span.text-warning,
+    h6 span.text-warning {
+        /* Chữ thành màu chính */
+        color: var(--primary-color) !important;
+    }
+
+    /* ==================== KHỐI 31: LINK CÓ CLASS TEXT-WARNING ==================== */
+    /* Link với class "text-warning" ở mọi trạng thái */
+    a.text-warning,
+    a.text-warning:hover,
+    a.text-warning:focus {
+        /* Link luôn dùng màu chính */
+        color: var(--primary-color) !important;
+    }
+
+    /* ==================== KHỐI 32: NAVIGATION BÊN CẠNH ACTIVE ==================== */
+    /* Item navigation được chọn */
+    .list-group-item.active,
+    .list-group-item-action.active {
+        /* Background thành màu chính */
+        background-color: var(--primary-color) !important;
+        /* Viền thành màu chính */
+        border-color: var(--primary-color) !important;
+        /* Chữ thành đen */
+        color: #000 !important;
+    }
+
+    /* ==================== KHỐI 33: CATEGORY SIDEBAR ==================== */
+    /* Link category khi không được chọn */
+    .text-decoration-none.text-warning,
+    .text-decoration-none.text-warning.fw-bold {
+        /* Chữ thành màu chính */
+        color: var(--primary-color) !important;
+    }
+
+    /* ==================== KHỐI 34: CTA SECTION (CALL TO ACTION) ==================== */
+    /* Section CTA có class "bg-warning" */
+    section.bg-warning,
+    div.bg-warning {
+        /* Background thành màu chính */
+        background-color: var(--primary-color) !important;
+    }
+
+    /* Heading và paragraph trong CTA section */
+    section.bg-warning h3,
+    section.bg-warning h2,
+    section.bg-warning p {
+        /* Tất cả text thành đen để contrast tốt */
+        color: #000 !important;
+    }
+
+    /* ==================== KHỐI 35: GRADIENT HEADER ==================== */
+    /* Card header với gradient */
+    .card-header[style*="linear-gradient"],
+    .card-header[style*="gradient"] {
+        /* Gradient từ màu chính sang màu đậm */
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%) !important;
+    }
+</style>

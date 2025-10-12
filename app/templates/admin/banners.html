@@ -1,0 +1,102 @@
+{% extends "admin/admin_base.html" %}
+
+{% block page_title %}Quản lý Banner{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4><i class="bi bi-images"></i> Danh sách Banner Slider</h4>
+    <a href="{{ url_for('admin.add_banner') }}" class="btn btn-warning">
+        <i class="bi bi-plus-circle"></i> Thêm Banner
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th width="80">Thứ tự</th>
+                        <th width="150">Hình ảnh</th>
+                        <th>Tiêu đề</th>
+                        <th>Phụ đề</th>
+                        <th>Link</th>
+                        <th width="100">Trạng thái</th>
+                        <th width="150">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for banner in banners %}
+                    <tr>
+                        <td class="text-center">
+                            <span class="badge bg-primary">{{ banner.order }}</span>
+                        </td>
+                        <td>
+                            {% if banner.image %}
+                            <img src="{{ banner.image }}"
+                                 alt="{{ banner.title }}"
+                                 style="width: 100%; max-width: 150px; height: 60px; object-fit: cover; border-radius: 5px;">
+                            {% else %}
+                            <div class="bg-light d-flex align-items-center justify-content-center"
+                                 style="width: 150px; height: 60px; border-radius: 5px;">
+                                <i class="bi bi-image text-muted"></i>
+                            </div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong>{{ banner.title if banner.title else 'N/A' }}</strong>
+                        </td>
+                        <td>
+                            <small class="text-muted">{{ banner.subtitle if banner.subtitle else 'N/A' }}</small>
+                        </td>
+                        <td>
+                            {% if banner.link %}
+                            <a href="{{ banner.link }}" target="_blank" class="text-decoration-none">
+                                <i class="bi bi-link-45deg"></i> {{ banner.link[:30] }}...
+                            </a>
+                            {% else %}
+                            <span class="text-muted">N/A</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if banner.is_active %}
+                            <span class="badge bg-success">Hiển thị</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Ẩn</span>
+                            {% endif %}
+                        </td>
+                        <td class="table-actions">
+                            <a href="{{ url_for('admin.edit_banner', id=banner.id) }}"
+                               class="btn btn-sm btn-primary" title="Sửa">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{{ url_for('admin.delete_banner', id=banner.id) }}"
+                               class="btn btn-sm btn-danger"
+                               data-confirm="Bạn có chắc muốn xóa banner này?"
+                               title="Xóa">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if not banners %}
+        <div class="text-center py-5">
+            <i class="bi bi-images display-1 text-muted"></i>
+            <p class="text-muted mt-3">Chưa có banner nào. Thêm banner đầu tiên!</p>
+            <a href="{{ url_for('admin.add_banner') }}" class="btn btn-warning">
+                <i class="bi bi-plus-circle"></i> Thêm Banner
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="alert alert-info mt-4">
+    <i class="bi bi-info-circle"></i>
+    <strong>Lưu ý:</strong> Banner được sắp xếp theo thứ tự từ nhỏ đến lớn. Số thứ tự nhỏ hơn sẽ hiển thị trước.
+</div>
+{% endblock %}

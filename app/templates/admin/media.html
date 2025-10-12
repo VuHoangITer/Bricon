@@ -1,0 +1,552 @@
+{% extends "admin/admin_base.html" %}
+
+{% block page_title %}Quản lý Media Library{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4><i class="bi bi-images"></i> Media Library</h4>
+        <p class="text-muted mb-0">
+            <i class="bi bi-file-earmark"></i> {{ total_files }} files
+            <i class="bi bi-hdd ms-3"></i> {{ total_size_mb }} MB
+        </p>
+    </div>
+    <div>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createAlbumModal">
+            <i class="bi bi-folder-plus"></i> Tạo Album
+        </button>
+        <a href="{{ url_for('admin.upload_media') }}" class="btn btn-warning">
+            <i class="bi bi-cloud-upload"></i> Upload File
+        </a>
+    </div>
+</div>
+
+<!-- SEO Statistics Card -->
+<div class="card mb-4 border-info">
+    <div class="card-header bg-info text-white">
+        <h6 class="mb-0"><i class="bi bi-graph-up"></i> Thống kê SEO</h6>
+    </div>
+    <div class="card-body">
+        <div class="row text-center">
+            <div class="col-md-3">
+                <div class="p-3 border rounded">
+                    <h2 class="text-success mb-0">{{ seo_stats.excellent }}</h2>
+                    <small class="text-muted">Xuất sắc (A+/A)</small>
+                    <div class="progress mt-2" style="height: 5px;">
+                        <div class="progress-bar bg-success" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-3 border rounded">
+                    <h2 class="text-info mb-0">{{ seo_stats.good }}</h2>
+                    <small class="text-muted">Tốt (B)</small>
+                    <div class="progress mt-2" style="height: 5px;">
+                        <div class="progress-bar bg-info" style="width: 80%;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-3 border rounded">
+                    <h2 class="text-warning mb-0">{{ seo_stats.fair }}</h2>
+                    <small class="text-muted">Trung bình (C)</small>
+                    <div class="progress mt-2" style="height: 5px;">
+                        <div class="progress-bar bg-warning" style="width: 60%;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-3 border rounded">
+                    <h2 class="text-danger mb-0">{{ seo_stats.poor }}</h2>
+                    <small class="text-muted">Cần cải thiện (D)</small>
+                    <div class="progress mt-2" style="height: 5px;">
+                        <div class="progress-bar bg-danger" style="width: 40%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filter Albums & SEO -->
+<div class="card mb-4">
+    <div class="card-body">
+        <!-- Album Filters -->
+        <div class="mb-3">
+            <strong class="me-2"><i class="bi bi-folder"></i> Albums:</strong>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="{{ url_for('admin.media') }}"
+                   class="btn btn-sm {% if not current_album %}btn-warning{% else %}btn-outline-secondary{% endif %}">
+                    <i class="bi bi-grid"></i> Tất cả ({{ total_files }})
+                </a>
+
+                {% for album in albums %}
+                <div class="btn-group btn-group-sm" role="group">
+                    <a href="{{ url_for('admin.media', album=album.name) }}"
+                       class="btn {% if current_album == album.name %}btn-warning{% else %}btn-outline-secondary{% endif %}">
+                        <i class="bi bi-folder"></i> {{ album.name }} ({{ album.count }})
+                    </a>
+                    <button type="button"
+                            class="btn {% if current_album == album.name %}btn-warning{% else %}btn-outline-secondary{% endif %} border-start"
+                            onclick="deleteAlbum('{{ album.name }}', {{ album.count }})"
+                            title="Xóa album">
+                        <i class="bi bi-x"></i>
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- SEO Filters -->
+        <div>
+            <strong class="me-2"><i class="bi bi-speedometer2"></i> Lọc theo SEO:</strong>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="{{ url_for('admin.media', album=current_album if current_album else '') }}"
+                   class="btn btn-sm {% if not current_seo_filter %}btn-info{% else %}btn-outline-secondary{% endif %}">
+                    Tất cả
+                </a>
+                <a href="{{ url_for('admin.media', album=current_album if current_album else '', seo='excellent') }}"
+                   class="btn btn-sm {% if current_seo_filter == 'excellent' %}btn-success{% else %}btn-outline-success{% endif %}">
+                    <i class="bi bi-star-fill"></i> Xuất sắc ({{ seo_stats.excellent }})
+                </a>
+                <a href="{{ url_for('admin.media', album=current_album if current_album else '', seo='good') }}"
+                   class="btn btn-sm {% if current_seo_filter == 'good' %}btn-info{% else %}btn-outline-info{% endif %}">
+                    <i class="bi bi-star"></i> Tốt ({{ seo_stats.good }})
+                </a>
+                <a href="{{ url_for('admin.media', album=current_album if current_album else '', seo='fair') }}"
+                   class="btn btn-sm {% if current_seo_filter == 'fair' %}btn-warning{% else %}btn-outline-warning{% endif %}">
+                    <i class="bi bi-dash-circle"></i> Trung bình ({{ seo_stats.fair }})
+                </a>
+                <a href="{{ url_for('admin.media', album=current_album if current_album else '', seo='poor') }}"
+                   class="btn btn-sm {% if current_seo_filter == 'poor' %}btn-danger{% else %}btn-outline-danger{% endif %}">
+                    <i class="bi bi-exclamation-triangle"></i> Cần cải thiện ({{ seo_stats.poor }})
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Media Grid -->
+<div class="card">
+    <div class="card-body">
+        {% if media_with_seo %}
+        <div class="row g-3">
+            {% for item in media_with_seo %}
+            {% set media = item.media %}
+            {% set seo = item.seo %}
+            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
+                <div class="card h-100 border-0 shadow-sm media-item">
+                    <div class="position-relative">
+                        <img src="{{ media.filepath }}"
+                             class="card-img-top"
+                             alt="{{ media.alt_text or media.filename }}"
+                             style="height: 150px; object-fit: cover; cursor: pointer;"
+                             onclick="viewImage('{{ media.filepath }}', '{{ media.filename }}')">
+
+                        <!-- SEO Badge - Góc trên trái -->
+                        <div class="position-absolute top-0 start-0 m-2">
+                            <span class="badge bg-{{ seo.grade_class }}"
+                                  data-bs-toggle="tooltip"
+                                  title="Điểm SEO: {{ seo.score }}/100">
+                                <i class="bi bi-speedometer2"></i> {{ seo.grade }}
+                            </span>
+                        </div>
+
+                        <!-- Menu - Góc trên phải -->
+                        <div class="position-absolute top-0 end-0 m-2">
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-dark opacity-75"
+                                        type="button"
+                                        data-bs-toggle="dropdown">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item"
+                                           href="#"
+                                           onclick="copyToClipboard('{{ media.filepath }}')"
+>
+                                            <i class="bi bi-clipboard"></i> Copy URL
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item"
+                                           href="{{ url_for('admin.edit_media', id=media.id) }}">
+                                            <i class="bi bi-pencil"></i> SEO ảnh
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item"
+                                           href="#"
+                                           onclick="showSEODetail({{ media.id }})">
+                                            <i class="bi bi-info-circle"></i> Chi tiết SEO
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item text-danger"
+                                           href="{{ url_for('admin.delete_media', id=media.id) }}"
+                                           onclick="return confirm('Xóa file này?')">
+                                            <i class="bi bi-trash"></i> Xóa
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Album Badge - Góc dưới trái -->
+                        {% if media.album %}
+                        <span class="badge bg-primary position-absolute bottom-0 start-0 m-2">
+                            {{ media.album }}
+                        </span>
+                        {% endif %}
+
+                        <!-- SEO Status Bar - Dưới cùng -->
+                        <div class="position-absolute bottom-0 start-0 end-0">
+                            <div class="progress" style="height: 4px; border-radius: 0;">
+                                <div class="progress-bar bg-{{ seo.grade_class }}"
+                                     style="width: {{ seo.score }}%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body p-2">
+                        <p class="small mb-1 text-truncate" title="{{ media.original_filename }}">
+                            <strong>{{ media.original_filename }}</strong>
+                        </p>
+
+                        <!-- SEO Summary -->
+                        <div class="mb-2">
+                            {% if media.alt_text %}
+                            <span class="badge bg-success" style="font-size: 0.65rem;">
+                                <i class="bi bi-check-circle"></i> Alt
+                            </span>
+                            {% else %}
+                            <span class="badge bg-danger" style="font-size: 0.65rem;">
+                                <i class="bi bi-x-circle"></i> Alt
+                            </span>
+                            {% endif %}
+
+                            {% if media.title %}
+                            <span class="badge bg-success" style="font-size: 0.65rem;">
+                                <i class="bi bi-check-circle"></i> Title
+                            </span>
+                            {% endif %}
+
+                            {% if media.caption %}
+                            <span class="badge bg-success" style="font-size: 0.65rem;">
+                                <i class="bi bi-check-circle"></i> Caption
+                            </span>
+                            {% endif %}
+                        </div>
+
+                        <p class="small text-muted mb-0">
+                            {{ media.width }}x{{ media.height }}px
+                            <br>{{ media.get_size_mb() }} MB
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if media_files.pages > 1 %}
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item {% if not media_files.has_prev %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('admin.media', page=media_files.prev_num, album=current_album, seo=current_seo_filter) }}">Trước</a>
+                </li>
+                {% for page_num in media_files.iter_pages(left_edge=1, right_edge=1) %}
+                    {% if page_num %}
+                        <li class="page-item {% if page_num == media_files.page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('admin.media', page=page_num, album=current_album, seo=current_seo_filter) }}">{{ page_num }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                {% endfor %}
+                <li class="page-item {% if not media_files.has_next %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('admin.media', page=media_files.next_num, album=current_album, seo=current_seo_filter) }}">Sau</a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-images display-1 text-muted"></i>
+            <p class="text-muted mt-3">Chưa có file nào. Upload file đầu tiên!</p>
+            <a href="{{ url_for('admin.upload_media') }}" class="btn btn-warning">
+                <i class="bi bi-cloud-upload"></i> Upload File
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Modal Tạo Album -->
+<div class="modal fade" id="createAlbumModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-folder-plus"></i> Tạo Album Mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('admin.create_album') }}">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Tên Album *</label>
+                        <input type="text" name="album_name" class="form-control"
+                               placeholder="Ví dụ: Khuyến mãi T6, Sự kiện Tết..." required>
+                        <small class="text-muted">
+                            Tên album sẽ được dùng để phân loại ảnh
+                        </small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-warning">
+                        <i class="bi bi-check"></i> Tạo Album
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Xem Ảnh -->
+<div class="modal fade" id="viewImageModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewImageTitle">Xem ảnh</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="viewImageSrc" src="" alt="" class="img-fluid" style="max-height: 70vh;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Chi tiết SEO -->
+<div class="modal fade" id="seoDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-speedometer2"></i> Chi tiết SEO</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="seoDetailContent">
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-3">Đang tải thông tin SEO...</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <a href="#" id="editSeoLink" class="btn btn-warning">
+                    <i class="bi bi-pencil"></i> Chỉnh sửa SEO
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Initialize tooltips
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl);
+});
+
+// Copy URL to clipboard
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        showToast('Thành công', 'Đã copy URL vào clipboard!', 'success');
+    }).catch(() => {
+        alert('Đã copy URL: ' + text);
+    });
+}
+
+// View image in modal
+function viewImage(src, filename) {
+    document.getElementById('viewImageSrc').src = src;
+    document.getElementById('viewImageTitle').textContent = filename;
+    new bootstrap.Modal(document.getElementById('viewImageModal')).show();
+}
+
+// Delete album
+function deleteAlbum(albumName, fileCount) {
+    if (fileCount > 0) {
+        alert('Không thể xóa album có chứa ' + fileCount + ' file!\n\nVui lòng xóa hết file trong album trước.');
+        return;
+    }
+
+    if (confirm('Bạn chắc chắn muốn xóa album "' + albumName + '"?')) {
+        window.location.href = '{{ url_for("admin.delete_album", album_name="PLACEHOLDER") }}'.replace('PLACEHOLDER', albumName);
+    }
+}
+
+// Show SEO Detail Modal
+function showSEODetail(mediaId) {
+    const modal = new bootstrap.Modal(document.getElementById('seoDetailModal'));
+    const content = document.getElementById('seoDetailContent');
+    const editLink = document.getElementById('editSeoLink');
+
+    // Set edit link
+    editLink.href = `/admin/media/edit/${mediaId}`;
+
+    // Show loading
+    content.innerHTML = `
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3">Đang tải thông tin SEO...</p>
+        </div>
+    `;
+
+    modal.show();
+
+    // Fetch SEO data
+    fetch(`/admin/media/check-seo/${mediaId}`)
+        .then(response => response.json())
+        .then(data => {
+            content.innerHTML = `
+                <div class="card border-${data.grade_class} mb-3">
+                    <div class="card-header bg-${data.grade_class} text-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Điểm SEO</h5>
+                            <span class="badge bg-white text-${data.grade_class} fs-4">
+                                ${data.grade} - ${data.grade_text}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="progress mb-3" style="height: 35px;">
+                            <div class="progress-bar progress-bar-striped bg-${data.grade_class}"
+                                 role="progressbar"
+                                 style="width: ${data.score}%;">
+                                <strong>${data.score}/100</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="bi bi-list-check"></i> Kiểm tra SEO</h6>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled mb-0">
+                                    ${data.checklist.map(item => `
+                                        <li class="mb-2">
+                                            <span class="badge bg-${item[0]} w-100 text-start">
+                                                ${item[1]}
+                                            </span>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    ${data.recommendations && data.recommendations.length > 0 ? `
+                    <div class="col-md-6">
+                        <div class="card mb-3 border-warning">
+                            <div class="card-header bg-warning">
+                                <h6 class="mb-0"><i class="bi bi-lightbulb"></i> Gợi ý cải thiện</h6>
+                            </div>
+                            <div class="card-body">
+                                <ul class="mb-0">
+                                    ${data.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    ` : ''}
+                </div>
+
+                ${data.issues && data.issues.length > 0 ? `
+                <div class="alert alert-danger">
+                    <h6 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> Vấn đề cần khắc phục</h6>
+                    <ul class="mb-0">
+                        ${data.issues.map(issue => `<li>${issue}</li>`).join('')}
+                    </ul>
+                </div>
+                ` : ''}
+            `;
+        })
+        .catch(error => {
+            content.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-circle"></i>
+                    Không thể tải thông tin SEO. Vui lòng thử lại!
+                </div>
+            `;
+            console.error('Error:', error);
+        });
+}
+
+// Toast notification helper
+function showToast(title, message, type = 'success') {
+    const bgColor = type === 'success' ? 'bg-success' :
+                    type === 'warning' ? 'bg-warning' :
+                    type === 'danger' ? 'bg-danger' : 'bg-info';
+
+    const toast = document.createElement('div');
+    toast.className = 'position-fixed top-0 end-0 p-3';
+    toast.style.zIndex = '9999';
+    toast.innerHTML = `
+        <div class="toast show" role="alert">
+            <div class="toast-header ${bgColor} text-white">
+                <i class="bi bi-check-circle me-2"></i>
+                <strong class="me-auto">${title}</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body">
+                ${message}
+            </div>
+        </div>
+    `;
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+}
+
+// Quick SEO check on hover (optional feature)
+document.addEventListener('DOMContentLoaded', function() {
+    const mediaItems = document.querySelectorAll('.media-item');
+
+    mediaItems.forEach(item => {
+        const img = item.querySelector('img');
+        const altText = img.getAttribute('alt');
+
+        // Add tooltip showing alt text status
+        if (!altText || altText === img.closest('.media-item').querySelector('.card-body strong').textContent) {
+            img.style.border = '2px solid #dc3545'; // Red border for missing alt
+        }
+    });
+});
+
+// Auto-refresh tooltip after AJAX operations
+function refreshTooltips() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+}
+</script>
+{% endblock %}

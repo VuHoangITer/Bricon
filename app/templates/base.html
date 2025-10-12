@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ==================== META TAGS  ==================== -->
+    <title>
+      {% block title %}{{ get_setting('meta_title', 'BRICON VIỆT NAM | Keo của
+      người Việt') }}{% endblock %}
+    </title>
+    <meta
+      name="description"
+      content="{% block meta_description %}{{ get_setting('meta_description', 'BRICON VIỆT NAM - Keo dán gạch, keo chà ron và chống thấm. Keo của người Việt, kết dính bền lâu, xây dựng niềm tin.') }}{% endblock %}"
+    />
+    <meta
+      name="keywords"
+      content="{{ get_setting('keo dán gạch, keo chà ron, chống thấm, bricon, vật liệu xây dựng') }}"
+    />
+
+    <!-- ==================== META ROBOTS - QUAN TRỌNG CHO SEO ==================== -->
+    <meta
+      name="robots"
+      content="{% block meta_robots %}index, follow{% endblock %}"
+    />
+    <meta
+      name="googlebot"
+      content="{% block meta_googlebot %}index, follow{% endblock %}"
+    />
+
+    <!-- ==================== FAVICON - MULTIPLE FORMATS ==================== -->
+    <!-- ICO: Ưu tiên mới → fallback cũ → mặc định -->
+    <link
+      rel="icon"
+      type="image/x-icon"
+      sizes="any"
+      href="{{ get_setting('favicon_ico_url', get_setting('favicon_url', url_for('static', filename='img/favicon.ico'))) }}"
+    />
+
+    <!-- SVG: Tối ưu cho màn hình Retina -->
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="{{ get_setting('favicon_svg_url', url_for('static', filename='img/favicon.svg')) }}"
+    />
+
+    <!-- PNG: Fallback hiện đại -->
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="96x96"
+      href="{{ get_setting('favicon_png_url', url_for('static', filename='img/favicon-96x96.png')) }}"
+    />
+
+    <!-- Apple Touch Icon -->
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="{{ get_setting('apple_touch_icon_url', url_for('static', filename='img/apple-touch-icon.png')) }}"
+    />
+
+    <!-- Web App Manifest -->
+    <link
+      rel="manifest"
+      href="{{ url_for('static', filename='site.webmanifest') }}"
+    />
+
+    <!-- ==================== DYNAMIC THEME COLORS  ==================== -->
+    <style>
+      :root {
+          --primary-color: {{ get_setting('primary_color', '#ffc107') }};
+          --primary-hover: {{ get_setting('primary_color', '#ffc107') }}dd;
+          --primary-light: {{ get_setting('primary_color', '#ffc107') }}22;
+          --primary-dark: {{ get_setting('primary_color', '#ffc107') }}cc;
+      }
+    </style>
+    <!-- ==================== OG TAGS  ==================== -->
+    <meta
+      property="og:title"
+      content="{{ get_setting('og_title', get_setting('meta_title', 'BRICON VIỆT NAM | Keo của người Việt')) }}"
+    />
+    <meta
+      property="og:description"
+      content="{{ get_setting('og_description', 'Keo dán gạch BRICON - Keo của người Việt, kết dính bền lâu') }}"
+    />
+    <meta
+      property="og:image"
+      content="{{ get_setting('og_image', get_setting('default_share_image', '/static/img/default-share.jpg')) }}"
+    />
+    <meta
+      property="og:url"
+      content="{{ get_setting('main_url', request.url) }}"
+    />
+    <meta property="og:type" content="website" />
+
+    <!-- ==================== SCHEMA.ORG  ==================== -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Công ty TNHH BRICON Việt Nam",
+        "name": "{{ get_setting('website_name', 'CÔNG TY TNHH BRICON VIỆT NAM') }}",
+        "url": "{{ get_setting('main_url', request.url_root) }}",
+        "logo": "{{ get_setting('logo_url', url_for('static', filename='img/logo.png', _external=True)) }}",
+        "description": "keo chà ron, keo dán gạch, vật liệu chống thấm và giải pháp xây dựng chất lượng cao tại Việt Nam.",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+84901180094",
+          "contactType": "customer service",
+          "email": "{{ get_setting('contact_email', 'info@bricon.vn') }}",
+          "availableLanguage": "Vietnamese"
+        },
+        "sameAs": [
+          "{{ get_setting('facebook_url', '') }}",
+          "{{ get_setting('zalo_url', '') }}",
+          "{{ get_setting('tiktok_url', '') }}",
+          "{{ get_setting('youtube_url', '') }}"
+        ]
+      }
+    </script>
+
+    <!-- ==================== GOOGLE ANALYTICS  ==================== -->
+    {% if get_setting('google_analytics') %}
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id={{ get_setting('google_analytics') }}"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '{{ get_setting('google_analytics') }}');
+    </script>
+    {% endif %}
+
+    <!-- ==================== CSS LIBRARIES ==================== -->
+    <!-- Bootstrap 5 -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Bootstrap Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Custom CSS -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/chatbot.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/theme-dynamic.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/chi-nhanh-footer.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/scale-down.css') }}"
+    />
+    {% block extra_css %}{% endblock %}
+  </head>
+
+  <body>
+    <!-- ==================== TOP BAR  ==================== -->
+    <div class="bg-dark text-white py-2 small d-none d-md-block">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <i class="bi bi-telephone-fill text-warning"></i>
+            <span class="ms-1"
+              >Hotline:
+              <strong
+                >{{ get_setting('hotline', '0901.180.094') }}</strong
+              ></span
+            >
+            <span class="mx-2">|</span>
+            <i class="bi bi-envelope-fill text-warning"></i>
+            <span class="ms-1"
+              >{{ get_setting('contact_email', 'info@bricon.vn') }}</span
+            >
+          </div>
+          <div class="col-md-6 text-end">
+            <a
+              href="{{ get_setting('zalo_url', 'https://zalo.me/0901180094') }}"
+              class="text-white text-decoration-none me-3"
+              target="_blank"
+            >
+              <i class="bi bi-chat-dots-fill text-warning"></i> Chat Zalo
+            </a>
+            <a
+              href="{{ get_setting('facebook_messenger_url', '#') }}"
+              class="text-white text-decoration-none"
+              target="_blank"
+            >
+              <i class="bi bi-messenger text-warning"></i> Chat Messenger
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== HEADER / NAVBAR  ==================== -->
+    <header class="bg-warning shadow-sm sticky-top">
+      <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light py-3">
+          <!-- Logo -->
+          <a
+            class="navbar-brand fw-bold d-flex align-items-center"
+            href="{{ url_for('main.index') }}"
+          >
+            <img
+              src="{{ get_setting('logo_url', url_for('static', filename='img/logo.png')) }}"
+              alt="{{ get_setting('website_name', 'BRICON VIỆT NAM - Keo của người Việt') }}"
+              height="50"
+              class="rounded-0 me-2"
+              loading="lazy"
+            />
+          </a>
+
+          <!-- Mobile Toggle Button -->
+          <button
+            class="navbar-toggler border-0 shadow-none"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <!-- Navigation Menu -->
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+              <!-- Home -->
+              <li class="nav-item">
+                <a
+                  class="nav-link {% if request.endpoint == 'main.index' %}active fw-bold{% endif %}"
+                  href="{{ url_for('main.index') }}"
+                >
+                  <i class="bi bi-house-door d-lg-none me-1"></i>
+                  Trang chủ
+                </a>
+              </li>
+
+              <!-- About Dropdown -->
+              <li class="nav-item dropdown">
+                <a
+                  class="nav-link dropdown-toggle"
+                  href="#"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <i class="bi bi-building d-lg-none me-1"></i>
+                  BRICON
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a class="dropdown-item" href="{{ url_for('main.about') }}">
+                      <i class="bi bi-info-circle me-2"></i>Giới thiệu
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      href="{{ url_for('main.projects') }}"
+                    >
+                      <i class="bi bi-building me-2"></i>Dự án tiêu biểu
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      href="{{ url_for('main.contact') }}"
+                    >
+                      <i class="bi bi-envelope me-2"></i>Liên hệ
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      href="{{ url_for('main.policy') }}"
+                    >
+                      <i class="bi bi-file-text me-2"></i>Chính sách
+                    </a>
+                  </li>
+                </ul>
+              </li>
+
+              <!-- Products -->
+              <li class="nav-item">
+                <a
+                  class="nav-link {% if request.endpoint == 'main.products' %}active fw-bold{% endif %}"
+                  href="{{ url_for('main.products') }}"
+                >
+                  <i class="bi bi-box-seam d-lg-none me-1"></i>
+                  Sản phẩm
+                </a>
+              </li>
+
+              <!-- Careers -->
+              <li class="nav-item">
+                <a
+                  class="nav-link {% if request.endpoint == 'main.careers' %}active fw-bold{% endif %}"
+                  href="{{ url_for('main.careers') }}"
+                >
+                  <i class="bi bi-briefcase d-lg-none me-1"></i>
+                  Tuyển dụng
+                </a>
+              </li>
+
+              <!-- News Dropdown -->
+              <li class="nav-item dropdown">
+                <a
+                  class="nav-link dropdown-toggle"
+                  href="#"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <i class="bi bi-newspaper d-lg-none me-1"></i>
+                  Tin tức
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a class="dropdown-item" href="{{ url_for('main.blog') }}">
+                      <i class="bi bi-journal-text me-2"></i>Kiến thức thi công
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="{{ url_for('main.faq') }}">
+                      <i class="bi bi-question-circle me-2"></i>Câu hỏi thường
+                      gặp
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+
+            <!-- CTA Button -->
+            <a
+              href="{{ url_for('main.contact') }}"
+              class="btn btn-dark ms-lg-3 px-4"
+            >
+              <i class="bi bi-telephone-fill me-2"></i>
+              Tư vấn báo giá
+            </a>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <!-- ==================== FLASH MESSAGES  ==================== -->
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %}
+    <div class="container mt-4">
+      {% for category, message in messages %}
+      <div
+        class="alert alert-{{ category }} alert-dismissible fade show shadow-sm"
+        role="alert"
+      >
+        {% if category == 'success' %}
+        <i class="bi bi-check-circle-fill me-2"></i>
+        {% elif category == 'danger' %}
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        {% elif category == 'warning' %}
+        <i class="bi bi-exclamation-circle-fill me-2"></i>
+        {% else %}
+        <i class="bi bi-info-circle-fill me-2"></i>
+        {% endif %} {{ message }}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %} {% endwith %}
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main>{% block content %}{% endblock %}</main>
+
+    <!-- ==================== FOOTER  ==================== -->
+    <footer class="bg-dark text-white py-5 mt-0">
+      <div class="container">
+        <div class="row g-4">
+          <!-- Tổng đài hỗ trợ -->
+          <div class="col-lg-3 col-md-6">
+            <h5 class="text-warning text-uppercase fw-semibold mb-4">
+              <i class="bi bi-telephone-fill me-2"></i>Tổng đài hỗ trợ
+            </h5>
+            <ul class="list-unstyled">
+              <li class="mb-3">
+                <i class="bi bi-geo-alt-fill text-warning me-2"></i>
+                <strong>Phía Bắc:</strong> {{ get_setting('hotline_north',
+                '0901.180.094') }}
+              </li>
+              <li class="mb-3">
+                <i class="bi bi-geo-alt-fill text-warning me-2"></i>
+                <strong>Phía Trung:</strong> {{ get_setting('hotline_central',
+                '0901.180.094') }}
+              </li>
+              <li class="mb-3">
+                <i class="bi bi-geo-alt-fill text-warning me-2"></i>
+                <strong>Phía Nam:</strong> {{ get_setting('hotline_south',
+                '0901.180.094') }}
+              </li>
+              <li class="mb-3">
+                <i class="bi bi-clock-fill text-warning me-2"></i>
+                {{ get_setting('working_hours', '8h - 17h30 (Thứ 2 - Thứ 7)') }}
+              </li>
+            </ul>
+          </div>
+
+          <!-- Hỗ trợ khách hàng -->
+          <div class="col-lg-3 col-md-6">
+            <h5 class="text-warning text-uppercase fw-semibold mb-4">
+              <i class="bi bi-headset me-2"></i>Hỗ trợ khách hàng
+            </h5>
+            <ul class="list-unstyled">
+              {% set terms = get_setting('terms_of_service', '') %} {% set
+              shipping = get_setting('shipping_policy', '') %} {% set warranty =
+              get_setting('warranty_policy', '') %} {% set return_pol =
+              get_setting('return_policy', '') %} {% set privacy =
+              get_setting('privacy_policy', '') %} {% if terms %}
+              <li class="mb-2">
+                <a
+                  href="{{ url_for('main.policy') }}#terms"
+                  class="text-white text-decoration-none"
+                >
+                  Điều khoản dịch vụ
+                </a>
+              </li>
+              {% endif %} {% if shipping %}
+              <li class="mb-2">
+                <a
+                  href="{{ url_for('main.policy') }}#shipping"
+                  class="text-white text-decoration-none"
+                >
+                  Chính sách vận chuyển
+                </a>
+              </li>
+              {% endif %} {% if warranty %}
+              <li class="mb-2">
+                <a
+                  href="{{ url_for('main.policy') }}#warranty"
+                  class="text-white text-decoration-none"
+                >
+                  Chính sách bảo hành
+                </a>
+              </li>
+              {% endif %} {% if return_pol %}
+              <li class="mb-2">
+                <a
+                  href="{{ url_for('main.policy') }}#return"
+                  class="text-white text-decoration-none"
+                >
+                  Chính sách đổi trả
+                </a>
+              </li>
+              {% endif %} {% if privacy %}
+              <li class="mb-2">
+                <a
+                  href="{{ url_for('main.policy') }}#privacy"
+                  class="text-white text-decoration-none"
+                >
+                  Chính sách bảo mật
+                </a>
+              </li>
+              {% endif %}
+
+              <li class="mb-2">
+                <a
+                  href="{{ url_for('main.faq') }}"
+                  class="text-white text-decoration-none"
+                >
+                  Câu hỏi thường gặp
+                </a>
+              </li>
+
+              {# Fallback: Nếu không có chính sách nào, hiển thị link trang
+              chính sách #} {% if not (terms or shipping or warranty or
+              return_pol or privacy) %}
+              <li class="mb-2">
+                <a
+                  href="{{ url_for('main.policy') }}"
+                  class="text-white text-decoration-none"
+                >
+                  Chính sách
+                </a>
+              </li>
+              {% endif %}
+            </ul>
+          </div>
+
+          <!-- Về công ty -->
+          <div class="col-lg-3 col-md-6">
+            <h5 class="text-warning text-uppercase fw-semibold mb-4">
+              <i class="bi bi-building me-2"></i>Về {{
+              get_setting('website_name', 'BRICON') }}
+            </h5>
+            <ul class="list-unstyled">
+              <li class="mb-2">
+                <a
+                  href="{{ url_for('main.about') }}"
+                  class="text-white text-decoration-none"
+                >
+                  Giới thiệu
+                </a>
+              </li>
+              <li class="mb-2">
+                <a
+                  href="{{ url_for('main.contact') }}"
+                  class="text-white text-decoration-none"
+                >
+                  Liên hệ
+                </a>
+              </li>
+              <li class="mb-2">
+                <a
+                  href="{{ url_for('main.careers') }}"
+                  class="text-white text-decoration-none"
+                >
+                  Tuyển dụng
+                </a>
+              </li>
+              <li class="mb-2">
+                <a
+                  href="{{ url_for('main.blog') }}"
+                  class="text-white text-decoration-none"
+                >
+                  Tin tức
+                </a>
+              </li>
+            </ul>
+          </div>
+
+            <!-- Liên hệ & Social -->
+            <div class="col-lg-3 col-md-6">
+              <h5 class="text-warning text-uppercase fw-semibold mb-4">
+                <i class="bi bi-chat-dots-fill me-2"></i>Kết nối với chúng tôi
+              </h5>
+              <ul class="list-unstyled mb-4">
+                <li class="mb-2">
+                  <i class="bi bi-envelope-fill text-warning me-2"></i>
+                  <a
+                    href="mailto:{{ get_setting('contact_email', 'info@bricon.vn') }}"
+                    class="text-white text-decoration-none"
+                  >
+                    {{ get_setting('contact_email', 'info@bricon.vn') }}
+                  </a>
+                </li>
+                <li class="mb-2">
+                  <i class="bi bi-telephone-fill text-warning me-2"></i>
+                  <a
+                    href="tel:{{ get_setting('hotline', '0901180094')|replace('.', '')|replace(' ', '') }}"
+                    class="text-white text-decoration-none"
+                  >
+                    {{ get_setting('hotline', '0901.180.094') }}
+                  </a>
+                </li>
+                <li class="mb-2">
+                  <i class="bi bi-geo-alt-fill text-warning me-2"></i>
+                  {% set branch_text = get_setting('branch_addresses', '171, Đường An Phú Đông 03, Phường An Phú Đông, Quận 12, TP.HCM') %}
+                  {% set branches = branch_text.strip().split('\n') %}
+
+                  {# Lọc các chi nhánh hợp lệ (không rỗng) #}
+                  {% set valid_branches = [] %}
+                  {% for b in branches %}
+                    {% if b.strip() %}
+                      {% set _ = valid_branches.append(b.strip()) %}
+                    {% endif %}
+                  {% endfor %}
+
+                  {% if valid_branches|length == 0 %}
+                    <!-- Không có chi nhánh: hiển thị mặc định -->
+                    171, Đường An Phú Đông 03, Phường An Phú Đông, Quận 12, TP.HCM
+
+                  {% elif valid_branches|length == 1 %}
+                    <!-- 1 chi nhánh: hiển thị trực tiếp -->
+                    <span>{{ valid_branches[0] }}</span>
+
+                  {% elif valid_branches|length == 2 %}
+                    <!-- 2 chi nhánh: hiển thị cả 2 không dropdown -->
+                    <div>{{ valid_branches[0] }}</div>
+                    <div class="ms-4 mt-2">{{ valid_branches[1] }}</div>
+
+                  {% else %}
+                    <!-- 3+ chi nhánh: dùng dropdown -->
+                    <div class="dropdown d-inline-block">
+                      <a
+                        class="text-white text-decoration-none dropdown-toggle"
+                        href="#"
+                        role="button"
+                        id="branchDropdown"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        {{ valid_branches|length }} chi nhánh toàn quốc
+                      </a>
+                      <ul
+                        class="dropdown-menu dropdown-menu-dark"
+                        aria-labelledby="branchDropdown"
+                        style="max-height: 300px; overflow-y: auto;"
+                      >
+                        {% for branch in valid_branches %}
+                        <li>
+                          <a class="dropdown-item small" href="#">
+                            <i class="bi bi-geo-alt-fill text-warning me-2"></i>{{ branch }}
+                          </a>
+                        </li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  {% endif %}
+                </li>
+              </ul>
+
+              <!-- Social Links -->
+              <div class="social-links">
+                {% if get_setting('facebook_url') %}
+                <a
+                  href="{{ get_setting('facebook_url') }}"
+                  target="_blank"
+                  title="Facebook"
+                  aria-label="Facebook"
+                >
+                  <i class="bi bi-facebook"></i>
+                </a>
+                {% endif %}
+
+                {% if get_setting('zalo_url') %}
+                <a
+                  href="{{ get_setting('zalo_url') }}"
+                  target="_blank"
+                  title="Zalo"
+                  aria-label="Zalo"
+                >
+                  <i class="bi bi-chat-dots-fill"></i>
+                </a>
+                {% endif %}
+
+                {% if get_setting('youtube_url') %}
+                <a
+                  href="{{ get_setting('youtube_url') }}"
+                  target="_blank"
+                  title="YouTube"
+                  aria-label="YouTube"
+                >
+                  <i class="bi bi-youtube"></i>
+                </a>
+                {% endif %}
+
+                {% if get_setting('tiktok_url') %}
+                <a
+                  href="{{ get_setting('tiktok_url') }}"
+                  target="_blank"
+                  title="TikTok"
+                  aria-label="TikTok"
+                >
+                  <i class="bi bi-tiktok"></i>
+                </a>
+                {% endif %}
+              </div>
+            </div>
+        </div>
+
+        <!-- Footer Bottom -->
+        <hr class="border-secondary opacity-25 my-4" />
+        <div class="row">
+          <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+            <p class="mb-0">
+              &copy; {{ current_year|default('2025') }} {{
+              get_setting('website_name', 'BRICON') }}. All Rights Reserved.
+            </p>
+          </div>
+          <div class="col-md-6 text-center text-md-end">
+            <p class="mb-0">Designed by Bricon IT Team</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- ==================== FLOATING ACTION BUTTONS  ==================== -->
+    <div class="floating-buttons">
+      <!-- Zalo -->
+      <a
+        href="{{ get_setting('zalo_url', 'https://zalo.me/0901180094') }}"
+        target="_blank"
+        class="floating-btn zalo-btn"
+        title="Chat Zalo"
+        aria-label="Chat Zalo"
+      >
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/9/91/Icon_of_Zalo.svg"
+          alt="Zalo"
+          width="24"
+          height="24"
+        />
+      </a>
+
+      <!-- Phone -->
+      <a
+        href="tel:{{ get_setting('hotline', '0901180094')|replace('.', '')|replace(' ', '') }}"
+        class="floating-btn phone-btn"
+        title="Gọi điện"
+        aria-label="Gọi điện"
+      >
+        <i class="bi bi-telephone-fill"></i>
+      </a>
+      <!-- Messenger (Optional) -->
+      <a
+        href="{{ get_setting('facebook_messenger_url', 'https://m.me/168331056704131') }}"
+        target="_blank"
+        class="floating-btn messenger-btn"
+        title="Messenger"
+        aria-label="Chat Messenger"
+      >
+        <i class="bi bi-messenger"></i>
+      </a>
+    </div>
+    <!-- ==================== SCROLL TO TOP BUTTON ==================== -->
+    <button class="scroll-to-top" id="scrollToTop" aria-label="Scroll to top">
+      <svg viewBox="0 0 56 56">
+        <circle cx="28" cy="28" r="26"></circle>
+        <circle class="progress" cx="28" cy="28" r="26"></circle>
+      </svg>
+      <i class="bi bi-arrow-up icon"></i>
+    </button>
+
+    <!-- ==================== SCRIPTS ==================== -->
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/projects-carousel.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+
+    <!-- Extra JS Block -->
+    {% block extra_js %}{% endblock %}
+
+    <!-- ==================== CHATBOT WIDGET ==================== -->
+    {% include 'components/chatbot_widget.html' %}
+
+  </body>
+</html>

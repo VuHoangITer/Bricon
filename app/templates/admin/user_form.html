@@ -1,0 +1,142 @@
+{% extends "admin/admin_base.html" %}
+
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4><i class="bi bi-people"></i> {{ title }}</h4>
+    <a href="{{ url_for('admin.users') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Quay lại
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Tên đăng nhập *</label>
+                    {{ form.username(class="form-control", placeholder="username") }}
+                    {% if form.username.errors %}
+                        <div class="text-danger small mt-1">{{ form.username.errors[0] }}</div>
+                    {% endif %}
+                    <small class="text-muted">Chỉ chữ cái, số và dấu gạch dưới</small>
+                </div>
+                
+                <div class="col-md-6">
+                    <label class="form-label">Email *</label>
+                    {{ form.email(class="form-control", placeholder="email@example.com") }}
+                    {% if form.email.errors %}
+                        <div class="text-danger small mt-1">{{ form.email.errors[0] }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6">
+                    <label class="form-label">Mật khẩu {% if not form.user %}*{% endif %}</label>
+                    {{ form.password(class="form-control", placeholder="••••••••") }}
+                    {% if form.password.errors %}
+                        <div class="text-danger small mt-1">{{ form.password.errors[0] }}</div>
+                    {% endif %}
+                    {% if form.user %}
+                    <small class="text-muted">Để trống nếu không muốn đổi mật khẩu</small>
+                    {% else %}
+                    <small class="text-muted">Tối thiểu 6 ký tự</small>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6">
+                    <label class="form-label">Xác nhận mật khẩu</label>
+                    {{ form.confirm_password(class="form-control", placeholder="••••••••") }}
+                    {% if form.confirm_password.errors %}
+                        <div class="text-danger small mt-1">{{ form.confirm_password.errors[0] }}</div>
+                    {% endif %}
+                </div>
+                
+                <!-- ===== ROLE SELECTION ===== -->
+                <div class="col-12">
+                    <hr>
+                    <label class="form-label">
+                        <i class="bi bi-shield-lock"></i> <strong>Vai trò *</strong>
+                    </label>
+                    {{ form.role_id(class="form-select form-select-lg") }}
+                    {% if form.role_id.errors %}
+                        <div class="text-danger small mt-1">{{ form.role_id.errors[0] }}</div>
+                    {% endif %}
+                    <small class="text-muted">Quyền hạn sẽ được áp dụng theo vai trò</small>
+                </div>
+
+                <!-- ===== ROLE INFO ===== -->
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>Mô tả vai trò:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li><strong class="text-danger">Admin:</strong> Toàn quyền quản lý hệ thống (users, roles, permissions)</li>
+                            <li><strong class="text-primary">Editor:</strong> Quản lý nội dung (blog, sản phẩm, media, dự án)</li>
+                            <li><strong class="text-info">Moderator:</strong> Kiểm duyệt blog, xử lý liên hệ</li>
+                            <li><strong class="text-secondary">User:</strong> Chỉ xem dashboard và thông tin cơ bản</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-12 mt-4">
+                    {{ form.submit(class="btn btn-warning px-5") }}
+                    <a href="{{ url_for('admin.users') }}" class="btn btn-secondary">Hủy</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ===== HIỂN thị PERMISSIONS (nếu đang edit user) ===== -->
+{% if form.user and form.user.role_obj %}
+<div class="card mt-4">
+    <div class="card-header bg-light">
+        <h5 class="mb-0">
+            <i class="bi bi-key"></i> Quyền hạn của {{ form.user.username }}
+        </h5>
+    </div>
+    <div class="card-body">
+        {% set perms_by_cat = form.user.role_obj.get_permissions_by_category() %}
+        {% if perms_by_cat %}
+        <div class="row">
+            {% for category, perms in perms_by_cat.items() %}
+            <div class="col-md-6 mb-3">
+                <h6 class="text-uppercase text-muted">
+                    <i class="bi bi-folder"></i> {{ category }}
+                </h6>
+                <ul class="list-unstyled">
+                    {% for perm in perms %}
+                    <li class="mb-1">
+                        <i class="bi bi-check-circle text-success"></i>
+                        <small>{{ perm.display_name }}</small>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-muted mb-0">
+            <i class="bi bi-exclamation-circle"></i>
+            Không có quyền nào
+        </p>
+        {% endif %}
+
+        <hr>
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <strong>Tổng số quyền:</strong>
+                <span class="badge bg-primary">{{ form.user.get_permissions()|length }}</span>
+            </div>
+            <a href="{{ url_for('admin.roles') }}" class="btn btn-sm btn-outline-info">
+                <i class="bi bi-gear"></i> Quản lý Roles & Permissions
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

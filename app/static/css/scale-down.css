@@ -1,0 +1,172 @@
+/* ==================== THU NHỎ NHẸ NHÀNG - CHỈ ĐIỀU CHỈNH NHỮNG GÌ CẦN THIẾT ==================== */
+
+/* Font-size tổng thể giảm nhẹ */
+body {
+  font-size: 0.9rem;
+}
+
+/* ==================== NAVBAR ==================== */
+.navbar-brand img {
+  height: 45px !important;
+}
+
+.nav-link {
+  font-size: 0.9rem !important;
+  padding: 0.45rem 0.9rem !important;
+}
+
+.navbar .btn-dark {
+  font-size: 0.85rem !important;
+  padding: 0.45rem 1.2rem !important;
+}
+
+/* ==================== BANNER ==================== */
+.carousel-item img {
+  height: 450px !important;
+}
+
+.carousel-item {
+  min-height: 450px !important;
+}
+
+.carousel-caption h1,
+.carousel-caption h2 {
+  font-size: 2.25rem !important;
+}
+
+.carousel-caption p {
+  font-size: 1.05rem !important;
+}
+
+@media (max-width: 768px) {
+  .carousel-item img {
+    height: 280px !important;
+  }
+  .carousel-item {
+    min-height: 280px !important;
+  }
+}
+
+/* ==================== SECTIONS ==================== */
+.py-5 {
+  padding-top: 2.75rem !important;
+  padding-bottom: 2.75rem !important;
+}
+
+section h2 {
+  font-size: 1.85rem !important;
+}
+
+/* ==================== PRODUCT CARDS ==================== */
+/* ==================== PRODUCT CARDS ==================== */
+.product-image {
+  height: 210px; /* Loại bỏ !important để linh hoạt */
+}
+
+.product-name {
+  font-size: 1rem !important;
+  height: auto !important; /* Loại bỏ height cố định để tránh cắt nội dung */
+  -webkit-line-clamp: 3 !important; /* Tăng lên 3 dòng để hiển thị đầy đủ hơn */
+}
+
+.product-price .price {
+  font-size: 1.2rem !important;
+}
+
+/* Thêm media query cho mobile nhỏ */
+@media (max-width: 576px) {
+  .product-image {
+    height: 140px !important; /* Giảm height để fit 2 cột */
+  }
+
+  .product-name {
+    font-size: 0.9rem !important; /* Giảm font để fit */
+    -webkit-line-clamp: 2 !important; /* 2 dòng trên mobile để tiết kiệm không gian */
+  }
+
+  .product-price .price {
+    font-size: 1rem !important; /* Giảm font giá */
+  }
+
+  .product-price .old-price {
+    font-size: 0.8rem !important; /* Giảm font giá cũ */
+  }
+
+  .product-card .btn {
+    font-size: 0.85rem !important; /* Giảm font nút */
+    padding: 0.4rem 0.8rem !important;
+  }
+
+  .row.g-4 {
+    gap: 0.5rem !important; /* Giảm gutter để fit 2 cột */
+  }
+
+  .container {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important; /* Đảm bảo không overflow */
+  }
+}
+
+/* Cập nhật media query hiện có */
+@media (max-width: 768px) {
+  .product-image {
+    height: 160px !important; /* Giảm nhẹ để fit tốt hơn */
+  }
+
+  .product-name {
+    font-size: 0.95rem !important;
+    height: auto !important; /* Loại bỏ height cố định */
+  }
+}
+
+/* ==================== BLOG CARDS ==================== */
+.blog-card img {
+  height: 180px !important;
+}
+
+/* ==================== FEATURED PROJECTS ==================== */
+#featured-projects .projects-carousel-wrapper {
+  max-width: 900px !important;
+}
+
+#featured-projects .project-card {
+  height: 360px !important;
+}
+
+@media (max-width: 991px) {
+  #featured-projects .project-card {
+    height: auto !important;
+  }
+
+  #featured-projects .project-image {
+    height: 250px !important;
+  }
+}
+
+/* ==================== FLOATING BUTTONS ==================== */
+.floating-btn {
+  width: 44px !important;
+  height: 44px !important;
+}
+
+/* ==================== SCROLL TO TOP ==================== */
+.scroll-to-top {
+  width: 44px !important;
+  height: 44px !important;
+  bottom: 165px !important;
+}
+
+/* ==================== FOOTER ==================== */
+footer {
+  padding: 2.75rem 0 !important;
+}
+
+footer h5 {
+  font-size: 1rem !important;
+}
+
+footer p,
+footer li,
+footer a {
+  font-size: 0.85rem !important;
+}

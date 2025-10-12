@@ -1,0 +1,451 @@
+{% extends "base.html" %} {% block title %}{{ get_setting('meta_title', 'BRICON
+VIỆT NAM | Keo của người Việt – Kết dính bền lâu, xây dựng niềm tin') }}
+{% endblock %} {% block meta_description %}{{ get_setting('index_meta_description',
+'Keo dán gạch, keo chà ron và chống thấm BRICON – Keo của người Việt, kết dính
+bền lâu, xây dựng niềm tin.') }}{% endblock %} {% block content %}
+<!-- ==================== BANNER SLIDER ==================== -->
+<section class="banner-slider">
+  <div
+    id="bannerCarousel"
+    class="carousel slide carousel-fade"
+    data-bs-ride="carousel"
+    data-bs-interval="5000"
+  >
+    <!-- Indicators -->
+    <div class="carousel-indicators">
+      {% for banner in banners %}
+      <button
+        type="button"
+        data-bs-target="#bannerCarousel"
+        data-bs-slide-to="{{ loop.index0 }}"
+        {%
+        if
+        loop.first
+        %}class="active"
+        aria-current="true"
+        {%
+        endif
+        %}
+        aria-label="Slide {{ loop.index }}"
+      ></button>
+      {% endfor %}
+    </div>
+
+    <!-- Slides -->
+    <div class="carousel-inner">
+      {% for banner in banners %}
+      <div class="carousel-item {% if loop.first %}active{% endif %}">
+        {# Lấy thông tin SEO từ Media nếu có #} {% set media_info =
+        banner.get_media_seo_info() if banner.image else None %}
+
+        <img
+          src="{{ banner.image if banner.image else 'https://via.placeholder.com/1200x500/FFC107/FFFFFF?text=Banner+' + loop.index|string }}"
+          class="d-block w-100"
+          alt="{{ media_info.alt if media_info else banner.title }}"
+          title="{{ media_info.title if media_info else banner.title }}"
+          loading="lazy"
+        />
+
+        <div class="carousel-caption">
+          {% if loop.first %}
+          <h1 class="display-4 fw-bold mb-3">{{ banner.title }}</h1>
+          <!-- ✅ chỉ H1 cho banner đầu tiên -->
+          {% else %}
+          <h2 class="display-4 fw-bold mb-3">{{ banner.title }}</h2>
+          <!-- những banner khác dùng H2 -->
+          {% endif %}
+          <p class="lead mb-4">{{ banner.subtitle }}</p>
+          {% if banner.button_text and banner.link %}
+          <a href="{{ banner.link }}" class="btn btn-warning btn-lg px-4 py-2">
+            {{ banner.button_text }} <i class="bi bi-arrow-right ms-2"></i>
+          </a>
+          {% endif %}
+        </div>
+
+        {# Hiển thị Caption cho SEO nhưng ẩn đi #} {% if media_info and
+        media_info.caption %}
+        <div class="visually-hidden">{{ media_info.caption }}</div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Controls -->
+    <button
+      class="carousel-control-prev"
+      type="button"
+      data-bs-target="#bannerCarousel"
+      data-bs-slide="prev"
+    >
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button
+      class="carousel-control-next"
+      type="button"
+      data-bs-target="#bannerCarousel"
+      data-bs-slide="next"
+    >
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+</section>
+
+<!-- ==================== WHY CHOOSE US ==================== -->
+<section class="py-5 bg-white">
+  <div class="container">
+    <div class="row g-4">
+      <!-- Feature 1 -->
+      <div class="col-lg-3 col-md-6">
+        <div class="text-center p-4">
+          <div class="mb-3">
+            <i
+              class="bi bi-shield-check text-warning"
+              style="font-size: 3rem"
+            ></i>
+          </div>
+          <h5 class="fw-semibold mb-2">Chất lượng đảm bảo</h5>
+          <p class="text-muted small mb-0">
+            Sản phẩm chính hãng, đảm bảo chất lượng
+          </p>
+        </div>
+      </div>
+
+      <!-- Feature 2 -->
+      <div class="col-lg-3 col-md-6">
+        <div class="text-center p-4">
+          <div class="mb-3">
+            <i class="bi bi-truck text-warning" style="font-size: 3rem"></i>
+          </div>
+          <h5 class="fw-semibold mb-2">Giao hàng nhanh</h5>
+          <p class="text-muted small mb-0">Giao hàng toàn quốc, nhanh chóng</p>
+        </div>
+      </div>
+
+      <!-- Feature 3 -->
+      <div class="col-lg-3 col-md-6">
+        <div class="text-center p-4">
+          <div class="mb-3">
+            <i class="bi bi-headset text-warning" style="font-size: 3rem"></i>
+          </div>
+          <h5 class="fw-semibold mb-2">Hỗ trợ 24/7</h5>
+          <p class="text-muted small mb-0">Đội ngũ tư vấn nhiệt tình</p>
+        </div>
+      </div>
+
+      <!-- Feature 4 -->
+      <div class="col-lg-3 col-md-6">
+        <div class="text-center p-4">
+          <div class="mb-3">
+            <i class="bi bi-wallet2 text-warning" style="font-size: 3rem"></i>
+          </div>
+          <h5 class="fw-semibold mb-2">Giá cạnh tranh</h5>
+          <p class="text-muted small mb-0">Giá tốt nhất thị trường</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FEATURED PRODUCTS ==================== -->
+<section class="py-5 bg-gray-dark">
+  <div class="container">
+    <!-- Section Title -->
+    <div class="text-center mb-5">
+      <h2 class="fw-bold mb-3">Sản phẩm nổi bật</h2>
+      <div class="title-underline mx-auto"></div>
+      <p class="text-muted mt-3">
+        Những sản phẩm được khách hàng tin dùng nhất
+      </p>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="row g-4">
+      {% for product in featured_products[:4] %}
+      <div class="col-lg-3 col-md-4 col-sm-6 col-6">
+        <div class="card product-card h-100 border-0">
+          <!-- Product Image -->
+          <div class="product-image position-relative">
+            <img
+              src="{{ product.image if product.image else 'https://via.placeholder.com/300x300/FFC107/FFFFFF?text=Product' }}"
+              alt="{{ media_info.alt_text if media_info and media_info.alt_text else product.name }}"
+              title="{{ media_info.title if media_info and media_info.title else product.name }}"
+              loading="lazy"
+            />
+
+            {% if product.old_price and product.price > 0 %}
+            <span class="badge bg-danger position-absolute top-0 start-0 m-2">
+              -{{ ((product.old_price - product.price) / product.old_price *
+              100)|int }}%
+            </span>
+            {% endif %}
+          </div>
+
+          <!-- Product Info -->
+          <div class="card-body d-flex flex-column text-center">
+            <h5 class="product-name mb-2">
+              <a
+                href="{{ url_for('main.product_detail', slug=product.slug) }}"
+                class="text-decoration-none"
+              >
+                {{ product.name }}
+              </a>
+            </h5>
+
+            <div class="product-price mb-3">
+              {% if product.price == 0 %}
+              <span class="price text-danger fw-bold fs-5">Liên hệ</span>
+              {% else %}
+              <span class="price">{{ product.price|format_price }}đ</span>
+              {% if product.old_price %}
+              <span class="old-price"
+                >{{ product.old_price|format_price }}đ</span
+              >
+              {% endif %} {% endif %}
+            </div>
+
+            <a
+              href="{{ url_for('main.product_detail', slug=product.slug) }}"
+              class="btn btn-warning btn-sm px-3"
+            >
+              <i class="bi bi-cart-plus me-1"></i> Xem chi tiết
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- View All Button -->
+    <div class="text-center mt-5">
+      <a
+        href="{{ url_for('main.products') }}"
+        class="btn btn-outline-warning btn-lg px-5"
+      >
+        Xem tất cả sản phẩm <i class="bi bi-arrow-right ms-2"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+{% include 'components/featured_projects.html' %}
+
+<!-- ==================== Tất cả sản phẩm mới nhất ====================
+
+<section class="py-5 white">
+    <div class="container">
+
+        <div class="text-center mb-5">
+            <h2 class="fw-bold mb-3">Sản phẩm mới nhất</h2>
+            <div class="title-underline mx-auto"></div>
+            <p class="text-muted mt-3">Cập nhật những sản phẩm mới nhất</p>
+        </div>
+
+
+        <div class="row g-4">
+            {% for product in latest_products[:8] %}
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="card product-card h-100 border-0 shadow-sm">
+
+                    <div class="product-image position-relative">
+                        {% set media_info = product.get_media_seo_info() if product.image else None %}
+
+                        <img src="{{ product.image if product.image else 'https://via.placeholder.com/300x300/FFC107/FFFFFF?text=New' }}"
+                             class="card-img-top"
+                             alt="{{ media_info.alt_text if media_info and media_info.alt_text else product.name }}"
+                             title="{{ media_info.title if media_info and media_info.title else product.name }}"
+                             loading="lazy">
+
+
+                        <span class="badge bg-success position-absolute top-0 end-0 m-2">
+                            <i class="bi bi-star-fill"></i> Mới
+                        </span>
+                    </div>
+
+
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="product-name mb-3">
+                            <a href="{{ url_for('main.product_detail', slug=product.slug) }}" class="text-decoration-none text-dark">
+                                {{ product.name }}
+                            </a>
+                        </h5>
+
+
+                        <div class="mt-auto">
+                            <div class="product-price mb-3">
+                                {% if product.price == 0 %}
+                                    <span class="price text-danger fw-bold fs-5">Liên hệ</span>
+                                {% else %}
+                                    <span class="price d-block">{{ product.price|format_price }}đ</span>
+                                    {% if product.old_price %}
+                                    <span class="old-price">{{ product.old_price|format_price }}đ</span>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+
+
+                            <a href="{{ url_for('main.product_detail', slug=product.slug) }}"
+                               class="btn btn-warning w-100">
+                                <i class="bi bi-cart-plus me-1"></i> Xem chi tiết
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+-->
+<!-- ==================== FEATURED BLOGS ==================== -->
+{% if featured_blogs %}
+<section class="py-5 bg-gray-dark">
+  <div class="container">
+    <!-- Section Title -->
+    <div class="text-center mb-5">
+      <h2 class="fw-bold mb-3">Tin tức nổi bật</h2>
+      <div class="title-underline mx-auto"></div>
+      <p class="text-muted mt-3">Cập nhật kiến thức và xu hướng mới nhất</p>
+    </div>
+
+    <!-- Blog Grid -->
+    <div class="row g-4">
+      {% for blog in featured_blogs %}
+      <div class="col-lg-4 col-md-6 col-sm-6 col-6">
+        <div class="card blog-card h-100 border-0 shadow-sm">
+          <!-- Blog Image -->
+          {% set media_info = blog.get_media_seo_info() if blog.image else None
+          %}
+
+          <img
+            src="{{ blog.image if blog.image else 'https://via.placeholder.com/400x250/FFC107/FFFFFF?text=Blog' }}"
+            class="card-img-top"
+            alt="{{ media_info.alt_text if media_info and media_info.alt_text else blog.title }}"
+            title="{{ media_info.title if media_info and media_info.title else blog.title }}"
+            loading="lazy"
+          />
+
+          <!-- Blog Content -->
+          <div class="card-body d-flex flex-column">
+            <!-- Meta Info -->
+            <div class="d-flex align-items-center text-muted small mb-3">
+              <span class="me-3">
+                <i class="bi bi-calendar3"></i>
+                {{ blog.created_at.strftime('%d/%m/%Y') }}
+              </span>
+              <span>
+                <i class="bi bi-eye"></i>
+                {{ blog.views }}
+              </span>
+            </div>
+
+            <!-- Title -->
+            <h5 class="card-title text-truncate-2 mb-3">
+              <a
+                href="{{ url_for('main.blog_detail', slug=blog.slug) }}"
+                class="text-decoration-none text-dark"
+              >
+                {{ blog.title }}
+              </a>
+            </h5>
+
+            <!-- Excerpt -->
+            <p class="card-text text-muted small mb-4">
+              {{ blog.excerpt[:120] if blog.excerpt else
+              (media_info.caption[:120] if media_info and media_info.caption
+              else '') }}...
+            </p>
+
+            <!-- Read More Button -->
+            <div class="mt-auto">
+              <a
+                href="{{ url_for('main.blog_detail', slug=blog.slug) }}"
+                class="btn btn-warning btn-sm fw-bold"
+              >
+                Đọc thêm <i class="bi bi-arrow-right ms-1"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- View All Button -->
+    <div class="text-center mt-5">
+      <a
+        href="{{ url_for('main.blog') }}"
+        class="btn btn-outline-warning btn-lg px-5"
+      >
+        Xem tất cả tin tức <i class="bi bi-arrow-right ms-2"></i>
+      </a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ==================== CALL TO ACTION ==================== -->
+<section class="py-5" style="background-color: #6c7b8b">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-8 text-center text-lg-start mb-4 mb-lg-0">
+        <h3 class="fw-bold mb-2">Cần tư vấn thêm về sản phẩm?</h3>
+        <p class="mb-0 text-dark">
+          Đội ngũ chuyên gia của BRICON luôn sẵn sàng hỗ trợ bạn
+        </p>
+      </div>
+      <div class="col-lg-4 text-center text-lg-end">
+        <a
+          href="{{ url_for('main.contact') }}"
+          class="btn btn-dark btn-lg px-5"
+        >
+          <i class="bi bi-telephone-fill me-2"></i> Liên hệ ngay
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Schema WebSite -->
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "{{ get_setting('website_name', 'BRICON VIỆT NAM') }}",
+    "url": "{{ get_setting('main_url', request.url_root) }}",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "{{ url_for('main.products') }}?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+</script>
+<!-- Schema Product cho featured_products -->
+{% if featured_products %}
+<script type="application/ld+json">
+  [
+  {% for product in featured_products %}
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": "{{ product.name|e }}",
+      "image": "{{ product.image|e }}",
+      "description": "{{ (product.description or 'Keo dán gạch, chà ron BRICON - Keo của người Việt')|e }}",
+      "sku": "{{ product.id }}",
+      "brand": {
+        "@type": "Brand",
+        "name": "{{ get_setting('website_name', 'BRICON VIỆT NAM')|e }}"
+      },
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "VND",
+        "price": "{{ product.price }}",
+        "url": "{{ url_for('main.product_detail', slug=product.slug, _external=True) }}",
+        "availability": "https://schema.org/InStock",
+        "itemCondition": "https://schema.org/NewCondition"
+      }
+    }{% if not loop.last %},{% endif %}
+  {% endfor %}
+  ]
+</script>
+{% endif %} {% endblock %}

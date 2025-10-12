@@ -1,0 +1,282 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2025-01-10",
+  "total_products": 8,
+  "categories": [
+    {
+      "name": "Keo Dán Gạch",
+      "slug": "keo-dan-gach",
+      "description": "Keo dán gạch chất lượng cao, độ bám dính vượt trội, phù hợp mọi loại gạch"
+    },
+    {
+      "name": "Keo Chà Ron",
+      "slug": "keo-cha-ron",
+      "description": "Keo chà ron chống thấm, chống ố vàng, bền màu lâu dài"
+    },
+    {
+      "name": "Chống Thấm",
+      "slug": "chong-tham",
+      "description": "Vật liệu chống thấm cao cấp, bảo vệ công trình lâu dài"
+    }
+  ],
+  "products": [
+    {
+      "name": "Keo Dán Gạch BRICON Nội Thất",
+      "slug": "keo-dan-gach-bricon-noi-that",
+      "category": "Keo Dán Gạch",
+      "description": "Keo dán gạch cao cấp dùng cho khu vực nội thất. Độ bám dính cao, dễ thi công, phù hợp với gạch có kích thước đến 80x80cm.",
+      "price": 0,
+      "old_price": null,
+      "is_featured": true,
+      "composition": [
+        "Cát khô siêu mịn <1% độ ẩm",
+        "Xi măng chuyên dụng",
+        "Phụ gia nhập khẩu"
+      ],
+      "production": "Sản xuất dựa trên dây chuyền công nghệ tự động.",
+      "application": [
+        "Phù hợp cho khu vực nội thất",
+        "Khổ gạch/dá thi công tối ưu: nhỏ hơn hoặc bằng 80x80cm",
+        "Có trọng lượng tối đa 45kg/m² và gạch dày từ 3–15mm",
+        "Sử dụng được phương pháp thi công GẠCH CHỒNG GẠCH",
+        "Ốp tường cao lên đến 3m",
+        "Thích hợp trên nền xi măng, sơn, xi măng láng bóng",
+        "Kết hợp với chống thấm BRICON trở thành vữa trát siêu chống thấm và bám dính cao"
+      ],
+      "expiry": "Trong vòng 1 năm kể từ ngày sản xuất",
+      "packaging": "5kg/túi, 25kg/bao, 80 bao/pallet",
+      "colors": [
+        "Xám",
+        "Trắng"
+      ],
+      "technical_specs": {
+        "Định mức sử dụng": "≈ 5kg/m²",
+        "Khối lượng riêng": "≈ 1.4g/m³",
+        "Thời gian trộn tối thiểu": "min 3–4 phút",
+        "Thời gian mở": "15–20 phút",
+        "Thời gian chỉnh gạch": "5 phút",
+        "Thời gian chờ trước khi chà ron": "24 giờ",
+        "Cường độ bám dính (điều kiện chuẩn)": "1.08 N/mm² – ĐẠT",
+        "Cường độ bám dính (sau khi ngâm nước)": "1.15 N/mm² – ĐẠT",
+        "Cường độ bám dính (sau khi gia nhiệt)": "1.02 N/mm² – ĐẠT",
+        "Cường độ bám dính kéo dài": "0.55 N/mm² – ĐẠT",
+        "Độ trượt": "0.37 mm – ĐẠT",
+        "Khả năng bám dính cao": "5.22 mm – ĐẠT"
+      },
+      "standards": "TCVN 7899-2:2008"
+    },
+    {
+      "name": "Keo Dán Gạch BRICON Ngoại Thất",
+      "slug": "keo-dan-gach-bricon-ngoai-that",
+      "category": "Keo Dán Gạch",
+      "description": "Keo dán gạch cao cấp dùng cho khu vực nội và ngoại thất. Độ bám dính cao, chịu thời tiết tốt, phù hợp cho hồ bơi, sân thượng, WC, kho lạnh và showroom oto.",
+      "price": 0,
+      "old_price": null,
+      "is_featured": true,
+      "composition": [
+        "Cát khô siêu mịn <1% độ ẩm",
+        "Xi măng chuyên dụng",
+        "Phụ gia nhập khẩu"
+      ],
+      "production": "Sản xuất dựa trên dây chuyền công nghệ tự động.",
+      "application": [
+        "Phù hợp cho khu vực Nội & Ngoại thất",
+        "Khổ gạch/đá thi công tối ưu: lên đến 1m x 1m",
+        "Gạch-Đá có trọng lượng lên đến 45kg/m² và gạch-đá ít hút nước",
+        "Thi công được cho khu vực Hồ bơi, Sân thượng, WC, kho Lạnh, phòng xông hơi, showroom oto",
+        "Sử dụng được phương pháp thi công GẠCH CHỒNG GẠCH, Ốp tường cao lên đến 3m",
+        "Thích hợp trên nền xi măng, sơn, xi măng láng bóng",
+        "Kết hợp với chống thấm BRICON trở thành vữa trát siêu chống thấm và bám dính cao"
+      ],
+      "expiry": "Trong vòng 1 năm kể từ ngày sản xuất",
+      "packaging": "5kg/túi, 25kg/bao, 80 bao/pallet",
+      "colors": [
+        "Xám",
+        "Trắng"
+      ],
+      "technical_specs": {
+        "Định mức sử dụng": "≈ 5kg/m²",
+        "Khối lượng riêng": "≈ 1.4g/m³",
+        "Thời gian trộn tối thiểu": "min 3–4 phút",
+        "Thời gian mở": "15–20 phút",
+        "Thời gian chỉnh gạch": "10 phút",
+        "Thời gian chờ trước khi chà ron": "24 giờ",
+        "Cường độ bám dính (điều kiện chuẩn)": "1.97 N/mm² – ĐẠT",
+        "Cường độ bám dính (sau khi ngâm nước)": "1.81 N/mm² – ĐẠT",
+        "Cường độ bám dính (sau khi gia nhiệt)": "1.95 N/mm² – ĐẠT",
+        "Cường độ bám dính kéo dài": "0.55 N/mm² – ĐẠT",
+        "Độ trượt": "0.37 mm – ĐẠT",
+        "Khả năng bám dính cao": "5.22 mm – ĐẠT"
+      },
+      "standards": "TCVN 7899-2:2008"
+    },
+    {
+      "name": "Keo Chà Ron BRICON Nội Thất",
+      "slug": "keo-cha-ron-bricon-noi-that",
+      "category": "Keo Chà Ron",
+      "description": "Keo chà ron cao cấp dùng cho khu vực nội thất, tường khu nội thất khô ráo và sàn nội thất chịu ẩm nhẹ.",
+      "price": 0,
+      "old_price": null,
+      "is_featured": true,
+      "composition": [
+        "CaCO₃",
+        "Xi măng trắng cao cấp",
+        "Phụ gia"
+      ],
+      "packaging": "1kg/túi, 1 thùng 24 túi",
+      "technical_specs": {
+        "Định mức sử dụng": "≈ 1kg/5m²",
+        "Khối lượng riêng": "≈ 0.9–1.1g/cm³",
+        "Thời gian trộn & sử dụng": "30 phút",
+        "Độ rộng của ron": "1–6mm",
+        "Mặt nền ổn định trước khi chà ron": "24 giờ",
+        "Thời gian chờ trước khi lưu thông": "24 giờ",
+        "Độ chịu mài mòn": "1820 mm³ – ĐẠT",
+        "Cường độ uốn": "2.73 N/mm² – ĐẠT",
+        "Cường độ nén": "16.8 N/mm² – ĐẠT",
+        "Độ rỗng co ngót": "2.55 mm/m – ĐẠT",
+        "Độ hút nước sau 30 phút": "2.87 g – ĐẠT",
+        "Độ hút nước sau 240 phút": "8.22 g – ĐẠT"
+      },
+      "standards": "TCVN 7899-3:2008"
+    },
+    {
+      "name": "Keo Chà Ron BRICON Ngoại Thất (Extra)",
+      "slug": "keo-cha-ron-bricon-ngoai-that-extra",
+      "category": "Keo Chà Ron",
+      "description": "Keo chà ron cao cấp dùng cho khu vực nội & ngoại thất. Chịu được thời tiết khắc nghiệt, thích hợp cho hồ bơi, phòng xông hơi, WC, kho lạnh và khu vực ẩm ướt.",
+      "price": 0,
+      "old_price": null,
+      "is_featured": true,
+      "composition": [
+        "CaCO₃",
+        "Xi măng trắng cao cấp",
+        "Phụ gia"
+      ],
+      "packaging": "1kg/túi, 1 thùng 24 túi",
+      "technical_specs": {
+        "Định mức sử dụng": "≈ 1kg/5m²",
+        "Khối lượng riêng": "≈ 0.9–1.1g/cm³",
+        "Thời gian trộn & sử dụng": "30 phút",
+        "Độ rộng của ron": "1–6mm",
+        "Mặt nền ổn định trước khi chà ron": "24 giờ",
+        "Thời gian chờ trước khi lưu thông": "24 giờ",
+        "Độ chịu mài mòn": "928 mm³ – ĐẠT",
+        "Cường độ uốn": "2.73 N/mm² – ĐẠT",
+        "Cường độ nén": "19.2 N/mm² – ĐẠT",
+        "Độ rỗng co ngót": "2.45 mm/m – ĐẠT",
+        "Độ hút nước sau 30 phút": "1.17 g – ĐẠT",
+        "Độ hút nước sau 240 phút": "3.8 g – ĐẠT"
+      },
+      "standards": "TCVN 7899-3:2008"
+    },
+    {
+      "name": "Keo Chà Ron BRICON Ngoại Thất (Dạng Hộp)",
+      "slug": "keo-cha-ron-bricon-ngoai-that-dang-hop",
+      "category": "Keo Chà Ron",
+      "description": "Keo chà ron cao cấp dạng hộp – dòng sản phẩm đặc trưng của BRICON, dùng cho khu vực nội và ngoại thất. Có khả năng chịu thời tiết, bám dính tốt, phù hợp cho hồ bơi, WC, sân thượng, kho lạnh và khu vực ẩm ướt.",
+      "price": 0,
+      "old_price": null,
+      "is_featured": true,
+      "composition": [
+        "CaCO₃",
+        "Xi măng trắng cao cấp",
+        "Phụ gia"
+      ],
+      "packaging": "1kg/hộp, 1 thùng 30 hộp",
+      "technical_specs": {
+        "Định mức sử dụng": "≈ 1kg/5m²",
+        "Khối lượng riêng": "≈ 0.9–1.1g/cm³",
+        "Thời gian trộn & sử dụng": "30 phút",
+        "Độ rộng của ron": "1–6mm",
+        "Mặt nền ổn định trước khi chà ron": "24 giờ",
+        "Thời gian chờ trước khi lưu thông": "24 giờ",
+        "Độ chịu mài mòn": "928 mm³ – ĐẠT",
+        "Cường độ uốn": "2.73 N/mm² – ĐẠT",
+        "Cường độ nén": "19.2 N/mm² – ĐẠT",
+        "Độ rỗng co ngót": "2.45 mm/m – ĐẠT",
+        "Độ hút nước sau 30 phút": "1.17 g – ĐẠT",
+        "Độ hút nước sau 240 phút": "3.8 g – ĐẠT"
+      },
+      "standards": "TCVN 7899-3:2008"
+    },
+    {
+      "name": "BRICON Chống Thấm Tường 102 Cao Cấp",
+      "slug": "bricon-chong-tham-tuong-102",
+      "category": "Chống Thấm",
+      "description": "Chống thấm gốc xi măng – polymer dùng cho tường, bể nước, sân thượng, mái, sàn vệ sinh.",
+      "price": 0,
+      "old_price": null,
+      "is_featured": true,
+      "composition": [
+        "Silica siêu mịn 200 Mesh",
+        "Nhựa",
+        "Phụ gia",
+        "Chất bảo quản"
+      ],
+      "packaging": "Lon 1kg (1 thùng 18 lon), Lon 5kg (1 thùng 4 lon)",
+      "technical_specs": {
+        "Cường độ bám dính ban đầu": "0.84 N/mm² – ĐẠT",
+        "Cường độ bám dính sau khi ngâm nước": "0.59 N/mm² – ĐẠT",
+        "Cường độ bám dính sau khi lão hóa nhiệt": "0.83 N/mm² – ĐẠT",
+        "Cường độ uốn đóng – tan băng": "0.76 N/mm² – ĐẠT",
+        "Cường độ uốn trong nước vôi": "0.65 N/mm² – ĐẠT",
+        "Áp lực 150kPa 7 ngày": "Không xuyên qua – ĐẠT",
+        "Tạo cầu vết nứt thường": "0.81 mm – ĐẠT"
+      },
+      "standards": "TCVN 12692:2020"
+    },
+    {
+      "name": "BRICON Chống Thấm Sàn 106 Cao Cấp",
+      "slug": "bricon-chong-tham-san-106",
+      "category": "Chống Thấm",
+      "description": "Chống thấm chuyên dụng cho sàn, sân thượng, hồ bơi, nhà vệ sinh – độ bền cao, kháng kiềm và chịu mài mòn tốt.",
+      "price": 0,
+      "old_price": null,
+      "is_featured": true,
+      "composition": [
+        "Silica siêu mịn 200 Mesh",
+        "Nhựa",
+        "Phụ gia",
+        "Chất bảo quản"
+      ],
+      "packaging": "Lon 1kg (1 thùng 18 lon), Lon 5kg (1 thùng 4 lon)",
+      "technical_specs": {
+        "Cường độ bám dính ban đầu": "0.86 N/mm² – ĐẠT",
+        "Cường độ bám dính sau khi ngâm nước": "0.62 N/mm² – ĐẠT",
+        "Cường độ bám dính sau khi lão hóa nhiệt": "0.81 N/mm² – ĐẠT",
+        "Cường độ uốn đóng – tan băng": "0.74 N/mm² – ĐẠT",
+        "Cường độ uốn trong nước vôi": "0.66 N/mm² – ĐẠT",
+        "Áp lực 150kPa 7 ngày": "Không xuyên qua – ĐẠT",
+        "Tạo cầu vết nứt thường": "0.84 mm – ĐẠT",
+        "Tạo cầu vết nứt -20°C": "0.82 mm – ĐẠT"
+      },
+      "standards": "TCVN 12692:2020"
+    },
+    {
+      "name": "BRICON Keo Bóng Chống Thấm 108 Cao Cấp",
+      "slug": "bricon-keo-bong-chong-tham-108",
+      "category": "Chống Thấm",
+      "description": "Keo bóng chống thấm gốc nhựa Acrylic solid cao – tạo bề mặt bóng, chống thấm, chống bụi và tăng độ bền cho công trình.",
+      "price": 0,
+      "old_price": null,
+      "is_featured": true,
+      "composition": [
+        "Nhựa Acrylic solid cao",
+        "Phụ gia",
+        "Chất bảo quản"
+      ],
+      "packaging": "Lon 1kg (1 thùng 18 lon), Lon 5kg (1 thùng 4 lon)",
+      "technical_specs": {
+        "Cường độ bám dính ban đầu": "0.85 N/mm² – ĐẠT",
+        "Cường độ bám dính sau khi ngâm nước": "0.61 N/mm² – ĐẠT",
+        "Cường độ bám dính sau khi lão hóa nhiệt": "0.83 N/mm² – ĐẠT",
+        "Cường độ uốn đóng – tan băng": "0.76 N/mm² – ĐẠT",
+        "Cường độ uốn trong nước vôi": "0.63 N/mm² – ĐẠT",
+        "Áp lực 150kPa 7 ngày": "Không xuyên qua – ĐẠT",
+        "Tạo cầu vết nứt thường": "0.84 mm – ĐẠT"
+      },
+      "standards": "TCVN 12692:2020"
+    }
+  ]
+}

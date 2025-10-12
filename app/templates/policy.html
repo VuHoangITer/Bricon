@@ -1,0 +1,694 @@
+{% extends "base.html" %} {% block title %}Chính sách - {{
+get_setting('website_name', 'BRICON VIỆT NAM | Keo của người Việt') }}{%
+endblock %} {% block meta_description %}Chính sách vận chuyển, đổi trả, bảo hành
+và bảo mật của {{ get_setting('website_name', 'BRICON VIỆT NAM') }}.{% endblock
+%} {% block content %}
+<!-- ==================== BREADCRUMB ==================== -->
+<div class="page-header bg-light py-4">
+  <div class="container">
+    <h1 class="fw-bold">Chính sách</h1>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="{{ url_for('main.index') }}">Trang chủ</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Chính sách</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<!-- ==================== POLICY CONTENT ==================== -->
+<section class="py-5" itemscope itemtype="https://schema.org/WebPage">
+  <div class="container">
+    {# Check if any policy content exists #} {% set terms =
+    get_setting('terms_of_service', '') %} {% set shipping =
+    get_setting('shipping_policy', '') %} {% set return_pol =
+    get_setting('return_policy', '') %} {% set warranty =
+    get_setting('warranty_policy', '') %} {% set privacy =
+    get_setting('privacy_policy', '') %} {% set has_any_policy = terms or
+    shipping or return_pol or warranty or privacy %} {% if not has_any_policy %}
+    <!-- No policies available message -->
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card shadow-sm border-0 text-center py-5">
+          <div class="card-body">
+            <i
+              class="bi bi-file-earmark-text text-muted"
+              style="font-size: 4rem"
+            ></i>
+            <h3 class="mt-3 mb-2">Chưa có chính sách nào</h3>
+            <p class="text-muted mb-4">
+              Các chính sách của BRICON đang được cập nhật. Vui lòng quay lại
+              sau hoặc liên hệ với chúng tôi để biết thêm chi tiết.
+            </p>
+            <div class="d-flex gap-2 justify-content-center flex-wrap">
+              <a
+                href="tel:{{ get_setting('hotline', '0901180094')|replace('.', '')|replace(' ', '') }}"
+                class="btn btn-warning"
+              >
+                <i class="bi bi-telephone-fill me-2"></i>
+                {{ get_setting('hotline', '0901.180.094') }}
+              </a>
+              <a
+                href="{{ url_for('main.contact') }}"
+                class="btn btn-outline-warning"
+              >
+                <i class="bi bi-envelope me-2"></i>
+                Liên hệ với chúng tôi
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <div class="row">
+      <!-- Sidebar Navigation -->
+      <div class="col-lg-2 mb-4">
+        <div class="list-group sticky-top" style="top: 100px; z-index: 10">
+          {% if terms %}
+          <a href="#terms" class="list-group-item list-group-item-action">
+            <i class="bi bi-file-earmark-text text-warning me-2"></i>Điều khoản
+            dịch vụ
+          </a>
+          {% endif %} {% if shipping %}
+          <a href="#shipping" class="list-group-item list-group-item-action">
+            <i class="bi bi-truck text-warning me-2"></i>Chính sách vận chuyển
+          </a>
+          {% endif %} {% if return_pol %}
+          <a href="#return" class="list-group-item list-group-item-action">
+            <i class="bi bi-arrow-repeat text-warning me-2"></i>Chính sách đổi
+            trả
+          </a>
+          {% endif %} {% if warranty %}
+          <a href="#warranty" class="list-group-item list-group-item-action">
+            <i class="bi bi-shield-check text-warning me-2"></i>Chính sách bảo
+            hành
+          </a>
+          {% endif %} {% if privacy %}
+          <a href="#privacy" class="list-group-item list-group-item-action">
+            <i class="bi bi-lock text-warning me-2"></i>Chính sách bảo mật
+          </a>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Policy Content -->
+      <div class="col-lg-10">
+        <!-- ✅ ĐIỀU KHOẢN DỊCH VỤ -->
+        {% if terms %}
+        <div class="card shadow-sm border-0 mb-4" id="terms">
+          <div class="card-header bg-warning">
+            <h3 class="mb-0">
+              <i class="bi bi-file-earmark-text me-2"></i>Điều khoản dịch vụ
+            </h3>
+          </div>
+          <div class="card-body">{{ terms | safe }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Chính sách vận chuyển -->
+        {% if shipping %}
+        <div class="card shadow-sm border-0 mb-4" id="shipping">
+          <div class="card-header bg-warning">
+            <h3 class="mb-0">
+              <i class="bi bi-truck me-2"></i>Chính sách vận chuyển
+            </h3>
+          </div>
+          <div class="card-body">{{ shipping | safe }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Chính sách đổi trả -->
+        {% if return_pol %}
+        <div class="card shadow-sm border-0 mb-4" id="return">
+          <div class="card-header bg-warning">
+            <h3 class="mb-0">
+              <i class="bi bi-arrow-repeat me-2"></i>Chính sách đổi trả
+            </h3>
+          </div>
+          <div class="card-body">{{ return_pol | safe }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Chính sách bảo hành -->
+        {% if warranty %}
+        <div class="card shadow-sm border-0 mb-4" id="warranty">
+          <div class="card-header bg-warning">
+            <h3 class="mb-0">
+              <i class="bi bi-shield-check me-2"></i>Chính sách bảo hành
+            </h3>
+          </div>
+          <div class="card-body">{{ warranty | safe }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Chính sách bảo mật -->
+        {% if privacy %}
+        <div class="card shadow-sm border-0 mb-4" id="privacy">
+          <div class="card-header bg-warning">
+            <h3 class="mb-0">
+              <i class="bi bi-lock me-2"></i>Chính sách bảo mật
+            </h3>
+          </div>
+          <div class="card-body">{{ privacy | safe }}</div>
+        </div>
+        {% endif %}
+
+        <!-- CTA Section -->
+        <div class="card shadow-sm border-0 bg-light">
+          <div class="card-body text-center py-4">
+            <h5 class="fw-bold mb-3">Bạn còn thắc mắc về chính sách?</h5>
+            <p class="text-muted mb-4">
+              Liên hệ ngay với BRICON để được giải đáp chi tiết
+            </p>
+            <div class="d-flex gap-2 justify-content-center flex-wrap">
+              <a
+                href="tel:{{ get_setting('hotline', '0901180094')|replace('.', '')|replace(' ', '') }}"
+                class="btn btn-warning"
+              >
+                <i class="bi bi-telephone-fill me-2"></i>
+                {{ get_setting('hotline', '0901.180.094') }}
+              </a>
+              <a
+                href="{{ url_for('main.contact') }}"
+                class="btn btn-outline-warning"
+              >
+                <i class="bi bi-envelope me-2"></i>
+                Gửi câu hỏi
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- ==================== SCHEMA.ORG - WEB PAGE ==================== -->
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Chính sách - {{ get_setting('website_name', 'BRICON VIỆT NAM')|e }}",
+    "url": "{{ url_for('main.policy', _external=True) }}",
+    "description": "Chính sách đổi trả và bảo mật của {{ get_setting('website_name', 'BRICON VIỆT NAM')|e }}",
+    "publisher": {
+      "@type": "Organization",
+      "name": "{{ get_setting('website_name', 'BRICON VIỆT NAM')|e }}",
+      "url": "{{ get_setting('main_url', request.url_root)|e }}"
+    }
+  }
+</script>
+
+<!-- ==================== SCHEMA.ORG - BREADCRUMB ==================== -->
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Trang chủ",
+        "item": "{{ url_for('main.index', _external=True) }}"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Chính sách",
+        "item": "{{ url_for('main.policy', _external=True) }}"
+      }
+    ]
+  }
+</script>
+
+<!-- Smooth Scroll Script -->
+<style>
+  html {
+    scroll-behavior: smooth;
+  }
+  .card-header {
+    background: linear-gradient(
+      135deg,
+      var(--primary-color) 0%,
+      var(--primary-dark) 100%
+    ) !important;
+    color: #000 !important;
+  }
+
+  .card-header h3,
+  .card-header h2 {
+    color: #000 !important;
+  }
+</style>
+<style>
+  /* ==================== PRIVACY POLICY STYLES ==================== */
+#privacy-policy {
+  max-width: 900px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 2.5rem;
+  border: 1px solid #e0e0e0;
+  color: #2c3e50;
+  line-height: 1.7;
+}
+
+#privacy-policy h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 2rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #2c3e50;
+}
+
+#privacy-policy h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 2rem 0 1rem 0;
+  padding-left: 0.75rem;
+  border-left: 3px solid #2c3e50;
+}
+
+#privacy-policy p {
+  margin: 1rem 0;
+  font-size: 0.95rem;
+  color: #495057;
+  text-align: justify;
+}
+
+#privacy-policy strong {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+#privacy-policy ul {
+  margin: 1rem 0 1rem 2rem;
+  list-style: disc;
+}
+
+#privacy-policy ul li {
+  margin: 0.5rem 0;
+  font-size: 0.95rem;
+  color: #495057;
+}
+
+#privacy-policy .info-box {
+  background: #f8f9fa;
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+  border-left: 3px solid #2c3e50;
+}
+
+#privacy-policy .info-box p {
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  #privacy-policy {
+    padding: 1.5rem;
+  }
+
+  #privacy-policy h2 {
+    font-size: 1.5rem;
+  }
+
+  #privacy-policy h3 {
+    font-size: 1.05rem;
+  }
+}
+</style>
+  <style>
+    #terms-of-service {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 2.5rem;
+      border: 1px solid #e0e0e0;
+      color: #2c3e50;
+      line-height: 1.7;
+    }
+
+    #terms-of-service h2 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 2rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid #2c3e50;
+    }
+
+    #terms-of-service h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin: 2rem 0 1rem 0;
+      padding-left: 0.75rem;
+      border-left: 3px solid #2c3e50;
+    }
+
+    #terms-of-service p {
+      margin: 1rem 0;
+      font-size: 0.95rem;
+      color: #495057;
+      text-align: justify;
+    }
+
+    #terms-of-service strong {
+      color: #2c3e50;
+      font-weight: 600;
+    }
+
+    #terms-of-service ul {
+      margin: 1rem 0;
+      padding-left: 0;
+      list-style: none;
+    }
+
+    #terms-of-service ul li {
+      margin: 0.75rem 0;
+      padding-left: 1.5rem;
+      font-size: 0.95rem;
+      color: #495057;
+      position: relative;
+    }
+
+    #terms-of-service ul li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #2c3e50;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    .intro-section {
+      background: #f8f9fa;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      border-left: 3px solid #2c3e50;
+    }
+
+    .intro-section p {
+      margin: 0.5rem 0;
+    }
+
+    .highlight-box {
+      background: #fafafa;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border: 1px solid #e0e0e0;
+      border-left: 3px solid #2c3e50;
+    }
+
+    .highlight-box p {
+      margin: 0.5rem 0;
+    }
+
+    .highlight-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      #terms-of-service {
+        padding: 1.5rem;
+      }
+
+      #terms-of-service h2 {
+        font-size: 1.5rem;
+      }
+
+      #terms-of-service h3 {
+        font-size: 1.05rem;
+      }
+    }
+/* ==================== RETURN & REFUND POLICY STYLES ==================== */
+.return-policy-section {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #2c3e50;
+  line-height: 1.7;
+}
+
+.policy-block {
+  background: #fff;
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+  border: 1px solid #e0e0e0;
+}
+
+.policy-divider {
+  border: none;
+  height: 1px;
+  background: #e0e0e0;
+  margin: 3rem 0;
+}
+
+.policy-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #2c3e50;
+}
+
+.highlight-box {
+  background: #f8f9fa;
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+  border-left: 3px solid #2c3e50;
+}
+
+.highlight-box p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.policy-intro {
+  background: #f8f9fa;
+  padding: 1rem;
+  margin: 1.5rem 0;
+  font-size: 0.95rem;
+  color: #495057;
+}
+
+.section-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 2rem 0 1rem 0;
+}
+
+.section-title i {
+  margin-right: 0.5rem;
+  font-size: 1rem;
+}
+
+.policy-list,
+.warning-list,
+.sub-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.policy-item,
+.warning-item {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.policy-item:last-child,
+.warning-item:last-child {
+  border-bottom: none;
+}
+
+.sub-list {
+  margin-left: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.sub-list li {
+  padding: 0.25rem 0;
+  font-size: 0.95rem;
+}
+
+.condition-card {
+  background: #fafafa;
+  padding: 1.25rem;
+  margin: 1rem 0;
+  border: 1px solid #e0e0e0;
+}
+
+.condition-item {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.condition-item i {
+  margin-top: 0.25rem;
+  flex-shrink: 0;
+}
+
+.highlight-text {
+  font-weight: 600;
+  color: #2c3e50;
+  text-decoration: underline;
+}
+
+.cost-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.cost-card {
+  background: #fafafa;
+  padding: 1.5rem;
+  border: 1px solid #e0e0e0;
+}
+
+.cost-card h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: #1a1a1a;
+}
+
+.cost-card p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #495057;
+}
+
+.refund-cases {
+  margin: 1.5rem 0;
+}
+
+.refund-case {
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  background: #fafafa;
+  border: 1px solid #e0e0e0;
+  border-left: 3px solid #2c3e50;
+}
+
+.refund-case h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #1a1a1a;
+}
+
+.refund-case p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #495057;
+}
+
+.alert {
+  padding: 1rem;
+  margin: 1.5rem 0;
+  border: 1px solid #e0e0e0;
+  background: #fafafa;
+}
+
+.alert-info {
+  border-left: 3px solid #0d6efd;
+}
+
+.alert-danger {
+  border-left: 3px solid #dc3545;
+  background: #fff5f5;
+}
+
+.alert i {
+  margin-right: 0.5rem;
+}
+
+/* Icon styles */
+.bi {
+  font-size: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .policy-block {
+    padding: 1.5rem;
+  }
+
+  .cost-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .return-policy-section {
+    padding: 0 1rem;
+  }
+}
+  </style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Xử lý scroll khi trang load với hash
+    if (window.location.hash) {
+      setTimeout(function () {
+        const target = document.querySelector(window.location.hash);
+        if (target) {
+          const offsetTop =
+            target.getBoundingClientRect().top + window.pageYOffset - 140;
+          window.scrollTo({
+            top: offsetTop,
+            behavior: "smooth",
+          });
+        }
+      }, 100);
+    }
+
+    // Smooth scroll cho sidebar links
+    document.querySelectorAll('.list-group a[href^="#"]').forEach((anchor) => {
+      anchor.addEventListener("click", function (e) {
+        e.preventDefault();
+        const targetId = this.getAttribute("href");
+        const target = document.querySelector(targetId);
+
+        if (target) {
+          // Scroll đến vị trí với offset cho sticky header (140px = navbar + padding)
+          const offsetTop =
+            target.getBoundingClientRect().top + window.pageYOffset - 140;
+          window.scrollTo({
+            top: offsetTop,
+            behavior: "smooth",
+          });
+
+          // Update URL hash
+          history.pushState(null, null, targetId);
+        }
+      });
+    });
+
+    // Xử lý khi click từ footer (external links)
+    window.addEventListener("hashchange", function () {
+      const target = document.querySelector(window.location.hash);
+      if (target) {
+        const offsetTop =
+          target.getBoundingClientRect().top + window.pageYOffset - 140;
+        window.scrollTo({
+          top: offsetTop,
+          behavior: "smooth",
+        });
+      }
+    });
+  });
+</script>
+{% endblock %}

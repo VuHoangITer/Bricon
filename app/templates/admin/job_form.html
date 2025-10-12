@@ -1,0 +1,195 @@
+{% extends "admin/admin_base.html" %}
+
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4><i class="bi bi-briefcase"></i> {{ title }}</h4>
+    <a href="{{ url_for('admin.jobs') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Quay lại
+    </a>
+</div>
+
+<form method="POST" novalidate>
+    {{ form.hidden_tag() }}
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card mb-3">
+                <div class="card-header bg-warning">
+                    <h6 class="mb-0">Thông tin tuyển dụng</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        {{ form.title.label(class="form-label") }}
+                        {{ form.title(class="form-control", placeholder="VD: Nhân viên Kinh doanh") }}
+                        {% if form.title.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.title.errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.slug.label(class="form-label") }}
+                        {{ form.slug(class="form-control") }}
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.department.label(class="form-label") }}
+                            {{ form.department(class="form-control", placeholder="VD: Kinh doanh") }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.location.label(class="form-label") }}
+                            {{ form.location(class="form-control", placeholder="VD: TP.HCM") }}
+                            {% if form.location.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.location.errors %}{{ error }}{% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            {{ form.job_type.label(class="form-label") }}
+                            {{ form.job_type(class="form-select") }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            {{ form.level.label(class="form-label") }}
+                            {{ form.level(class="form-select") }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            {{ form.salary.label(class="form-label") }}
+                            {{ form.salary(class="form-control", placeholder="VD: 10-15 triệu") }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.experience.label(class="form-label") }}
+                        {{ form.experience(class="form-control", placeholder="VD: 1-2 năm kinh nghiệm") }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.description.label(class="form-label") }}
+                        {{ form.description(class="form-control", rows="5", id="description") }}
+                        {% if form.description.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.description.errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.requirements.label(class="form-label") }}
+                        {{ form.requirements(class="form-control", rows="8", id="requirements") }}
+                        <small class="text-muted">Sử dụng danh sách có dấu đầu dòng</small>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.benefits.label(class="form-label") }}
+                        {{ form.benefits(class="form-control", rows="6", id="benefits") }}
+                        <small class="text-muted">Quyền lợi được hưởng</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card mb-3">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0">Thông tin liên hệ</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        {{ form.contact_email.label(class="form-label") }}
+                        {{ form.contact_email(class="form-control", placeholder="hr@tuyendung.com.vn") }}
+                        {% if form.contact_email.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.contact_email.errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
+                        <small class="text-muted">Email nhận hồ sơ ứng tuyển</small>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.deadline.label(class="form-label") }}
+                        {{ form.deadline(class="form-control", type="date") }}
+                        <small class="text-muted">Hạn cuối nộp hồ sơ</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header bg-secondary text-white">
+                    <h6 class="mb-0">Cài đặt</h6>
+                </div>
+                <div class="card-body">
+                    <div class="form-check mb-2">
+                        {{ form.is_urgent(class="form-check-input") }}
+                        {{ form.is_urgent.label(class="form-check-label") }}
+                    </div>
+
+                    <div class="form-check">
+                        {{ form.is_active(class="form-check-input") }}
+                        {{ form.is_active.label(class="form-check-label") }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2">
+                {{ form.submit(class="btn btn-warning btn-lg") }}
+                <a href="{{ url_for('admin.jobs') }}" class="btn btn-secondary">Hủy</a>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.0/classic/ckeditor.js"></script>
+<script>
+// CKEditor instances
+let editors = {};
+
+// Initialize CKEditor for textareas
+['description', 'requirements', 'benefits'].forEach(id => {
+    ClassicEditor
+        .create(document.querySelector(`#${id}`), {
+            toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'undo', 'redo']
+        })
+        .then(editor => {
+            editors[id] = editor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+});
+
+// Auto-generate slug from title
+document.querySelector('[name="title"]').addEventListener('input', function() {
+    const slug = this.value
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[đĐ]/g, 'd')
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '');
+
+    document.querySelector('[name="slug"]').value = slug;
+});
+
+// CRITICAL: Sync CKEditor data before submit
+document.querySelector('form').addEventListener('submit', function(e) {
+    // Copy data from CKEditor to hidden textarea
+    for (let id in editors) {
+        if (editors[id]) {
+            document.querySelector(`#${id}`).value = editors[id].getData();
+        }
+    }
+});
+</script>
+{% endblock %}

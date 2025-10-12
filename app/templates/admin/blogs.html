@@ -1,0 +1,150 @@
+{% extends "admin/admin_base.html" %}
+
+{% block page_title %}Quản lý Tin tức{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4><i class="bi bi-newspaper"></i> Danh sách Tin tức / Blog</h4>
+    <a href="{{ url_for('admin.add_blog') }}" class="btn btn-warning">
+        <i class="bi bi-plus-circle"></i> Thêm bài viết
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Hình ảnh</th>
+                        <th>Tiêu đề</th>
+                        <th>Tác giả</th>
+                        <th>Lượt xem</th>
+                        <th>SEO Score</th>
+                        <th>Nổi bật</th>
+                        <th>Trạng thái</th>
+                        <th>Ngày tạo</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for blog in blogs.items %}
+                    <tr>
+                        <td>{{ blog.id }}</td>
+                        <td>
+                            {% if blog.image %}
+                            <img src="{{ blog.image }}"
+                                 alt="{{ blog.title }}"
+                                 style="width: 80px; height: 50px; object-fit: cover; border-radius: 5px;">
+                            {% else %}
+                            <div class="bg-light d-flex align-items-center justify-content-center"
+                                 style="width: 80px; height: 50px; border-radius: 5px;">
+                                <i class="bi bi-image text-muted"></i>
+                            </div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong>{{ blog.title }}</strong><br>
+                            <small class="text-muted">{{ blog.slug }}</small>
+                            {% if blog.focus_keyword %}
+                            <br><small class="badge bg-info">🎯 {{ blog.focus_keyword }}</small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <i class="bi bi-person"></i> {{ blog.author if blog.author else 'N/A' }}
+                        </td>
+                        <td>
+                            <i class="bi bi-eye"></i> {{ blog.views }}
+                        </td>
+                        <td>
+                            {% if blog.seo_score is not none %}
+                                {% set grade_class = 'success' if blog.seo_score >= 85 else 'info' if blog.seo_score >= 65 else 'warning' if blog.seo_score >= 45 else 'danger' %}
+                                <span class="badge bg-{{ grade_class }}"
+                                      data-bs-toggle="tooltip"
+                                      title="Điểm SEO: {{ blog.seo_score }}/100">
+                                    {{ blog.seo_grade }} ({{ blog.seo_score }})
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary">Chưa check</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if blog.is_featured %}
+                            <i class="bi bi-star-fill text-warning" title="Nổi bật"></i>
+                            {% else %}
+                            <i class="bi bi-star text-muted"></i>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if blog.is_active %}
+                            <span class="badge bg-success">Hiển thị</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Ẩn</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <small>{{ blog.created_at.strftime('%d/%m/%Y') }}</small>
+                        </td>
+                        <td class="table-actions">
+                            <a href="{{ url_for('main.blog_detail', slug=blog.slug) }}"
+                               class="btn btn-sm btn-info"
+                               target="_blank"
+                               title="Xem">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a href="{{ url_for('admin.edit_blog', id=blog.id) }}"
+                               class="btn btn-sm btn-primary"
+                               title="Sửa">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{{ url_for('admin.delete_blog', id=blog.id) }}"
+                               class="btn btn-sm btn-danger"
+                               data-confirm="Bạn có chắc muốn xóa bài viết này?"
+                               title="Xóa">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if blogs.pages > 1 %}
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item {% if not blogs.has_prev %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('admin.blogs', page=blogs.prev_num) }}">Trước</a>
+                </li>
+
+                {% for page_num in blogs.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                    {% if page_num %}
+                        <li class="page-item {% if page_num == blogs.page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('admin.blogs', page=page_num) }}">{{ page_num }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                {% endfor %}
+
+                <li class="page-item {% if not blogs.has_next %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('admin.blogs', page=blogs.next_num) }}">Sau</a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+// Enable Bootstrap tooltips
+document.addEventListener('DOMContentLoaded', function() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,134 @@
+{% extends "admin/admin_base.html" %}
+
+{% block page_title %}Quản lý Liên hệ{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4><i class="bi bi-envelope"></i> Danh sách Liên hệ từ Khách hàng</h4>
+    <div>
+        <span class="badge bg-danger">{{ contacts.total }} tin nhắn</span>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Trạng thái</th>
+                        <th>Tên khách hàng</th>
+                        <th>Email</th>
+                        <th>Số điện thoại</th>
+                        <th>Tiêu đề</th>
+                        <th>Ngày gửi</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for contact in contacts.items %}
+                    <tr class="{% if not contact.is_read %}table-warning{% endif %}">
+                        <td>{{ contact.id }}</td>
+                        <td>
+                            {% if contact.is_read %}
+                            <i class="bi bi-envelope-open text-muted" title="Đã đọc"></i>
+                            {% else %}
+                            <i class="bi bi-envelope-fill text-danger" title="Chưa đọc"></i>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong>{{ contact.name }}</strong>
+                            {% if not contact.is_read %}
+                            <span class="badge bg-danger ms-1">Mới</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="mailto:{{ contact.email }}" class="text-decoration-none">
+                                <i class="bi bi-envelope"></i> {{ contact.email }}
+                            </a>
+                        </td>
+                        <td>
+                            {% if contact.phone %}
+                            <a href="tel:{{ contact.phone }}" class="text-decoration-none">
+                                <i class="bi bi-telephone"></i> {{ contact.phone }}
+                            </a>
+                            {% else %}
+                            <span class="text-muted">N/A</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if contact.subject %}
+                            {{ contact.subject[:50] }}{% if contact.subject|length > 50 %}...{% endif %}
+                            {% else %}
+                            <span class="text-muted">Không có tiêu đề</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <small class="text-muted">
+                                {{ contact.created_at.strftime('%d/%m/%Y %H:%M') }}
+                            </small>
+                        </td>
+                        <td class="table-actions">
+                            <a href="{{ url_for('admin.view_contact', id=contact.id) }}" 
+                               class="btn btn-sm btn-primary" 
+                               title="Xem chi tiết">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a href="mailto:{{ contact.email }}" 
+                               class="btn btn-sm btn-success" 
+                               title="Gửi email">
+                                <i class="bi bi-reply"></i>
+                            </a>
+                            <a href="{{ url_for('admin.delete_contact', id=contact.id) }}" 
+                               class="btn btn-sm btn-danger" 
+                               data-confirm="Bạn có chắc muốn xóa liên hệ này?"
+                               title="Xóa">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        {% if contacts.total == 0 %}
+        <div class="text-center py-5">
+            <i class="bi bi-inbox display-1 text-muted"></i>
+            <p class="text-muted mt-3">Chưa có liên hệ nào</p>
+        </div>
+        {% endif %}
+        
+        <!-- Pagination -->
+        {% if contacts.pages > 1 %}
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item {% if not contacts.has_prev %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('admin.contacts', page=contacts.prev_num) }}">Trước</a>
+                </li>
+                
+                {% for page_num in contacts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                    {% if page_num %}
+                        <li class="page-item {% if page_num == contacts.page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('admin.contacts', page=page_num) }}">{{ page_num }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                {% endfor %}
+                
+                <li class="page-item {% if not contacts.has_next %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('admin.contacts', page=contacts.next_num) }}">Sau</a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+
+<div class="alert alert-info mt-4">
+    <i class="bi bi-info-circle"></i> 
+    <strong>Chú ý:</strong> Tin nhắn chưa đọc được đánh dấu bằng nền vàng. Click "Xem chi tiết" để đọc nội dung đầy đủ.
+</div>
+{% endblock %}

@@ -1,0 +1,314 @@
+{% extends "base.html" %} {# ==================== SEO HEADERS
+==================== #} {% block title %}Dự án tiêu biểu - {{
+get_setting('website_name', 'BRICON Việt Nam') }}{% endblock %} {% block
+meta_description %} Khám phá các dự án keo dán gạch – keo chà ron – chống thấm
+tiêu biểu của {{ get_setting('website_name', 'BRICON Việt Nam') }}: TTTM,
+resort, khách sạn, nhà máy, chung cư, bệnh viện. {% endblock %} {% block content
+%}
+<!-- ==================== BREADCRUMB ==================== -->
+<section class="breadcrumb-section py-4 bg-light">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+          <a href="{{ url_for('main.index') }}">Trang chủ</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+          Dự án tiêu biểu
+        </li>
+      </ol>
+    </nav>
+  </div>
+</section>
+
+<!-- ==================== PAGE HEADER ==================== -->
+<section class="page-header py-5 bg-white">
+  <div class="container text-center">
+    <h1 class="display-4 fw-bold mb-3">Dự án tiêu biểu</h1>
+    <p class="lead text-muted">
+      Những công trình ứng dụng giải pháp keo dán gạch, keo chà ron & chống thấm
+      của {{ get_setting('website_name', 'BRICON Việt Nam') }}
+    </p>
+  </div>
+</section>
+
+<!-- ==================== FILTER SECTION ==================== -->
+<section class="filter-section py-3 bg-light">
+  <div class="container">
+    <div class="d-flex flex-wrap gap-2 justify-content-center">
+      <!-- Nút "Tất cả" -->
+      <a
+        href="{{ url_for('main.projects') }}"
+        class="btn btn-sm {% if not current_type %}btn-warning{% else %}btn-outline-secondary{% endif %}"
+      >
+        <i class="bi bi-grid"></i> Tất cả
+      </a>
+
+      <!-- Render từ config -->
+      {% for project_type in project_types %}
+      <a
+        href="{{ url_for('main.projects', type=project_type.value) }}"
+        class="btn btn-sm {% if current_type == project_type.value %}btn-warning{% else %}btn-outline-secondary{% endif %}"
+        title="{{ project_type.description }}"
+      >
+        <i class="bi {{ project_type.icon }}"></i> {{ project_type.label }}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PROJECTS LIST ==================== -->
+<section class="projects-list py-5">
+  <div class="container">
+    {% if projects.items %}
+    <div class="row g-4">
+      {% for project in projects.items %}
+      <div class="col-lg-4 col-md-6">
+        <article
+          class="card h-100 border-0 shadow-sm project-card"
+          itemscope
+          itemtype="https://schema.org/CreativeWork"
+        >
+          <!-- Project Image -->
+          <div class="position-relative overflow-hidden">
+            <img
+              src="{{ project.image or url_for('static', filename='img/placeholder.jpg') }}"
+              class="card-img-top"
+              alt="{{ project.title }}"
+              itemprop="image"
+              loading="lazy"
+              style="height: 220px; object-fit: cover"
+            />
+            {% if project.is_featured %}
+            <span class="badge bg-warning position-absolute top-0 start-0 m-2">
+              <i class="bi bi-star-fill"></i> Nổi bật
+            </span>
+            {% endif %}
+          </div>
+
+          <!-- Project Info -->
+          <div class="card-body">
+            {# ===== Badge loại dự án theo BRICON categories ===== #}
+            <span class="badge bg-secondary mb-2">
+              {% if project.project_type == 'commercial' %}
+              <i class="bi bi-shop-window"></i> TTTM & Khách sạn {% elif
+              project.project_type == 'resort_golf' %}
+              <i class="bi bi-flag"></i> KDL & Sân golf {% elif
+              project.project_type == 'residential' %}
+              <i class="bi bi-building"></i> Nhà ở & Chung cư {% elif
+              project.project_type == 'industrial' %}
+              <i class="bi bi-gear-wide-connected"></i> Nhà máy & Công nghiệp {%
+              elif project.project_type == 'public' %}
+              <i class="bi bi-bank"></i> Công cộng & Hạ tầng {% elif
+              project.project_type == 'bathroom_kitchen' %}
+              <i class="bi bi-droplet-half"></i> Nhà tắm & Bếp {% elif
+              project.project_type == 'outdoor' %}
+              <i class="bi bi-tree"></i> Ngoại thất & Sân vườn {% elif
+              project.project_type == 'pool' %} <i class="bi bi-water"></i> Hồ
+              bơi & Spa {% else %} <i class="bi bi-grid"></i> {{
+              project.project_type }} {% endif %}
+            </span>
+
+            <!-- Title -->
+            <h5 class="card-title" itemprop="name">
+              <a
+                href="{{ url_for('main.project_detail', slug=project.slug) }}"
+                class="text-decoration-none text-dark"
+                itemprop="url"
+              >
+                {{ project.title }}
+              </a>
+            </h5>
+
+            <!-- Meta -->
+            <p class="text-muted small mb-2">
+              {% if project.client %}
+              <i class="bi bi-building text-warning"></i> {{ project.client
+              }}<br />
+              {% endif %}
+              <i class="bi bi-geo-alt text-warning"></i>
+              <span itemprop="locationCreated">{{ project.location }}</span>
+              {% if project.year %} |
+              <i class="bi bi-calendar text-warning"></i>
+              <span itemprop="dateCreated">{{ project.year }}</span>
+              {% endif %}
+            </p>
+
+            <!-- Description -->
+            <p class="card-text text-muted small" itemprop="description">
+              {{ project.description[:110] }}{% if project.description and
+              project.description|length > 110 %}…{% endif %}
+            </p>
+
+            {# Optional: hiển thị nhanh sản phẩm sử dụng (2 dòng đầu) #} {% if
+            project.products_used %} {% set lines =
+            project.products_used.split('\n') %}
+            <p class="text-muted small mb-0">
+              <i class="bi bi-tools text-warning"></i>
+              {{ (lines[:2] | join(', ')) }}{% if lines|length > 2 %}, …{% endif
+              %}
+            </p>
+            {% endif %}
+
+            <!-- Hidden Schema Data -->
+            <div
+              itemprop="creator"
+              itemscope
+              itemtype="https://schema.org/Organization"
+            >
+              <meta
+                itemprop="name"
+                content="{{ get_setting('website_name', 'BRICON Việt Nam') }}"
+              />
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div class="card-footer bg-white border-0">
+            <a
+              href="{{ url_for('main.project_detail', slug=project.slug) }}"
+              class="btn btn-outline-warning w-100"
+            >
+              Xem chi tiết <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+        </article>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- ==================== PAGINATION ==================== -->
+    {% if projects.pages > 1 %}
+    <nav class="mt-5" aria-label="Projects pagination">
+      <ul class="pagination justify-content-center">
+        <li class="page-item {% if not projects.has_prev %}disabled{% endif %}">
+          <a
+            class="page-link"
+            href="{{ url_for('main.projects', page=projects.prev_num, type=current_type) }}"
+            aria-label="Previous"
+          >
+            <i class="bi bi-chevron-left"></i>
+          </a>
+        </li>
+        {% for page_num in projects.iter_pages(left_edge=1, right_edge=1,
+        left_current=1, right_current=2) %} {% if page_num %}
+        <li
+          class="page-item {% if page_num == projects.page %}active{% endif %}"
+        >
+          <a
+            class="page-link"
+            href="{{ url_for('main.projects', page=page_num, type=current_type) }}"
+            >{{ page_num }}</a
+          >
+        </li>
+        {% else %}
+        <li class="page-item disabled"><span class="page-link">…</span></li>
+        {% endif %} {% endfor %}
+        <li class="page-item {% if not projects.has_next %}disabled{% endif %}">
+          <a
+            class="page-link"
+            href="{{ url_for('main.projects', page=projects.next_num, type=current_type) }}"
+            aria-label="Next"
+          >
+            <i class="bi bi-chevron-right"></i>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    {% endif %} {% else %}
+    <!-- ==================== EMPTY STATE ==================== -->
+    <div class="text-center py-5">
+      <i class="bi bi-building display-1 text-muted"></i>
+      <p class="text-muted mt-3">Chưa có dự án nào trong danh mục này</p>
+      <a href="{{ url_for('main.projects') }}" class="btn btn-warning mt-3">
+        <i class="bi bi-grid"></i> Xem tất cả dự án
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{# ==================== SCHEMA.ORG - ITEM LIST ==================== #} {% if
+projects.items %}
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Dự án tiêu biểu {{ get_setting('website_name', 'BRICON Việt Nam')|e }}",
+    "url": "{{ url_for('main.projects', _external=True) }}",
+    "description": "Các dự án ứng dụng keo dán gạch, keo chà ron, chống thấm của {{ get_setting('website_name', 'BRICON Việt Nam')|e }}",
+    "itemListElement": [
+      {% for project in projects.items %}
+      {
+        "@type": "ListItem",
+        "position": {{ loop.index }},
+        "item": {
+          "@type": "CreativeWork",
+          "name": "{{ project.title|e }}",
+          "image": "{{ project.image if project.image else url_for('static', filename='img/placeholder.jpg', _external=True) }}",
+          "description": "{{ (project.description or '')|e }}",
+          "url": "{{ url_for('main.project_detail', slug=project.slug, _external=True) }}",
+          "locationCreated": "{{ (project.location or '')|e }}",
+          "dateCreated": "{{ project.year if project.year else '' }}",
+          "creator": {
+            "@type": "Organization",
+            "name": "{{ get_setting('website_name', 'BRICON Việt Nam')|e }}"
+          }
+        }
+      }{% if not loop.last %},{% endif %}
+      {% endfor %}
+    ]
+  }
+</script>
+{% endif %} {# ==================== SCHEMA.ORG - BREADCRUMB ====================
+#}
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Trang chủ",
+        "item": "{{ url_for('main.index', _external=True) }}"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Dự án tiêu biểu",
+        "item": "{{ url_for('main.projects', _external=True) }}"
+      }
+    ]
+  }
+</script>
+{% endblock %} {# ==================== CUSTOM STYLES ==================== #} {%
+block extra_css %}
+<style>
+  .project-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+  }
+  .project-card .card-img-top {
+    transition: transform 0.3s ease;
+  }
+  .project-card:hover .card-img-top {
+    transform: scale(1.05);
+  }
+  .filter-section .btn {
+    transition: all 0.3s ease;
+  }
+  .filter-section .btn:hover {
+    transform: translateY(-2px);
+  }
+</style>
+{% endblock %} {# ==================== CUSTOM SCRIPTS ==================== #} {%
+block extra_js %}
+<script>
+  // Thêm bất kỳ JavaScript tùy chỉnh nào nếu cần
+</script>
+{% endblock %} {# ==================== END OF FILE ==================== #}

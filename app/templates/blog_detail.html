@@ -1,0 +1,429 @@
+{% extends "base.html" %} {% block title %}{{ blog.title }} - {{
+get_setting('website_name', 'BRICON VIỆT NAM') }}{% endblock %} {% block
+meta_description %}{{ blog.excerpt[:160] if blog.excerpt else
+blog.content[:160]|striptags }}{% endblock %}
+
+<!-- ==================== CUSTOM OG TAGS FOR BLOG ==================== -->
+{% block extra_css %}
+<meta property="og:title" content="{{ blog.title }}" />
+<meta
+  property="og:description"
+  content="{{ blog.excerpt[:200] if blog.excerpt else blog.content[:200]|striptags }}"
+/>
+<meta
+  property="og:image"
+  content="{{ blog.image if blog.image else get_setting('default_share_image', '/static/img/default-share.jpg') }}"
+/>
+<meta property="og:url" content="{{ request.url }}" />
+<meta property="og:type" content="article" />
+<meta
+  property="article:published_time"
+  content="{{ blog.created_at.strftime('%Y-%m-%dT%H:%M:%S') }}"
+/>
+{% if blog.updated_at %}
+<meta
+  property="article:modified_time"
+  content="{{ blog.updated_at.strftime('%Y-%m-%dT%H:%M:%S') }}"
+/>
+{% endif %} {% if blog.author %}
+<meta property="article:author" content="{{ blog.author }}" />
+{% endif %} {% endblock %} {% block content %}
+<!-- ==================== BREADCRUMB ==================== -->
+<div class="page-header bg-light py-4">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+          <a href="{{ url_for('main.index') }}">Trang chủ</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="{{ url_for('main.blog') }}">Tin tức</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+          {{ blog.title }}
+        </li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<!-- ==================== BLOG DETAIL ==================== -->
+<section class="py-5">
+  <div class="container">
+    <div class="row">
+      <!-- Main Content -->
+      <div class="col-lg-8">
+        <article itemscope itemtype="https://schema.org/BlogPosting">
+          <!-- Blog Header -->
+          <header class="mb-4">
+            <h1 class="fw-bold mb-3" itemprop="headline">{{ blog.title }}</h1>
+
+            <!-- Meta Info -->
+            <div class="d-flex flex-wrap gap-3 text-muted mb-3">
+              <span
+                itemprop="datePublished"
+                content="{{ blog.created_at.strftime('%Y-%m-%d') }}"
+              >
+                <i class="bi bi-calendar text-warning"></i>
+                {{ blog.created_at.strftime('%d/%m/%Y') }}
+              </span>
+              <span>
+                <i class="bi bi-eye text-warning"></i>
+                {{ blog.views }} lượt xem
+              </span>
+              {% if blog.author %}
+              <span
+                itemprop="author"
+                itemscope
+                itemtype="https://schema.org/Person"
+              >
+                <i class="bi bi-person text-warning"></i>
+                <span itemprop="name">{{ blog.author }}</span>
+              </span>
+              {% endif %} {% if blog.is_featured %}
+              <span class="badge bg-warning">
+                <i class="bi bi-star-fill"></i> Nổi bật
+              </span>
+              {% endif %}
+            </div>
+
+            <!-- Social Share -->
+            <div class="border-top border-bottom py-3 mb-4">
+              <div class="d-flex align-items-center gap-2">
+                <span class="text-muted small me-2">Chia sẻ:</span>
+                <a
+                  href="https://www.facebook.com/sharer/sharer.php?u={{ request.url }}"
+                  target="_blank"
+                  class="btn btn-sm btn-outline-primary"
+                  title="Chia sẻ lên Facebook"
+                >
+                  <i class="bi bi-facebook"></i>
+                </a>
+                <a
+                  href="https://zalo.me/share?url={{ request.url }}"
+                  target="_blank"
+                  class="btn btn-sm btn-outline-info"
+                  title="Chia sẻ qua Zalo"
+                >
+                  <i class="bi bi-chat-dots-fill"></i>
+                </a>
+                <a
+                  href="https://twitter.com/intent/tweet?url={{ request.url }}&text={{ blog.title }}"
+                  target="_blank"
+                  class="btn btn-sm btn-outline-dark"
+                  title="Chia sẻ lên Twitter"
+                >
+                  <i class="bi bi-twitter"></i>
+                </a>
+                <button
+                  onclick="copyLink()"
+                  class="btn btn-sm btn-outline-secondary"
+                  title="Sao chép link"
+                >
+                  <i class="bi bi-link-45deg"></i>
+                </button>
+              </div>
+            </div>
+          </header>
+
+          <!-- Featured Image -->
+          {% if blog.image %}
+          <figure class="mb-4">
+            {% set media_info = blog.get_media_seo_info() %}
+
+            <img
+              src="{{ blog.image }}"
+              class="img-fluid rounded shadow-sm"
+              alt="{{ media_info.alt_text if media_info and media_info.alt_text else blog.title }}"
+              title="{{ media_info.title if media_info and media_info.title else blog.title }}"
+              itemprop="image"
+              loading="eager"
+            />
+
+            {# Caption hiển thị #} {% if media_info and media_info.caption %}
+            <figcaption class="text-muted small mt-2 fst-italic">
+              {{ media_info.caption }}
+            </figcaption>
+            {% endif %}
+          </figure>
+          {% endif %}
+
+          <!-- Blog Content -->
+          <div class="blog-content-detail" itemprop="articleBody">
+            {{ blog.content|safe }}
+          </div>
+
+          <!-- Tags (if any) -->
+          <div class="mt-4 pt-3 border-top">
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-tags text-warning"></i>
+              <span class="text-muted small">Tags:</span>
+              <span class="badge bg-light text-dark">Tin tức</span>
+              <span class="badge bg-light text-dark">Kiến thức</span>
+            </div>
+          </div>
+
+          <!-- Hidden Schema Data -->
+          <meta
+            itemprop="dateModified"
+            content="{{ blog.updated_at.strftime('%Y-%m-%d') if blog.updated_at else blog.created_at.strftime('%Y-%m-%d') }}"
+          />
+          <div
+            itemprop="publisher"
+            itemscope
+            itemtype="https://schema.org/Organization"
+          >
+            <meta
+              itemprop="name"
+              content="{{ get_setting('website_name', 'Hoangvn') }}"
+            />
+            <div
+              itemprop="logo"
+              itemscope
+              itemtype="https://schema.org/ImageObject"
+            >
+              <meta
+                itemprop="url"
+                content="{{ get_setting('logo_url', url_for('static', filename='img/logo.png', _external=True)) }}"
+              />
+            </div>
+          </div>
+          <meta itemprop="mainEntityOfPage" content="{{ request.url }}" />
+        </article>
+
+        <!-- Related Blogs -->
+        {% if related_blogs %}
+        <div class="mt-5">
+          <h4 class="fw-bold mb-4">
+            <i class="bi bi-newspaper text-warning me-2"></i>Bài viết liên quan
+          </h4>
+          <div class="row g-3">
+            {% for rb in related_blogs %}
+            <div class="col-md-4">
+              <div class="card h-100 border-0 shadow-sm">
+                {% set rb_media_info = rb.get_media_seo_info() if rb.image else
+                None %}
+
+                <img
+                  src="{{ rb.image if rb.image else 'https://via.placeholder.com/300x200/FFC107/FFFFFF?text=Blog' }}"
+                  class="card-img-top"
+                  alt="{{ rb_media_info.alt_text if rb_media_info and rb_media_info.alt_text else rb.title }}"
+                  title="{{ rb_media_info.title if rb_media_info and rb_media_info.title else rb.title }}"
+                  loading="lazy"
+                  style="height: 180px; object-fit: cover"
+                />
+
+                <div class="card-body">
+                  <h6 class="card-title">
+                    <a
+                      href="{{ url_for('main.blog_detail', slug=rb.slug) }}"
+                      class="text-decoration-none text-dark"
+                    >
+                      {{ rb.title }}
+                    </a>
+                  </h6>
+                  <p class="text-muted small mb-2">
+                    <i class="bi bi-calendar"></i> {{
+                    rb.created_at.strftime('%d/%m/%Y') }}
+                  </p>
+                  <a
+                    href="{{ url_for('main.blog_detail', slug=rb.slug) }}"
+                    class="btn btn-warning btn-sm w-100"
+                  >
+                    Đọc thêm
+                  </a>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-lg-4">
+        <!-- Contact CTA Card -->
+        <div
+          class="card shadow-sm border-0 mb-4 sticky-top"
+          style="top: 120px; z-index: 100"
+        >
+          <div class="card-body text-center p-4">
+            <i class="bi bi-headset text-warning fs-1 mb-3 d-block"></i>
+            <h5 class="fw-bold mb-3">Cần tư vấn thêm?</h5>
+            <p class="text-muted mb-4">
+              Liên hệ ngay với BRICON để được hỗ trợ!
+            </p>
+            <a
+              href="{{ url_for('main.contact') }}"
+              class="btn btn-warning w-100 mb-2"
+            >
+              <i class="bi bi-envelope"></i> Gửi yêu cầu
+            </a>
+            <a
+              href="tel:{{ get_setting('hotline', '0901180094')|replace('.', '')|replace(' ', '') }}"
+              class="btn btn-outline-warning w-100"
+            >
+              <i class="bi bi-telephone"></i> {{ get_setting('hotline',
+              '0901.180.094') }}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SCHEMA.ORG - ARTICLE ==================== -->
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "{{ blog.title|e }}",
+    "image": "{{ blog.image|e }}",
+    "datePublished": "{{ blog.created_at.strftime('%Y-%m-%dT%H:%M:%S') }}",
+    "dateModified": "{{ blog.updated_at.strftime('%Y-%m-%dT%H:%M:%S') if blog.updated_at else blog.created_at.strftime('%Y-%m-%dT%H:%M:%S') }}",
+    "author": {
+      "@type": "Person",
+      "name": "{{ blog.author if blog.author else get_setting('website_name', 'BRICON VIỆT NAM')|e }}"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "{{ get_setting('website_name', 'BRICON VIỆT NAM')|e }}",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "{{ get_setting('logo_url', url_for('static', filename='img/logo.png', _external=True))|e }}"
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "{{ request.url }}"
+    },
+    "description": "{{ (blog.excerpt if blog.excerpt else blog.content[:200]|striptags)|e }}"
+  }
+</script>
+
+<!-- ==================== SCHEMA.ORG - BREADCRUMB ==================== -->
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Trang chủ",
+        "item": "{{ url_for('main.index', _external=True) }}"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Tin tức",
+        "item": "{{ url_for('main.blog', _external=True) }}"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "{{ blog.title|e }}",
+        "item": "{{ request.url }}"
+      }
+    ]
+  }
+</script>
+
+<!-- Custom Styles -->
+<style>
+  .blog-content-detail {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: #333;
+  }
+
+  .blog-content-detail img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+  }
+
+  .blog-content-detail h2,
+  .blog-content-detail h3 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+
+  .blog-content-detail ul,
+  .blog-content-detail ol {
+    margin: 1rem 0;
+    padding-left: 2rem;
+  }
+
+  .blog-content-detail blockquote {
+    border-left: 4px solid #ffc107;
+    padding-left: 1.5rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: #666;
+  }
+</style>
+
+<!-- Copy Link Script -->
+<script>
+  // Copy link function
+  function copyLink() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      // Tạo thông báo tạm thời
+      const notification = document.createElement('div');
+      notification.textContent = '✓ Đã sao chép link bài viết!';
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #28a745;
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 9999;
+        font-weight: 500;
+        animation: slideIn 0.3s ease;
+      `;
+
+      document.body.appendChild(notification);
+
+      // Tự động xóa sau 2 giây
+      setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+      }, 2000);
+    });
+  }
+
+  // CSS animations
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    @keyframes slideOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+</script>
+{% endblock %}

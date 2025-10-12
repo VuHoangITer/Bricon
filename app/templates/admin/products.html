@@ -1,0 +1,118 @@
+{% extends "admin/admin_base.html" %}
+
+{% block page_title %}Quản lý sản phẩm{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4><i class="bi bi-box-seam"></i> Danh sách sản phẩm</h4>
+    <a href="{{ url_for('admin.add_product') }}" class="btn btn-warning">
+        <i class="bi bi-plus-circle"></i> Thêm sản phẩm
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Hình ảnh</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Danh mục</th>
+                        <th>Giá</th>
+                        <th>Nổi bật</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products.items %}
+                    <tr>
+                        <td>{{ product.id }}</td>
+                        <td>
+                            {% if product.image %}
+                            <img src="{{ product.image }}"
+                                 alt="{{ product.name }}" 
+                                 style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">
+                            {% else %}
+                            <div class="bg-light d-flex align-items-center justify-content-center" 
+                                 style="width: 50px; height: 50px; border-radius: 5px;">
+                                <i class="bi bi-image text-muted"></i>
+                            </div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong>{{ product.name }}</strong><br>
+                            <small class="text-muted">{{ product.slug }}</small>
+                        </td>
+                        <td>
+                            {% if product.category %}
+                            <span class="badge bg-info">{{ product.category.name }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong class="text-warning">{{ product.price|format_price }}đ</strong>
+                            {% if product.old_price %}
+                            <br><small class="text-muted text-decoration-line-through">{{ product.old_price|format_price }}đ</small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if product.is_featured %}
+                            <i class="bi bi-star-fill text-warning"></i>
+                            {% else %}
+                            <i class="bi bi-star text-muted"></i>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if product.is_active %}
+                            <span class="badge bg-success">Hoạt động</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Ẩn</span>
+                            {% endif %}
+                        </td>
+                        <td class="table-actions">
+                            <a href="{{ url_for('admin.edit_product', id=product.id) }}" 
+                               class="btn btn-sm btn-primary" title="Sửa">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{{ url_for('admin.delete_product', id=product.id) }}" 
+                               class="btn btn-sm btn-danger" 
+                               data-confirm="Bạn có chắc muốn xóa sản phẩm này?"
+                               title="Xóa">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination -->
+        {% if products.pages > 1 %}
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item {% if not products.has_prev %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('admin.products', page=products.prev_num) }}">Trước</a>
+                </li>
+                
+                {% for page_num in products.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                    {% if page_num %}
+                        <li class="page-item {% if page_num == products.page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('admin.products', page=page_num) }}">{{ page_num }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                {% endfor %}
+                
+                <li class="page-item {% if not products.has_next %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('admin.products', page=products.next_num) }}">Sau</a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

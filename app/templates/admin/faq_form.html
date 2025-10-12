@@ -1,0 +1,73 @@
+{% extends "admin/admin_base.html" %}
+
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4><i class="bi bi-question-circle"></i> {{ title }}</h4>
+    <a href="{{ url_for('admin.faqs') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Quay lại
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label">Câu hỏi *</label>
+                    {{ form.question(class="form-control", placeholder="Nhập câu hỏi thường gặp") }}
+                    {% if form.question.errors %}
+                        <div class="text-danger small mt-1">{{ form.question.errors[0] }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-12">
+                    <label class="form-label">Câu trả lời *</label>
+                    {{ form.answer(class="form-control", rows="8", placeholder="Nhập câu trả lời chi tiết") }}
+                    {% if form.answer.errors %}
+                        <div class="text-danger small mt-1">{{ form.answer.errors[0] }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6">
+                    <label class="form-label">Thứ tự hiển thị</label>
+                    {{ form.order(class="form-control", value="0") }}
+                    <small class="text-muted">Số nhỏ hiển thị trước (0, 1, 2, 3...)</small>
+                </div>
+                
+                <div class="col-md-6">
+                    <label class="form-label d-block">Trạng thái</label>
+                    <div class="form-check form-switch mt-2">
+                        {{ form.is_active(class="form-check-input", checked=true) }}
+                        <label class="form-check-label" for="{{ form.is_active.id }}">
+                            Kích hoạt hiển thị
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="col-12">
+                    <hr>
+                    <div class="alert alert-success">
+                        <i class="bi bi-lightbulb"></i> 
+                        <strong>Mẹo viết FAQ hiệu quả:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>Câu hỏi ngắn gọn, dễ hiểu</li>
+                            <li>Câu trả lời chi tiết, rõ ràng</li>
+                            <li>Sắp xếp theo mức độ quan trọng (thường gặp nhất lên đầu)</li>
+                            <li>Cập nhật thường xuyên khi có thay đổi</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="col-12 mt-4">
+                    {{ form.submit(class="btn btn-warning px-5") }}
+                    <a href="{{ url_for('admin.faqs') }}" class="btn btn-secondary">Hủy</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

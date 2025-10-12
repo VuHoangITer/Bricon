@@ -1,0 +1,347 @@
+{% extends "base.html" %} {% block title %}Tin tức - {{
+get_setting('website_name', 'BRICON VIỆT NAM') }}{% endblock %} {% block
+meta_description %}Cập nhật tin tức, kiến thức và xu hướng mới nhất về keo dán
+gạch, chà ron và chống thấm từ {{ get_setting('website_name', 'BRICON VIỆT NAM')
+}}.{% endblock %} {% block content %}
+<!-- ==================== BREADCRUMB ==================== -->
+<div class="page-header bg-light py-4">
+  <div class="container">
+    <h1 class="fw-bold">Tin tức</h1>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+          <a href="{{ url_for('main.index') }}">Trang chủ</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Tin tức</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<!-- ==================== BLOG LIST ==================== -->
+<section class="py-5">
+  <div class="container">
+    <div class="row">
+      <!-- Sidebar -->
+      <div class="col-lg-4">
+        <!-- Search Box -->
+        <div class="card shadow-sm border-0 mb-4">
+          <div class="card-body">
+            <h5 class="fw-bold mb-3">
+              <i class="bi bi-search text-warning me-2"></i>Tìm kiếm
+            </h5>
+            <form action="{{ url_for('main.blog') }}" method="get">
+              <div class="input-group">
+                <input
+                  type="text"
+                  class="form-control"
+                  name="search"
+                  placeholder="Tìm bài viết..."
+                  aria-label="Tìm kiếm bài viết"
+                />
+                <button class="btn btn-warning" type="submit">
+                  <i class="bi bi-search"></i>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Featured Blogs -->
+        {% if featured_blogs %}
+        <div class="card shadow-sm border-0">
+          <div class="card-body">
+            <h5 class="fw-bold mb-3">
+              <i class="bi bi-star text-warning me-2"></i>Bài viết nổi bật
+            </h5>
+            <ul class="list-unstyled">
+              {% for fb in featured_blogs %}
+              <li
+                class="mb-3 pb-3 {% if not loop.last %}border-bottom{% endif %}"
+              >
+                <a
+                  href="{{ url_for('main.blog_detail', slug=fb.slug) }}"
+                  class="text-decoration-none"
+                >
+                  <strong class="text-dark d-block mb-1">{{ fb.title }}</strong>
+                </a>
+                <p class="text-muted small mb-0">
+                  <i class="bi bi-calendar"></i> {{
+                  fb.created_at.strftime('%d/%m/%Y') }}
+                  <span class="ms-2">
+                    <i class="bi bi-eye"></i> {{ fb.views }}
+                  </span>
+                </p>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+      <!-- Blog Grid -->
+      <div class="col-lg-8">
+        {% if blogs %}
+        <div class="row g-4">
+          {% for blog in blogs %}
+          <div class="col-md-6">
+            <article
+              class="card blog-card h-100 border-0 shadow-sm"
+              itemscope
+              itemtype="https://schema.org/BlogPosting"
+            >
+              <!-- Blog Image -->
+              <div class="position-relative overflow-hidden">
+                {% set media_info = blog.get_media_seo_info() if blog.image else
+                None %}
+
+                <img
+                  src="{{ blog.image if blog.image else 'https://via.placeholder.com/400x250/FFC107/FFFFFF?text=Blog' }}"
+                  class="card-img-top"
+                  alt="{{ media_info.alt_text if media_info and media_info.alt_text else blog.title }}"
+                  title="{{ media_info.title if media_info and media_info.title else blog.title }}"
+                  itemprop="image"
+                  loading="lazy"
+                  style="height: 220px; object-fit: cover"
+                />
+
+                {# Caption ẩn cho SEO #} {% if media_info and media_info.caption
+                %}
+                <div class="visually-hidden" itemprop="description">
+                  {{ media_info.caption }}
+                </div>
+                {% endif %}
+
+                <!-- Featured Badge -->
+                {% if blog.is_featured %}
+                <span
+                  class="badge bg-warning position-absolute top-0 start-0 m-2"
+                >
+                  <i class="bi bi-star-fill"></i> Nổi bật
+                </span>
+                {% endif %}
+              </div>
+
+              <!-- Blog Content -->
+              <div class="card-body">
+                <!-- Meta Info -->
+                <div class="mb-2 text-muted small">
+                  <span
+                    itemprop="datePublished"
+                    content="{{ blog.created_at.strftime('%Y-%m-%d') }}"
+                  >
+                    <i class="bi bi-calendar text-warning"></i>
+                    {{ blog.created_at.strftime('%d/%m/%Y') }}
+                  </span>
+                  <span class="ms-3">
+                    <i class="bi bi-eye text-warning"></i> {{ blog.views }}
+                  </span>
+                  {% if blog.author %}
+                  <span
+                    class="ms-3"
+                    itemprop="author"
+                    itemscope
+                    itemtype="https://schema.org/Person"
+                  >
+                    <i class="bi bi-person text-warning"></i>
+                    <span itemprop="name">{{ blog.author }}</span>
+                  </span>
+                  {% endif %}
+                </div>
+
+                <!-- Title -->
+                <h5 class="card-title">
+                  <a
+                    href="{{ url_for('main.blog_detail', slug=blog.slug) }}"
+                    class="text-decoration-none text-dark"
+                    itemprop="headline"
+                  >
+                    {{ blog.title }}
+                  </a>
+                </h5>
+
+                <!-- Excerpt -->
+                <p class="card-text text-muted small" itemprop="description">
+                  {{ blog.excerpt[:150] if blog.excerpt else
+                  blog.content[:150]|striptags }}...
+                </p>
+
+                <!-- Read More Button -->
+                <a
+                  href="{{ url_for('main.blog_detail', slug=blog.slug) }}"
+                  class="btn btn-warning btn-sm"
+                  itemprop="url"
+                >
+                  Đọc thêm <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+
+                <!-- Hidden Schema Data -->
+                <meta
+                  itemprop="dateModified"
+                  content="{{ blog.updated_at.strftime('%Y-%m-%d') if blog.updated_at else blog.created_at.strftime('%Y-%m-%d') }}"
+                />
+                <div
+                  itemprop="publisher"
+                  itemscope
+                  itemtype="https://schema.org/Organization"
+                >
+                  <meta
+                    itemprop="name"
+                    content="{{ get_setting('website_name', 'BRICON VIỆT NAM') }}"
+                  />
+                  <div
+                    itemprop="logo"
+                    itemscope
+                    itemtype="https://schema.org/ImageObject"
+                  >
+                    <meta
+                      itemprop="url"
+                      content="{{ get_setting('logo_url', url_for('static', filename='img/logo.png', _external=True)) }}"
+                    />
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if pagination.pages > 1 %}
+        <nav class="mt-5" aria-label="Blog pagination">
+          <ul class="pagination justify-content-center">
+            <li
+              class="page-item {% if not pagination.has_prev %}disabled{% endif %}"
+            >
+              <a
+                class="page-link"
+                href="{{ url_for('main.blog', page=pagination.prev_num) }}"
+                aria-label="Previous"
+              >
+                <i class="bi bi-chevron-left"></i>
+              </a>
+            </li>
+            {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1,
+            left_current=1, right_current=2) %} {% if page_num %}
+            <li
+              class="page-item {% if page_num == pagination.page %}active{% endif %}"
+            >
+              <a
+                class="page-link"
+                href="{{ url_for('main.blog', page=page_num) }}"
+              >
+                {{ page_num }}
+              </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
+            {% endif %} {% endfor %}
+            <li
+              class="page-item {% if not pagination.has_next %}disabled{% endif %}"
+            >
+              <a
+                class="page-link"
+                href="{{ url_for('main.blog', page=pagination.next_num) }}"
+                aria-label="Next"
+              >
+                <i class="bi bi-chevron-right"></i>
+              </a>
+            </li>
+          </ul>
+        </nav>
+        {% endif %} {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-5">
+          <i class="bi bi-inbox display-1 text-muted"></i>
+          <p class="text-muted mt-3">Chưa có bài viết nào</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SCHEMA.ORG - ITEM LIST ==================== -->
+{% if blogs %}
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Tin tức {{ get_setting('website_name', 'BRICON VIỆT NAM')|e }}",
+    "url": "{{ url_for('main.blog', _external=True) }}",
+    "itemListElement": [
+      {% for blog in blogs %}
+      {
+        "@type": "ListItem",
+        "position": {{ loop.index }},
+        "item": {
+          "@type": "BlogPosting",
+          "headline": "{{ blog.title|e }}",
+          "image": "{{ blog.image|e }}",
+          "datePublished": "{{ blog.created_at.strftime('%Y-%m-%d') }}",
+          "dateModified": "{{ blog.updated_at.strftime('%Y-%m-%d') if blog.updated_at else blog.created_at.strftime('%Y-%m-%d') }}",
+          "author": {
+            "@type": "Person",
+            "name": "{{ blog.author if blog.author else get_setting('website_name', 'BRICON VIỆT NAM')|e }}"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "{{ get_setting('website_name', 'BRICON VIỆT NAM')|e }}",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "{{ get_setting('logo_url', url_for('static', filename='img/logo.png', _external=True))|e }}"
+            }
+          },
+          "url": "{{ url_for('main.blog_detail', slug=blog.slug, _external=True) }}"
+        }
+      }{% if not loop.last %},{% endif %}
+      {% endfor %}
+    ]
+  }
+</script>
+{% endif %}
+
+<!-- ==================== SCHEMA.ORG - BREADCRUMB ==================== -->
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Trang chủ",
+        "item": "{{ url_for('main.index', _external=True) }}"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Tin tức",
+        "item": "{{ url_for('main.blog', _external=True) }}"
+      }
+    ]
+  }
+</script>
+
+<!-- Custom Styles -->
+<style>
+  .blog-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .blog-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  .blog-card img {
+    transition: transform 0.3s;
+  }
+
+  .blog-card:hover img {
+    transform: scale(1.05);
+  }
+</style>
+{% endblock %}

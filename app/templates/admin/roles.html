@@ -1,0 +1,132 @@
+{% extends "admin/admin_base.html" %}
+
+{% block page_title %}Quản lý Phân quyền{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4><i class="bi bi-shield-lock"></i> Quản lý Roles & Permissions</h4>
+    <div>
+        <a href="{{ url_for('admin.permissions') }}" class="btn btn-info">
+            <i class="bi bi-key"></i> Quản lý Permissions
+        </a>
+        <a href="{{ url_for('admin.add_role') }}" class="btn btn-warning">
+            <i class="bi bi-plus-circle"></i> Thêm Role
+        </a>
+    </div>
+</div>
+
+<!-- ===== STATS ===== -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <h3>{{ stats.total_roles }}</h3>
+            <p>Roles</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card success">
+            <h3>{{ stats.total_permissions }}</h3>
+            <p>Permissions</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card info">
+            <h3>{{ stats.total_users }}</h3>
+            <p>Users</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card warning">
+            <h3>{{ stats.active_roles }}</h3>
+            <p>Active Roles</p>
+        </div>
+    </div>
+</div>
+
+<!-- ===== ROLES TABLE ===== -->
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Role</th>
+                        <th>Mô tả</th>
+                        <th>Độ ưu tiên</th>
+                        <th>Permissions</th>
+                        <th>Users</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for role in roles %}
+                    <tr>
+                        <td>
+                            <span class="badge bg-{{ role.color }} fs-6">
+                                {{ role.display_name }}
+                            </span>
+                            <br>
+                            <small class="text-muted">{{ role.name }}</small>
+                        </td>
+                        <td>
+                            <small>{{ role.description }}</small>
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary">{{ role.priority }}</span>
+                        </td>
+                        <td>
+                            <strong>{{ role.permissions.count() }}</strong> quyền
+                        </td>
+                        <td>
+                            <strong>{{ role.user_count }}</strong> user
+                        </td>
+                        <td>
+                            {% if role.is_active %}
+                            <span class="badge bg-success">Active</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td class="table-actions">
+                            <a href="{{ url_for('admin.edit_role_permissions', id=role.id) }}" 
+                               class="btn btn-sm btn-info" 
+                               title="Sửa quyền">
+                                <i class="bi bi-key"></i>
+                            </a>
+                            <a href="{{ url_for('admin.edit_role', id=role.id) }}" 
+                               class="btn btn-sm btn-primary" 
+                               title="Sửa">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            {% if role.name not in ['admin', 'user'] and role.user_count == 0 %}
+                            <a href="{{ url_for('admin.delete_role', id=role.id) }}" 
+                               class="btn btn-sm btn-danger" 
+                               data-confirm="Bạn có chắc muốn xóa role này?"
+                               title="Xóa">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                            {% else %}
+                            <button class="btn btn-sm btn-secondary" disabled title="Không thể xóa">
+                                <i class="bi bi-lock"></i>
+                            </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="alert alert-info mt-4">
+    <i class="bi bi-info-circle"></i> 
+    <strong>Lưu ý:</strong>
+    <ul class="mb-0">
+        <li>Roles hệ thống (Admin, User) không thể xóa</li>
+        <li>Không thể xóa role đang có user</li>
+        <li>Độ ưu tiên cao = quyền hạn lớn</li>
+    </ul>
+</div>
+{% endblock %}

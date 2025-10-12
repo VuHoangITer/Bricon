@@ -1,0 +1,127 @@
+{% extends "admin/admin_base.html" %}
+
+{% block page_title %}Quản lý Dự án{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4><i class="bi bi-building"></i> Quản lý Dự án Tiêu Biểu</h4>
+    <a href="{{ url_for('admin.add_project') }}" class="btn btn-warning">
+        <i class="bi bi-plus-circle"></i> Thêm dự án
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if projects.items %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">ID</th>
+                        <th>Ảnh</th>
+                        <th>Tên dự án</th>
+                        <th>Khách hàng</th>
+                        <th>Loại</th>
+                        <th>Năm</th>
+                        <th>Nổi bật</th>
+                        <th>Trạng thái</th>
+                        <th>Lượt xem</th>
+                        <th style="width: 150px;">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in projects.items %}
+                    <tr>
+                        <td>{{ project.id }}</td>
+                        <td>
+                            {% if project.image %}
+                            <img src="{{ project.image }}" 
+                                 alt="{{ project.title }}"
+                                 style="width: 60px; height: 60px; object-fit: cover;"
+                                 class="rounded">
+                            {% else %}
+                            <div class="bg-secondary text-white d-flex align-items-center justify-content-center rounded"
+                                 style="width: 60px; height: 60px;">
+                                <i class="bi bi-image"></i>
+                            </div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong>{{ project.title }}</strong>
+                            <br><small class="text-muted">{{ project.location }}</small>
+                        </td>
+                        <td>{{ project.client or '-' }}</td>
+                        <td>
+                            <span class="badge bg-secondary">{{ project.project_type }}</span>
+                        </td>
+                        <td>{{ project.year or '-' }}</td>
+                        <td>
+                            {% if project.is_featured %}
+                            <span class="badge bg-warning"><i class="bi bi-star-fill"></i> Nổi bật</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if project.is_active %}
+                            <span class="badge bg-success">Active</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <i class="bi bi-eye"></i> {{ project.view_count }}
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a href="{{ url_for('admin.edit_project', id=project.id) }}" 
+                                   class="btn btn-outline-primary"
+                                   title="Sửa">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="{{ url_for('admin.delete_project', id=project.id) }}" 
+                                   class="btn btn-outline-danger"
+                                   onclick="return confirm('Xóa dự án này?')"
+                                   title="Xóa">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if projects.pages > 1 %}
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item {% if not projects.has_prev %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('admin.projects', page=projects.prev_num) }}">Trước</a>
+                </li>
+                {% for page_num in projects.iter_pages(left_edge=1, right_edge=1) %}
+                    {% if page_num %}
+                    <li class="page-item {% if page_num == projects.page %}active{% endif %}">
+                        <a class="page-link" href="{{ url_for('admin.projects', page=page_num) }}">{{ page_num }}</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                {% endfor %}
+                <li class="page-item {% if not projects.has_next %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('admin.projects', page=projects.next_num) }}">Sau</a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-building display-1 text-muted"></i>
+            <p class="text-muted mt-3">Chưa có dự án nào</p>
+            <a href="{{ url_for('admin.add_project') }}" class="btn btn-warning">
+                <i class="bi bi-plus-circle"></i> Thêm dự án đầu tiên
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

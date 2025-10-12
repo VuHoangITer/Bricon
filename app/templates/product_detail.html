@@ -1,0 +1,874 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ product.name }} - {{ get_setting('website_name', 'BRICON VIỆT NAM | Keo của người Việt') }}
+{% endblock %}
+
+{% block meta_description %}
+    {{ rendered_meta_description }}
+{% endblock %}
+
+
+
+<!-- ==================== CUSTOM OG TAGS FOR PRODUCT ==================== -->
+{% block extra_css %}
+<meta
+  property="og:title"
+  content="{{ product.name }} - {{ get_setting('website_name', 'BRICON VIỆT NAM') }}"
+/>
+<meta
+  property="og:description"
+  content="{{ product.description[:200] if product.description else 'Keo dán gạch, keo chà ron, chống thấm BRICON - Keo của người Việt' }}"
+/>
+<meta
+  property="og:image"
+  content="{{ product.image if product.image else get_setting('default_share_image', '/static/img/default-share.jpg') }}"
+/>
+<meta property="og:url" content="{{ request.url }}" />
+<meta property="og:type" content="product" />
+<meta property="product:price:amount" content="{{ product.price }}" />
+<meta property="product:price:currency" content="VND" />
+{% endblock %} {% block content %}
+<!-- ==================== BREADCRUMB ==================== -->
+<div class="page-header bg-light py-3">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+          <a href="{{ url_for('main.index') }}">Trang chủ</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="{{ url_for('main.products') }}">Sản phẩm</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a
+            href="{{ url_for('main.products', category_slug=product.category.slug) }}"
+          >
+            {{ product.category.name }}
+          </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+          {{ product.name }}
+        </li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<!-- ==================== PRODUCT DETAIL ==================== -->
+<section class="py-5">
+  <div class="container">
+    <div class="row">
+      <!-- Product Image -->
+      <div class="col-lg-6 mb-4">
+        <div class="product-detail-image position-relative">
+          {% set media_info = product.get_media_seo_info() if product.image else
+          None %}
+
+          <img
+            src="{{ product.image if product.image else 'https://via.placeholder.com/600x600/FFC107/FFFFFF?text=Product' }}"
+            class="img-fluid rounded shadow-lg w-100"
+            alt="{{ media_info.alt_text if media_info and media_info.alt_text else product.name }}"
+            title="{{ media_info.title if media_info and media_info.title else product.name }}"
+            itemprop="image"
+            loading="eager"
+          />
+
+          <!-- Badge giảm giá -->
+          {% if product.old_price and product.price > 0 %}
+          <span
+            class="badge bg-danger position-absolute top-0 start-0 m-3 fs-5"
+          >
+            -{{ ((product.old_price - product.price) / product.old_price *
+            100)|int }}%
+          </span>
+          {% endif %} {# Hiển thị Caption cho SEO nhưng ẩn đi #} {% if
+          media_info and media_info.caption %}
+          <div class="visually-hidden" itemprop="description">
+            {{ media_info.caption }}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Product Info -->
+      <div class="col-lg-6">
+        <h1 class="fw-bold mb-3" itemprop="name">{{ product.name }}</h1>
+
+        <!-- Badges -->
+        <div class="mb-3">
+          <span class="badge bg-info me-2">
+            <i class="bi bi-tag-fill me-1"></i>{{ product.category.name }}
+          </span>
+          {% if product.is_featured %}
+          <span class="badge bg-warning">
+            <i class="bi bi-star-fill me-1"></i>Nổi bật
+          </span>
+          {% endif %}
+        </div>
+
+        <!-- Price -->
+        <div class="product-price-detail bg-light p-3 rounded mb-4">
+          {% if product.price == 0 %}
+          <h2 class="text-danger fw-bold mb-0" itemprop="price">Liên hệ</h2>
+          <meta itemprop="priceCurrency" content="VND" />
+          {% else %}
+          <h2 class="text-warning fw-bold mb-0">
+            <span itemprop="price" content="{{ product.price }}"
+              >{{ product.price|format_price }}</span
+            >
+            <small class="fs-5">đ</small>
+            <meta itemprop="priceCurrency" content="VND" />
+          </h2>
+          {% if product.old_price %}
+          <p class="text-muted mb-0 mt-2">
+            <span class="text-decoration-line-through fs-5"
+              >{{ product.old_price|format_price }}đ</span
+            >
+            <span class="badge bg-danger ms-2">
+              Tiết kiệm {{ ((product.old_price - product.price) / 1000)|int }}K
+            </span>
+          </p>
+          {% endif %} {% endif %}
+        </div>
+        <!-- CTA Buttons -->
+        <div class="d-grid gap-2 mb-4">
+          <a
+            href="tel:{{ get_setting('hotline', '0901180094')|replace('.', '')|replace(' ', '') }}"
+            class="btn btn-warning btn-lg"
+          >
+            <i class="bi bi-telephone-fill me-2"></i>
+            Gọi ngay: {{ get_setting('hotline', '0901.180.094') }}
+          </a>
+          <div class="row g-2">
+            <div class="col-6">
+              <a
+                href="{{ get_setting('zalo_url', 'https://zalo.me/2548623772320781405') }}"
+                target="_blank"
+                class="btn btn-outline-primary btn-lg w-100"
+              >
+                <i class="bi bi-chat-dots-fill me-1"></i>Chat Zalo
+              </a>
+            </div>
+            <div class="col-6">
+              <a
+                href="{{ get_setting('facebook_messenger_url', '#') }}"
+                target="_blank"
+                class="btn btn-outline-primary btn-lg w-100"
+              >
+                <i class="bi bi-messenger me-1"></i>Messenger
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Social Share -->
+        <div class="border-top pt-3">
+          <h6 class="fw-semibold mb-2">Chia sẻ sản phẩm:</h6>
+          <div class="d-flex gap-2">
+            <a
+              href="https://www.facebook.com/sharer/sharer.php?u={{ request.url }}"
+              target="_blank"
+              class="btn btn-outline-primary btn-sm"
+              title="Chia sẻ lên Facebook"
+            >
+              <i class="bi bi-facebook"></i> Facebook
+            </a>
+            <a
+              href="https://zalo.me/share?url={{ request.url }}"
+              target="_blank"
+              class="btn btn-outline-info btn-sm"
+              title="Chia sẻ qua Zalo"
+            >
+              <i class="bi bi-chat-dots-fill"></i> Zalo
+            </a>
+            <button
+              onclick="copyLink()"
+              class="btn btn-outline-secondary btn-sm"
+              title="Sao chép link"
+            >
+              <i class="bi bi-link-45deg"></i> Copy Link
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== PRODUCT TABS ==================== -->
+    <div class="row mt-5">
+      <div class="col-12">
+        <ul class="nav nav-tabs mb-4" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#details">
+              <i class="bi bi-info-circle me-1"></i>Mô tả
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#specs">
+              <i class="bi bi-card-list me-1"></i>Thông số kỹ thuật
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#policy">
+              <i class="bi bi-shield-check me-1"></i>Chính sách đổi trả
+            </a>
+          </li>
+        </ul>
+
+        <div class="tab-content">
+          <!-- Chi tiết sản phẩm -->
+          <div class="tab-pane fade show active" id="details">
+            <div class="bg-light p-4 rounded">
+              {{ product.description | nl2br | safe if product.description else
+              '
+              <p>Thông tin chi tiết đang được cập nhật...</p>
+              ' }}
+            </div>
+          </div>
+
+          <!-- Thông số kỹ thuật -->
+          <div class="tab-pane fade" id="specs">
+            <div class="bg-white p-4">
+
+              <!-- Thông tin cơ bản -->
+              <h5 class="fw-bold text-dark mb-3 pb-2 border-bottom border-warning">
+                <i class="bi bi-info-circle text-warning me-2"></i>Thông tin cơ bản
+              </h5>
+              <table class="table table-bordered mb-5">
+                <tbody>
+                  <tr>
+                    <td class="fw-semibold bg-light" style="width: 30%">
+                      <i class="bi bi-tag text-warning me-2"></i>Danh mục
+                    </td>
+                    <td>{{ product.category.name }}</td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold bg-light">
+                      <i class="bi bi-check-circle text-success me-2"></i>Tình trạng
+                    </td>
+                    <td>
+                      <span class="badge bg-success">Còn hàng</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold bg-light">
+                      <i class="bi bi-flag text-warning me-2"></i>Xuất xứ
+                    </td>
+                    <td>
+                      <strong>Việt Nam</strong> - Sản xuất bởi CÔNG TY TNHH BRICON VIỆT NAM
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <!-- Thành phần -->
+              {% if product.composition %}
+              <h5 class="fw-bold text-dark mb-3 pb-2 border-bottom border-warning">
+                <i class="bi bi-layers text-warning me-2"></i>Thành phần sản phẩm
+              </h5>
+              <div class="card border-0 shadow-sm mb-5">
+                <div class="card-body p-4">
+                  <ul class="list-unstyled mb-0">
+                    {% if product.composition is string %}
+                      <li class="mb-2 d-flex align-items-start">
+                        <i class="bi bi-dot text-warning fs-4 me-2" style="line-height: 1;"></i>
+                        <span class="text-muted">{{ product.composition }}</span>
+                      </li>
+                    {% else %}
+                      {% for comp in product.composition %}
+                      <li class="mb-2 d-flex align-items-start">
+                        <i class="bi bi-dot text-warning fs-4 me-2" style="line-height: 1;"></i>
+                        <span class="text-muted">{{ comp }}</span>
+                      </li>
+                      {% endfor %}
+                    {% endif %}
+                  </ul>
+                </div>
+              </div>
+              {% endif %}
+
+              <!-- Sản xuất -->
+              {% if product.production %}
+              <h5 class="fw-bold text-dark mb-3 pb-2 border-bottom border-warning">
+                <i class="bi bi-gear-fill text-warning me-2"></i>Quy trình sản xuất
+              </h5>
+              <div class="card border-0 shadow-sm mb-5">
+                <div class="card-body p-4">
+                  <div class="d-flex align-items-start">
+                    <i class="bi bi-check-circle-fill text-success me-3 mt-1"></i>
+                    <p class="mb-0 text-muted lh-lg">{{ product.production }}</p>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
+
+              <!-- Ứng dụng -->
+              {% if product.application %}
+              <h5 class="fw-bold text-dark mb-3 pb-2 border-bottom border-warning">
+                <i class="bi bi-tools text-warning me-2"></i>Ứng dụng & Phạm vi sử dụng
+              </h5>
+              <div class="card border-0 shadow-sm mb-5">
+                <div class="card-body p-4">
+                  <ul class="list-unstyled mb-0">
+                    {% if product.application is string %}
+                      <li class="mb-3 d-flex align-items-start">
+                        <i class="bi bi-check-circle-fill text-success me-3 mt-1"></i>
+                        <span class="text-muted">{{ product.application }}</span>
+                      </li>
+                    {% else %}
+                      {% for app in product.application %}
+                      <li class="mb-3 d-flex align-items-start">
+                        <i class="bi bi-check-circle-fill text-success me-3 mt-1"></i>
+                        <span class="text-muted">{{ app }}</span>
+                      </li>
+                      {% endfor %}
+                    {% endif %}
+                  </ul>
+                </div>
+              </div>
+              {% endif %}
+
+              <!-- Quy cách đóng gói & Hạn sử dụng -->
+              <div class="row mb-5">
+                {% if product.packaging %}
+                <div class="col-md-6 mb-3 mb-md-0">
+                  <h5 class="fw-bold text-dark mb-3 pb-2 border-bottom border-warning">
+                    <i class="bi bi-box-seam text-warning me-2"></i>Quy cách đóng gói
+                  </h5>
+                  <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                      <div class="d-flex align-items-center">
+                        <i class="bi bi-package text-warning fs-3 me-3"></i>
+                        <span class="text-muted fw-semibold">{{ product.packaging }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
+
+                {% if product.expiry %}
+                <div class="col-md-6">
+                  <h5 class="fw-bold text-dark mb-3 pb-2 border-bottom border-warning">
+                    <i class="bi bi-calendar-check text-warning me-2"></i>Hạn sử dụng
+                  </h5>
+                  <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                      <div class="d-flex align-items-center">
+                        <i class="bi bi-hourglass-split text-warning fs-3 me-3"></i>
+                        <span class="text-muted fw-semibold">{{ product.expiry }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
+              </div>
+
+              <!-- Màu sắc -->
+              {% if product.colors %}
+              <h5 class="fw-bold text-dark mb-3 pb-2 border-bottom border-warning">
+                <i class="bi bi-palette text-warning me-2"></i>Màu sắc có sẵn
+              </h5>
+              <div class="card border-0 shadow-sm mb-5">
+                <div class="card-body p-4">
+                  {% if product.colors is string %}
+                    <span class="badge bg-light text-dark border fs-6 px-3 py-2 me-2">
+                      {{ product.colors }}
+                    </span>
+                  {% else %}
+                    {% for color in product.colors %}
+                    <span class="badge bg-light text-dark border fs-6 px-3 py-2 me-2 mb-2">
+                      {{ color }}
+                    </span>
+                    {% endfor %}
+                  {% endif %}
+                </div>
+              </div>
+              {% endif %}
+
+              <!-- Thông số kỹ thuật chi tiết -->
+              {% if product.technical_specs %}
+              <h5 class="fw-bold text-dark mb-3 pb-2 border-bottom border-warning">
+                <i class="bi bi-clipboard-data text-warning me-2"></i>Thông số kỹ thuật chi tiết
+              </h5>
+              <div class="table-responsive mb-5">
+                <table class="table table-bordered">
+                  <thead class="bg-light">
+                    <tr>
+                      <th class="fw-semibold" style="width: 50%">Chỉ tiêu</th>
+                      <th class="fw-semibold">Giá trị</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% if product.technical_specs is mapping %}
+                      {% for key, value in product.technical_specs.items() %}
+                      <tr>
+                        <td class="fw-semibold text-dark">{{ key }}</td>
+                        <td class="text-muted">
+                          {% if 'ĐẠT' in value|string %}
+                            <span class="text-success fw-bold">
+                              <i class="bi bi-check-circle-fill me-1"></i>{{ value }}
+                            </span>
+                          {% else %}
+                            {{ value }}
+                          {% endif %}
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    {% else %}
+                      <tr>
+                        <td colspan="2" class="text-center text-muted">
+                          Thông số kỹ thuật đang được cập nhật...
+                        </td>
+                      </tr>
+                    {% endif %}
+                  </tbody>
+                </table>
+              </div>
+              {% endif %}
+
+              <!-- Tiêu chuẩn -->
+              {% if product.standards %}
+              <h5 class="fw-bold text-dark mb-3 pb-2 border-bottom border-warning">
+                <i class="bi bi-award-fill text-warning me-2"></i>Tiêu chuẩn chất lượng
+              </h5>
+              <div class="card border-0 shadow-sm bg-light mb-5">
+                <div class="card-body p-4">
+                  <div class="d-flex align-items-center">
+                    <i class="bi bi-patch-check-fill text-success fs-2 me-3"></i>
+                    <div>
+                      <span class="text-muted d-block mb-1">Đạt tiêu chuẩn:</span>
+                      <strong class="text-dark fs-5">{{ product.standards }}</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
+
+              <!-- Note: Nếu không có thông tin -->
+              {% if not (product.composition or product.production or product.application or
+                        product.packaging or product.expiry or product.colors or
+                        product.technical_specs or product.standards) %}
+              <div class="card border-warning bg-light">
+                <div class="card-body text-center py-5">
+                  <i class="bi bi-exclamation-triangle text-warning fs-1 mb-3 d-block"></i>
+                  <p class="text-muted mb-3">
+                    Thông tin kỹ thuật chi tiết đang được cập nhật.
+                  </p>
+                  <p class="mb-0">
+                    Vui lòng liên hệ <strong class="text-dark">{{ get_setting('hotline', '0901.180.094') }}</strong>
+                    để được tư vấn cụ thể.
+                  </p>
+                </div>
+              </div>
+              {% endif %}
+
+            </div>
+          </div>
+
+          <!-- Chính sách -->
+          <div class="tab-pane fade" id="policy">
+            <div class="bg-light p-4 rounded">
+              {{ get_setting('return_policy', '
+              <p>Chính sách đang được cập nhật...</p>
+              ') | safe }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== RELATED PRODUCTS ==================== -->
+    {% if related_products %}
+    <div class="mt-5">
+      <h3 class="fw-bold mb-4">
+        <i class="bi bi-box-seam text-warning me-2"></i>Sản phẩm liên quan
+      </h3>
+      <div class="row g-4">
+        {% for rp in related_products %}
+        <div class="col-lg-3 col-md-4 col-sm-6">
+          <div class="card product-card h-100 border-0 shadow-sm">
+            <div class="product-image position-relative">
+              {% set rp_media_info = rp.get_media_seo_info() if rp.image else
+              None %}
+
+              <img
+                src="{{ rp.image if rp.image else 'https://via.placeholder.com/300x300/FFC107/FFFFFF?text=Product' }}"
+                class="card-img-top"
+                alt="{{ rp_media_info.alt_text if rp_media_info and rp_media_info.alt_text else rp.name }}"
+                title="{{ rp_media_info.title if rp_media_info and rp_media_info.title else rp.name }}"
+                loading="lazy"
+              />
+
+              {# Caption ẩn cho SEO #} {% if rp_media_info and
+              rp_media_info.caption %}
+              <div class="visually-hidden">{{ rp_media_info.caption }}</div>
+              {% endif %}
+            </div>
+            <div class="card-body text-center">
+              <h5 class="product-name mb-2">
+                <a
+                  href="{{ url_for('main.product_detail', slug=rp.slug) }}"
+                  class="text-decoration-none text-dark"
+                >
+                  {{ rp.name }}
+                </a>
+              </h5>
+              <div class="product-price mb-3">
+                {% if rp.price == 0 %}
+                <span class="price text-danger fw-bold">Liên hệ</span>
+                {% else %}
+                <span class="price d-block">{{ rp.price|format_price }}đ</span>
+                {% if rp.old_price %}
+                <span class="old-price">{{ rp.old_price|format_price }}đ</span>
+                {% endif %} {% endif %}
+              </div>
+              <a
+                href="{{ url_for('main.product_detail', slug=rp.slug) }}"
+                class="btn btn-warning btn-sm w-100"
+              >
+                <i class="bi bi-eye me-1"></i>Xem chi tiết
+              </a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- ==================== SCHEMA.ORG - PRODUCT ==================== -->
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "{{ product.name|e }}",
+    "image": "{{ product.image|e }}",
+    "description": "{{ (product.description or 'Sản phẩm chất lượng cao')|striptags|e }}",
+    "sku": "{{ product.id }}",
+    "brand": {
+      "@type": "Brand",
+      "name": "{{ get_setting('website_name', 'BRICON VIỆT NAM')|e }}"
+    },
+    "offers": {
+      "@type": "Offer",
+      "url": "{{ url_for('main.product_detail', slug=product.slug, _external=True) }}",
+      "priceCurrency": "VND",
+      "price": "{{ product.price }}",
+      "priceValidUntil": "{{ (now + timedelta(days=30)).strftime('%Y-%m-%d') }}",
+      "availability": "https://schema.org/InStock",
+      "itemCondition": "https://schema.org/NewCondition",
+      "seller": {
+        "@type": "Organization",
+        "name": "{{ get_setting('website_name', 'BRICON VIỆT NAM')|e }}"
+      }
+    }
+  }
+</script>
+
+<!-- ==================== SCHEMA.ORG - BREADCRUMB ==================== -->
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Trang chủ",
+        "item": "{{ url_for('main.index', _external=True) }}"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Sản phẩm",
+        "item": "{{ url_for('main.products', _external=True) }}"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "{{ product.category.name|e }}",
+        "item": "{{ url_for('main.products', category_slug=product.category.slug, _external=True) }}"
+      },
+      {
+        "@type": "ListItem",
+        "position": 4,
+        "name": "{{ product.name|e }}",
+        "item": "{{ request.url }}"
+      }
+    ]
+  }
+</script>
+{% endblock %}
+
+<!-- ==================== CUSTOM JS ==================== -->
+{% block extra_js %}
+<script>
+  // Copy link function
+  function copyLink() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      // Tạo thông báo tạm thời
+      const notification = document.createElement('div');
+      notification.textContent = '✓ Đã sao chép link sản phẩm!';
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #28a745;
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 9999;
+        font-weight: 500;
+        animation: slideIn 0.3s ease;
+      `;
+
+      document.body.appendChild(notification);
+
+      // Tự động xóa sau 2 giây
+      setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+      }, 2000);
+    });
+  }
+
+  // CSS animations
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    @keyframes slideOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+</script>
+<style>
+  /* ==================== RETURN & REFUND POLICY STYLES ==================== */
+.return-policy-section {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #2c3e50;
+  line-height: 1.7;
+}
+
+.policy-block {
+  background: #fff;
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+  border: 1px solid #e0e0e0;
+}
+
+.policy-divider {
+  border: none;
+  height: 1px;
+  background: #e0e0e0;
+  margin: 3rem 0;
+}
+
+.policy-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #2c3e50;
+}
+
+.highlight-box {
+  background: #f8f9fa;
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+  border-left: 3px solid #2c3e50;
+}
+
+.highlight-box p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.policy-intro {
+  background: #f8f9fa;
+  padding: 1rem;
+  margin: 1.5rem 0;
+  font-size: 0.95rem;
+  color: #495057;
+}
+
+.section-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 2rem 0 1rem 0;
+}
+
+.section-title i {
+  margin-right: 0.5rem;
+  font-size: 1rem;
+}
+
+.policy-list,
+.warning-list,
+.sub-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.policy-item,
+.warning-item {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.policy-item:last-child,
+.warning-item:last-child {
+  border-bottom: none;
+}
+
+.sub-list {
+  margin-left: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.sub-list li {
+  padding: 0.25rem 0;
+  font-size: 0.95rem;
+}
+
+.condition-card {
+  background: #fafafa;
+  padding: 1.25rem;
+  margin: 1rem 0;
+  border: 1px solid #e0e0e0;
+}
+
+.condition-item {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.condition-item i {
+  margin-top: 0.25rem;
+  flex-shrink: 0;
+}
+
+.highlight-text {
+  font-weight: 600;
+  color: #2c3e50;
+  text-decoration: underline;
+}
+
+.cost-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.cost-card {
+  background: #fafafa;
+  padding: 1.5rem;
+  border: 1px solid #e0e0e0;
+}
+
+.cost-card h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: #1a1a1a;
+}
+
+.cost-card p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #495057;
+}
+
+.refund-cases {
+  margin: 1.5rem 0;
+}
+
+.refund-case {
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  background: #fafafa;
+  border: 1px solid #e0e0e0;
+  border-left: 3px solid #2c3e50;
+}
+
+.refund-case h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #1a1a1a;
+}
+
+.refund-case p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #495057;
+}
+
+.alert {
+  padding: 1rem;
+  margin: 1.5rem 0;
+  border: 1px solid #e0e0e0;
+  background: #fafafa;
+}
+
+.alert-info {
+  border-left: 3px solid #0d6efd;
+}
+
+.alert-danger {
+  border-left: 3px solid #dc3545;
+  background: #fff5f5;
+}
+
+.alert i {
+  margin-right: 0.5rem;
+}
+
+/* Icon styles */
+.bi {
+  font-size: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .policy-block {
+    padding: 1.5rem;
+  }
+
+  .cost-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .return-policy-section {
+    padding: 0 1rem;
+  }
+}
+</style>
+{% endblock %}

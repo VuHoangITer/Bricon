@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Panel{% endblock %}</title>
+
+    <meta name="referrer" content="no-referrer">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="icon" type="image/webp" href="{{ url_for('static', filename='img/fav_icon.webp') }}">
+
+
+    <style>
+        :root {
+            --sidebar-width: 250px;
+            --primary-color: #FFC107;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            background: #2c3e50;
+            color: #ecf0f1;
+            overflow-y: auto;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .sidebar-brand {
+            padding: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+
+        .sidebar-nav .nav-link {
+            color: #ecf0f1;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-nav .nav-link:hover,
+        .sidebar-nav .nav-link.active {
+            background: rgba(255,193,7,0.1);
+            border-left-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .sidebar-nav .nav-link i {
+            width: 20px;
+            margin-right: 10px;
+        }
+
+        .sidebar-section-title {
+            position: relative;
+            text-align: center;
+            margin: 1.5rem 1rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #bdc3c7;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .sidebar-section-title::before,
+        .sidebar-section-title::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar-section-title::before {
+            left: 0;
+        }
+
+        .sidebar-section-title::after {
+            right: 0;
+        }
+
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            background: #f8f9fa;
+        }
+
+        .top-bar {
+            background: #fff;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #dee2e6;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .content-wrapper {
+            padding: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card.warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .stat-card.success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .stat-card.info {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-radius: 10px;
+        }
+
+        .table-actions a {
+            margin: 0 0.25rem;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-brand " style="color: #fff;">
+            <i class="bi bi-speedometer2"></i> Admin Panel
+        </div>
+        <ul class="sidebar-nav nav flex-column">
+            <!-- ===== PHẦN CHUNG ===== -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('main.index') }}" target="_blank">
+                    <i class="bi bi-globe"></i> Xem Website
+                </a>
+            </li>
+            <!-- ===== Lập trình viên ===== -->
+                {% if current_user.has_permission('manage_settings') %}
+            <div class="sidebar-section-title"> Developer </div>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin.settings') }}">
+                            <i class="bi bi-gear"></i> Quản trị hệ thống
+                        </a>
+                    </li>
+                {% endif %}
+            <!-- Dashboard / Welcome - Tùy theo role -->
+            <li class="nav-item">
+                {% if current_user.has_any_permission('manage_users', 'manage_products', 'manage_categories') %}
+                <div class="sidebar-section-title">Thống kê</div>
+                <a class="nav-link {% if request.endpoint == 'admin.dashboard' %}active{% endif %}"
+                   href="{{ url_for('admin.dashboard') }}">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+                {% else %}
+                <a class="nav-link {% if request.endpoint == 'admin.welcome' %}active{% endif %}"
+                   href="{{ url_for('admin.welcome') }}">
+                    <i class="bi bi-house-heart"></i> Trang chủ
+                </a>
+                {% endif %}
+            </li>
+
+            <!-- ===== QUẢN TRỊ HỆ THỐNG (ADMIN ONLY) ===== -->
+            {% if current_user.has_any_permission('manage_users', 'view_users', 'manage_roles') %}
+            <div class="sidebar-section-title">Quản trị</div>
+
+            {% if current_user.has_any_permission('manage_users', 'view_users') %}
+            <li class="nav-item">
+                <a class="nav-link {% if 'users' in request.endpoint %}active{% endif %}"
+                   href="{{ url_for('admin.users') }}">
+                    <i class="bi bi-people"></i> Người dùng
+                </a>
+            </li>
+            {% endif %}
+
+            {% if current_user.has_permission('manage_roles') %}
+            <li class="nav-item">
+                <a class="nav-link {% if 'roles' in request.endpoint or 'permissions' in request.endpoint %}active{% endif %}"
+                   href="{{ url_for('admin.roles') }}">
+                    <i class="bi bi-shield-lock"></i> Phân quyền
+                </a>
+            </li>
+            {% endif %}
+            {% endif %}
+
+            <!-- ===== QUẢN LÝ NỘI DUNG ===== -->
+            {% if current_user.has_any_permission('manage_categories', 'manage_projects', 'manage_jobs', 'view_projects', 'view_jobs', 'view_contacts', 'manage_contacts', 'manage_banners', 'manage_faqs') %}
+            <div class="sidebar-section-title">Quản lý</div>
+
+            {% if current_user.has_permission('manage_categories') %}
+            <li class="nav-item">
+                <a class="nav-link {% if 'categories' in request.endpoint %}active{% endif %}"
+                   href="{{ url_for('admin.categories') }}">
+                    <i class="bi bi-tag"></i> Danh mục
+                </a>
+            </li>
+            {% endif %}
+
+            {% if current_user.has_any_permission('view_contacts', 'manage_contacts') %}
+            <li class="nav-item">
+                <a class="nav-link {% if 'contacts' in request.endpoint %}active{% endif %}"
+                   href="{{ url_for('admin.contacts') }}">
+                    <i class="bi bi-envelope"></i> Liên hệ
+                    {% if total_contacts and total_contacts > 0 %}
+                    <span class="badge bg-danger ms-2">{{ total_contacts }}</span>
+                    {% endif %}
+                </a>
+            </li>
+            {% endif %}
+
+            {% if current_user.has_any_permission('manage_projects', 'view_projects') %}
+            <li class="nav-item">
+                <a class="nav-link {% if 'projects' in request.endpoint %}active{% endif %}"
+                   href="{{ url_for('admin.projects') }}">
+                    <i class="bi bi-building"></i> Dự án
+                </a>
+            </li>
+            {% endif %}
+
+            {% if current_user.has_any_permission('manage_jobs', 'view_jobs') %}
+            <li class="nav-item">
+                <a class="nav-link {% if 'jobs' in request.endpoint %}active{% endif %}"
+                   href="{{ url_for('admin.jobs') }}">
+                    <i class="bi bi-briefcase"></i> Tuyển dụng
+                </a>
+            </li>
+            {% endif %}
+
+            {% if current_user.has_permission('manage_banners') %}
+            <li class="nav-item">
+                <a class="nav-link {% if 'banners' in request.endpoint %}active{% endif %}"
+                   href="{{ url_for('admin.banners') }}">
+                    <i class="bi bi-images"></i> Banner
+                </a>
+            </li>
+            {% endif %}
+
+            {% if current_user.has_permission('manage_faqs') %}
+            <li class="nav-item">
+                <a class="nav-link {% if 'faqs' in request.endpoint %}active{% endif %}"
+                   href="{{ url_for('admin.faqs') }}">
+                    <i class="bi bi-question-circle"></i> FAQ
+                </a>
+            </li>
+            {% endif %}
+            {% endif %}
+
+            <!-- ===== NỘI DUNG - Tất cả user đều có thể truy cập ===== -->
+            {% if current_user.has_any_permission('view_products', 'manage_products', 'view_blogs', 'create_blog', 'view_media', 'upload_media') %}
+            <div class="sidebar-section-title">Nội dung</div>
+
+            {% if current_user.has_any_permission('view_products', 'manage_products') %}
+            <li class="nav-item">
+                <a class="nav-link {% if 'products' in request.endpoint %}active{% endif %}"
+                   href="{{ url_for('admin.products') }}">
+                    <i class="bi bi-box-seam"></i> Sản phẩm
+                </a>
+            </li>
+            {% endif %}
+
+            {% if current_user.has_any_permission('view_blogs', 'create_blog', 'edit_all_blogs') %}
+            <li class="nav-item">
+                <a class="nav-link {% if 'blogs' in request.endpoint %}active{% endif %}"
+                   href="{{ url_for('admin.blogs') }}">
+                    <i class="bi bi-newspaper"></i> Tin tức
+                </a>
+            </li>
+            {% endif %}
+
+            {% if current_user.has_any_permission('view_media', 'upload_media') %}
+            <li class="nav-item">
+                <a class="nav-link {% if 'media' in request.endpoint %}active{% endif %}"
+                   href="{{ url_for('admin.media') }}">
+                    <i class="bi bi-folder2-open"></i> Media Library
+                </a>
+            </li>
+            {% endif %}
+            {% endif %}
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar d-flex justify-content-between align-items-center">
+            <div>
+                <button class="btn btn-link d-md-none" id="sidebarToggle">
+                    <i class="bi bi-list fs-4"></i>
+                </button>
+                <h4 class="mb-0 d-inline">{% block page_title %}Dashboard{% endblock %}</h4>
+            </div>
+
+            <div class="dropdown">
+                <button class="btn btn-link dropdown-toggle text-decoration-none"
+                        type="button" data-bs-toggle="dropdown">
+                    <i class="bi bi-person-circle fs-5"></i>
+                    <span class="ms-2">{{ current_user.username }}</span>
+                    {% if current_user.role %}
+                    <span class="badge" style="background-color: {{ current_user.role.color }}">
+                        {{ current_user.role.display_name }}
+                    </span>
+                    {% endif %}
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <a class="dropdown-item" href="{{ url_for('admin.logout') }}">
+                            <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="content-wrapper">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Content -->
+        <div class="content-wrapper">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Sidebar toggle for mobile
+        document.getElementById('sidebarToggle')?.addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.toggle('show');
+        });
+
+        // Confirm delete
+        document.querySelectorAll('[data-confirm]').forEach(function(element) {
+            element.addEventListener('click', function(e) {
+                if (!confirm(this.dataset.confirm || 'Bạn có chắc chắn muốn xóa?')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

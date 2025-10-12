@@ -1,0 +1,459 @@
+{% extends "base.html" %} {% block title %}{{ project.title }} - Dự án tiêu biểu
+- {{ get_setting('website_name', 'BRICON VIỆT NAM') }} | Keo của người Việt{%
+endblock %} {% block meta_description %}{{ project.description[:160] if
+project.description else 'Dự án ' + project.title + ' tại ' + project.location
+}}{% endblock %}
+
+<!-- ==================== CUSTOM OG TAGS FOR PROJECT ==================== -->
+{% block extra_css %}
+<meta
+  property="og:title"
+  content="{{ project.title }} - {{ get_setting('website_name', ' BRICON VIỆT NAM') }}"
+/>
+<meta
+  property="og:description"
+  content="{{ project.description[:200] if project.description else 'Dự án tiêu biểu' }}"
+/>
+<meta
+  property="og:image"
+  content="{{ project.image if project.image else get_setting('default_share_image', '/static/img/default-share.jpg') }}"
+/>
+<meta property="og:url" content="{{ request.url }}" />
+<meta property="og:type" content="article" />
+{% endblock %} {% block content %}
+<!-- ==================== BREADCRUMB ==================== -->
+<section class="breadcrumb-section py-4 bg-light">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+          <a href="{{ url_for('main.index') }}">Trang chủ</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="{{ url_for('main.projects') }}">Dự án tiêu biểu</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+          {{ project.title }}
+        </li>
+      </ol>
+    </nav>
+  </div>
+</section>
+
+<!-- ==================== PROJECT DETAIL ==================== -->
+<section class="project-detail py-5">
+  <div class="container">
+    <div class="row">
+      <!-- Main Content -->
+      <div class="col-lg-8">
+        <!-- Main Image -->
+        <article itemscope itemtype="https://schema.org/CreativeWork">
+          <div class="card border-0 shadow-sm mb-4">
+            <img
+              src="{{ project.image or url_for('static', filename='img/placeholder.jpg') }}"
+              class="card-img-top"
+              alt="{{ project.title }}"
+              itemprop="image"
+              loading="eager"
+              style="max-height: 500px; object-fit: cover"
+            />
+          </div>
+
+          <!-- Project Header Info -->
+          <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+              <div
+                class="d-flex justify-content-between align-items-start mb-3 flex-wrap gap-3"
+              >
+                <div>
+                  <h1 class="h2 mb-2" itemprop="name">{{ project.title }}</h1>
+                  <p class="text-muted mb-0">
+                    <i class="bi bi-geo-alt text-warning"></i>
+                    <span itemprop="locationCreated"
+                      >{{ project.location }}</span
+                    >
+                    {% if project.year %} |
+                    <i class="bi bi-calendar text-warning"></i>
+                    <span itemprop="dateCreated">{{ project.year }}</span>
+                    {% endif %} | <i class="bi bi-eye text-warning"></i> {{
+                    project.view_count }} lượt xem
+                  </p>
+                </div>
+                {% if project.is_featured %}
+                <span class="badge bg-warning fs-6">
+                  <i class="bi bi-star-fill"></i> Nổi bật
+                </span>
+                {% endif %}
+              </div>
+
+              <!-- Project Description -->
+              {% if project.description %}
+              <div class="alert alert-info">
+                <i class="bi bi-info-circle me-2"></i>
+                <span itemprop="description">{{ project.description }}</span>
+              </div>
+              {% endif %}
+
+              <!-- Social Share -->
+              <div class="border-top pt-3 mb-4">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="text-muted small me-2">Chia sẻ:</span>
+                  <a
+                    href="https://www.facebook.com/sharer/sharer.php?u={{ request.url }}"
+                    target="_blank"
+                    class="btn btn-sm btn-outline-primary"
+                    title="Chia sẻ lên Facebook"
+                  >
+                    <i class="bi bi-facebook"></i>
+                  </a>
+                  <a
+                    href="https://zalo.me/share?url={{ request.url }}"
+                    target="_blank"
+                    class="btn btn-sm btn-outline-info"
+                    title="Chia sẻ qua Zalo"
+                  >
+                    <i class="bi bi-chat-dots-fill"></i>
+                  </a>
+                  <button
+                    onclick="copyLink()"
+                    class="btn btn-sm btn-outline-secondary"
+                    title="Sao chép link"
+                  >
+                    <i class="bi bi-link-45deg"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Project Content -->
+              <div class="project-content mt-4" itemprop="text">
+                {{ project.content|safe }}
+              </div>
+
+              <!-- Hidden Schema Data -->
+              <div
+                itemprop="creator"
+                itemscope
+                itemtype="https://schema.org/Organization"
+              >
+                <meta
+                  itemprop="name"
+                  content="{{ get_setting('website_name', 'BRICON VIỆT NAM') }}"
+                />
+                <meta
+                  itemprop="url"
+                  content="{{ get_setting('main_url', request.url_root) }}"
+                />
+              </div>
+              <meta itemprop="url" content="{{ request.url }}" />
+            </div>
+          </div>
+        </article>
+
+        <!-- Related Projects -->
+        {% if related %}
+        <div class="card border-0 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title fw-bold mb-4">
+              <i class="bi bi-building text-warning me-2"></i>Dự án liên quan
+            </h5>
+            <div class="row g-3">
+              {% for rel in related %}
+              <div class="col-md-6">
+                <div class="card h-100 border shadow-sm">
+                  <div class="row g-0">
+                    <div class="col-4">
+                      <img
+                        src="{{ rel.image or url_for('static', filename='img/placeholder.jpg') }}"
+                        class="img-fluid h-100"
+                        style="object-fit: cover"
+                        alt="{{ rel.title }}"
+                        loading="lazy"
+                      />
+                    </div>
+                    <div class="col-8">
+                      <div class="card-body p-2">
+                        <h6 class="card-title mb-1">
+                          <a
+                            href="{{ url_for('main.project_detail', slug=rel.slug) }}"
+                            class="text-decoration-none text-dark"
+                          >
+                            {{ rel.title }}
+                          </a>
+                        </h6>
+                        <p class="card-text small text-muted mb-0">
+                          <i class="bi bi-geo-alt text-warning"></i> {{
+                          rel.location }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-lg-4">
+        <!-- Combined Info & CTA Card -->
+        <div
+          class="card border-0 shadow-sm mb-4 sticky-top"
+          style="top: 120px; z-index: 100"
+        >
+          <!-- Project Info Section -->
+          <div class="card-header bg-warning">
+            <h5 class="mb-0">
+              <i class="bi bi-info-circle me-2"></i>Thông tin dự án
+            </h5>
+          </div>
+          <div class="card-body">
+            <table class="table table-sm table-borderless mb-0">
+              {% if project.client %}
+              <tr>
+                <td class="text-muted">
+                  <i class="bi bi-building text-warning"></i> Khách hàng:
+                </td>
+                <td><strong>{{ project.client }}</strong></td>
+              </tr>
+              {% endif %}
+              <tr>
+                <td class="text-muted">
+                  <i class="bi bi-geo-alt text-warning"></i> Địa điểm:
+                </td>
+                <td><strong>{{ project.location }}</strong></td>
+              </tr>
+              {% if project.year %}
+              <tr>
+                <td class="text-muted">
+                  <i class="bi bi-calendar text-warning"></i> Năm:
+                </td>
+                <td><strong>{{ project.year }}</strong></td>
+              </tr>
+              {% endif %}
+              <tr>
+                <td class="text-muted">
+                  <i class="bi bi-tag text-warning"></i> Loại:
+                </td>
+                <td>
+                  <span class="badge bg-secondary mb-2">
+                    {% if project.project_type == 'commercial' %}
+                    <i class="bi bi-shop-window"></i> Trung tâm thương mại &
+                    Khách sạn {% elif project.project_type == 'resort_golf' %}
+                    <i class="bi bi-flag"></i> Khu du lịch & Sân golf {% elif
+                    project.project_type == 'residential' %}
+                    <i class="bi bi-building"></i> Nhà ở & Chung cư cao cấp {%
+                    elif project.project_type == 'industrial' %}
+                    <i class="bi bi-gear-wide-connected"></i> Nhà máy & Công
+                    trình công nghiệp {% elif project.project_type == 'public'
+                    %} <i class="bi bi-bank"></i> Công trình công cộng & Hạ tầng
+                    {% else %} <i class="bi bi-grid"></i> {{
+                    project.project_type }} {% endif %}
+                  </span>
+                </td>
+              </tr>
+              {% if project.area %}
+              <tr>
+                <td class="text-muted">
+                  <i class="bi bi-arrows-angle-expand text-warning"></i> Diện
+                  tích:
+                </td>
+                <td><strong>{{ project.area }}</strong></td>
+              </tr>
+              {% endif %}
+            </table>
+
+            {% if project.products_used %}
+            <hr />
+            <h6 class="mb-2">
+              <i class="bi bi-box-seam text-warning me-1"></i>Sản phẩm sử dụng:
+            </h6>
+            <p class="small text-muted mb-0">{{ project.products_used }}</p>
+            {% endif %}
+          </div>
+
+          <!-- Divider -->
+          <hr class="my-0" />
+
+          <!-- CTA Section -->
+          <div class="card-body text-center p-4">
+            <i class="bi bi-lightbulb text-warning fs-1 mb-3 d-block"></i>
+            <h5 class="card-title fw-bold mb-3">Bạn có dự án tương tự?</h5>
+            <p class="card-text small text-muted mb-4">
+              Liên hệ với chúng tôi để được tư vấn giải pháp phù hợp nhất
+            </p>
+            <a
+              href="tel:{{ get_setting('hotline', '0901180094')|replace('.', '')|replace(' ', '') }}"
+              class="btn btn-warning w-100 mb-2"
+            >
+              <i class="bi bi-telephone"></i> {{ get_setting('hotline',
+              '0901.180.094') }}
+            </a>
+            <a
+              href="{{ url_for('main.contact') }}"
+              class="btn btn-outline-warning w-100"
+            >
+              <i class="bi bi-envelope"></i> Gửi yêu cầu
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SCHEMA.ORG - CREATIVE WORK ==================== -->
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    "name": "{{ project.title|e }}",
+    "image": "{{ project.image if project.image else url_for('static', filename='img/placeholder.jpg', _external=True) }}",
+    "description": "{{ project.description|e }}",
+    "url": "{{ request.url }}",
+    "locationCreated": "{{ project.location|e }}",
+    {% if project.year %}
+    "dateCreated": "{{ project.year }}",
+    {% endif %}
+    {% if project.client %}
+    "sponsor": {
+      "@type": "Organization",
+      "name": "{{ project.client|e }}"
+    },
+    {% endif %}
+    "creator": {
+      "@type": "Organization",
+      "name": "{{ get_setting('website_name', 'BRICON VIỆT NAM')|e }}",
+      "url": "{{ get_setting('main_url', request.url_root)|e }}"
+    }
+  }
+</script>
+
+<!-- ==================== SCHEMA.ORG - BREADCRUMB ==================== -->
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Trang chủ",
+        "item": "{{ url_for('main.index', _external=True) }}"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Dự án tiêu biểu",
+        "item": "{{ url_for('main.projects', _external=True) }}"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "{{ project.title|e }}",
+        "item": "{{ request.url }}"
+      }
+    ]
+  }
+</script>
+
+<!-- Custom Styles -->
+<style>
+  .project-content {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: #333;
+  }
+
+  .project-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .project-content h2,
+  .project-content h3 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    color: #000;
+  }
+
+  .project-content ul,
+  .project-content ol {
+    margin: 1rem 0;
+    padding-left: 2rem;
+  }
+
+  .project-content blockquote {
+    border-left: 4px solid #ffc107;
+    padding-left: 1.5rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: #666;
+  }
+</style>
+
+<!-- Copy Link Script -->
+<script>
+  // Copy link function
+  function copyLink() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      // Tạo thông báo tạm thời
+      const notification = document.createElement('div');
+      notification.textContent = '✓ Đã sao chép link dự án!';
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #28a745;
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 9999;
+        font-weight: 500;
+        animation: slideIn 0.3s ease;
+      `;
+
+      document.body.appendChild(notification);
+
+      // Tự động xóa sau 2 giây
+      setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+      }, 2000);
+    });
+  }
+
+  // CSS animations
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    @keyframes slideOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+</script>
+{% endblock %}

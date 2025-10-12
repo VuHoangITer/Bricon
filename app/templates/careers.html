@@ -1,0 +1,306 @@
+{% extends "base.html" %}
+
+{% block title %}Tuyển dụng - {{ get_setting('website_name', 'BRICON VIỆT NAM') }}{% endblock %}
+{% block meta_description %}{{ get_setting('careers_meta_description', 'Khám phá cơ hội nghề nghiệp tại ' ~ get_setting('website_name', 'BRICON VIỆT NAM') ~ '. Môi trường làm việc chuyên nghiệp, thu nhập hấp dẫn.') }}{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<section class="breadcrumb-section py-4 bg-light">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Trang chủ</a></li>
+                <li class="breadcrumb-item active">Tuyển dụng</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<!-- Page Header -->
+<section class="page-header py-5 bg-gradient" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <div class="container text-center text-white">
+        <h1 class="display-4 fw-bold mb-3">Cơ hội nghề nghiệp</h1>
+        <p class="lead text-dark">Gia nhập đội ngũ {{ get_setting('website_name', 'BRICON') }} và phát triển cùng chúng tôi</p>
+    </div>
+</section>
+
+<!-- Filter -->
+<section class="filter-section py-4 bg-light">
+    <div class="container">
+        <form method="GET" class="row g-3">
+            <div class="col-md-4">
+                <select name="dept" class="form-select">
+                    <option value="">Tất cả phòng ban</option>
+                    {% for dept in departments %}
+                    <option value="{{ dept }}" {% if request.args.get('dept') == dept %}selected{% endif %}>{{ dept }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <select name="loc" class="form-select">
+                    <option value="">Tất cả địa điểm</option>
+                    {% for loc in locations %}
+                    <option value="{{ loc }}" {% if request.args.get('loc') == loc %}selected{% endif %}>{{ loc }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-warning w-100">
+                    <i class="bi bi-search"></i> Tìm kiếm
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+
+<!-- Jobs List -->
+<section class="jobs-list py-5">
+    <div class="container">
+        {% if jobs %}
+        <div class="row">
+            <div class="col-lg-8">
+                <h5 class="mb-4">Có {{ jobs|length }} vị trí đang tuyển dụng</h5>
+
+                {% for job in jobs %}
+                <div class="card border-0 shadow-sm mb-3 job-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <h5 class="card-title mb-2">
+                                    <a href="{{ url_for('main.job_detail', slug=job.slug) }}" class="text-decoration-none text-dark">
+                                        {{ job.title }}
+                                    </a>
+                                    {% if job.is_urgent %}
+                                    <span class="badge bg-danger ms-2">Tuyển gấp</span>
+                                    {% endif %}
+                                </h5>
+
+                                <p class="text-muted small mb-2">
+                                    {% if job.department %}
+                                    <i class="bi bi-briefcase"></i> {{ job.department }} |
+                                    {% endif %}
+                                    <i class="bi bi-geo-alt"></i> {{ job.location }} |
+                                    <i class="bi bi-clock"></i> {{ job.job_type }}
+                                </p>
+
+                                <div class="d-flex flex-wrap gap-2 mb-2">
+                                    <span class="badge bg-info">{{ job.level }}</span>
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-cash"></i> {{ job.salary }}
+                                    </span>
+                                    {% if job.experience %}
+                                    <span class="badge bg-secondary">
+                                        <i class="bi bi-award"></i> {{ job.experience }}
+                                    </span>
+                                    {% endif %}
+                                </div>
+
+                                {% if job.deadline %}
+                                <p class="small text-muted mb-0">
+                                    <i class="bi bi-calendar-event"></i>
+                                    Hạn nộp: {{ job.deadline.strftime('%d/%m/%Y') }}
+                                </p>
+                                {% endif %}
+                            </div>
+
+                            <a href="{{ url_for('main.job_detail', slug=job.slug) }}" class="btn btn-outline-warning ms-3">
+                                Chi tiết <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-warning">
+                        <h5 class="mb-0"><i class="bi bi-info-circle"></i> Quy trình tuyển dụng</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="list-group list-group-numbered">
+                            <li class="list-group-item border-0 ps-0">
+                                <strong>Nộp hồ sơ</strong>
+                                <p class="small text-muted mb-0">Gửi CV qua email hoặc form online</p>
+                            </li>
+                            <li class="list-group-item border-0 ps-0">
+                                <strong>Sơ tuyển</strong>
+                                <p class="small text-muted mb-0">Phòng Nhân sự xem xét hồ sơ</p>
+                            </li>
+                            <li class="list-group-item border-0 ps-0">
+                                <strong>Phỏng vấn</strong>
+                                <p class="small text-muted mb-0">Phỏng vấn trực tiếp hoặc online</p>
+                            </li>
+                            <li class="list-group-item border-0 ps-0">
+                                <strong>Nhận việc</strong>
+                                <p class="small text-muted mb-0">Thông báo kết quả và onboarding</p>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm bg-light">
+                    <div class="card-body text-center">
+                        <i class="bi bi-envelope display-4 text-warning"></i>
+                        <h5 class="card-title mt-3">Không tìm thấy vị trí phù hợp?</h5>
+                        <p class="card-text small text-muted">
+                            Gửi CV của bạn cho chúng tôi để được xem xét cho các cơ hội trong tương lai
+                        </p>
+                        <a href="mailto:{{ get_setting('contact_email', 'info@bricon.vn') }}" class="btn btn-warning">
+                            <i class="bi bi-envelope"></i> Gửi CV
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-briefcase display-1 text-muted"></i>
+            <p class="text-muted mt-3">Hiện tại chưa có vị trí tuyển dụng nào</p>
+            <p class="text-muted">Vui lòng quay lại sau hoặc gửi CV của bạn để được xem xét trong tương lai</p>
+            <a href="mailto:{{ get_setting('contact_email', 'info@bricon.vn') }}" class="btn btn-warning">
+                <i class="bi bi-envelope"></i> Gửi CV
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Benefits Section -->
+<section class="benefits-section py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold mb-3">Trở thành đội ngũ {{ get_setting('website_name', 'Bricon Việt Nam') }}</h2>
+            <p class="text-muted">Những lợi ích khi làm việc cùng chúng tôi</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-3 col-sm-6">
+                <div class="card border-0 shadow-sm text-center h-100">
+                    <div class="card-body">
+                        <i class="bi bi-graph-up-arrow display-4 text-warning mb-3"></i>
+                        <h5 class="card-title">Phát triển nghề nghiệp</h5>
+                        <p class="card-text small text-muted">
+                            Cơ hội đào tạo và thăng tiến rõ ràng
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="card border-0 shadow-sm text-center h-100">
+                    <div class="card-body">
+                        <i class="bi bi-cash-stack display-4 text-success mb-3"></i>
+                        <h5 class="card-title">Thu nhập hấp dẫn</h5>
+                        <p class="card-text small text-muted">
+                            Lương thưởng cạnh tranh, đánh giá định kỳ
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="card border-0 shadow-sm text-center h-100">
+                    <div class="card-body">
+                        <i class="bi bi-people display-4 text-primary mb-3"></i>
+                        <h5 class="card-title">Môi trường chuyên nghiệp</h5>
+                        <p class="card-text small text-muted">
+                            Văn hóa làm việc tích cực, đồng nghiệp thân thiện
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="card border-0 shadow-sm text-center h-100">
+                    <div class="card-body">
+                        <i class="bi bi-shield-check display-4 text-info mb-3"></i>
+                        <h5 class="card-title">Chế độ đãi ngộ</h5>
+                        <p class="card-text small text-muted">
+                            BHXH, BHYT đầy đủ, teambuilding, du lịch
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== SCHEMA.ORG - BREADCRUMB ==================== -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Trang chủ",
+      "item": "{{ url_for('main.index', _external=True) }}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Tuyển dụng",
+      "item": "{{ url_for('main.careers', _external=True) }}"
+    }
+  ]
+}
+</script>
+
+<!-- ==================== SCHEMA.ORG - JOB POSTINGS ==================== -->
+{% if jobs %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "itemListElement": [
+    {% for job in jobs %}
+    {
+      "@type": "JobPosting",
+      "position": {{ loop.index }},
+      "title": "{{ job.title|e }}",
+      "description": "{{ (job.description[:200] if job.description else 'Cơ hội việc làm tại ' ~ get_setting('website_name', 'BRICON VIỆT NAM'))|e }}",
+      "datePosted": "{{ job.created_at.strftime('%Y-%m-%d') if job.created_at else '' }}",
+      "validThrough": "{{ job.deadline.strftime('%Y-%m-%d') if job.deadline else '' }}",
+      "employmentType": "{{ job.job_type|e }}",
+      "hiringOrganization": {
+        "@type": "Organization",
+        "name": "{{ get_setting('website_name', 'BRICON VIỆT NAM')|e }}",
+        "sameAs": "{{ get_setting('main_url', request.url_root)|e }}",
+        "logo": "{{ get_setting('logo_url', url_for('static', filename='img/logo.png', _external=True))|e }}"
+      },
+      "jobLocation": {
+        "@type": "Place",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "{{ job.location|e }}",
+          "addressCountry": "VN"
+        }
+      },
+      "baseSalary": {
+        "@type": "MonetaryAmount",
+        "currency": "VND",
+        "value": {
+          "@type": "QuantitativeValue",
+          "value": "{{ job.salary|e }}"
+        }
+      }
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
+</script>
+{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.job-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.job-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+}
+</style>
+{% endblock %}

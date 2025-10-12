@@ -1,0 +1,123 @@
+{% extends "admin/admin_base.html" %}
+
+{% block page_title %}Quản lý Tuyển dụng{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4><i class="bi bi-briefcase"></i> Quản lý Tuyển dụng</h4>
+    <a href="{{ url_for('admin.add_job') }}" class="btn btn-warning">
+        <i class="bi bi-plus-circle"></i> Thêm tin tuyển dụng
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if jobs.items %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Vị trí</th>
+                        <th>Phòng ban</th>
+                        <th>Địa điểm</th>
+                        <th>Loại</th>
+                        <th>Mức lương</th>
+                        <th>Hạn nộp</th>
+                        <th>Trạng thái</th>
+                        <th>Lượt xem</th>
+                        <th style="width: 150px;">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for job in jobs.items %}
+                    <tr {% if job.is_expired() %}class="table-secondary"{% endif %}>
+                        <td>{{ job.id }}</td>
+                        <td>
+                            <strong>{{ job.title }}</strong>
+                            {% if job.is_urgent %}
+                            <span class="badge bg-danger ms-1">Gấp</span>
+                            {% endif %}
+                            <br><small class="text-muted">{{ job.level }}</small>
+                        </td>
+                        <td>{{ job.department or '-' }}</td>
+                        <td>{{ job.location }}</td>
+                        <td>
+                            <span class="badge bg-info">{{ job.job_type }}</span>
+                        </td>
+                        <td>{{ job.salary }}</td>
+                        <td>
+                            {% if job.deadline %}
+                            {{ job.deadline.strftime('%d/%m/%Y') }}
+                            {% if job.is_expired() %}
+                            <br><span class="badge bg-danger">Hết hạn</span>
+                            {% endif %}
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if job.is_active and not job.is_expired() %}
+                            <span class="badge bg-success">Đang tuyển</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Đã đóng</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <i class="bi bi-eye"></i> {{ job.view_count }}
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a href="{{ url_for('admin.edit_job', id=job.id) }}" 
+                                   class="btn btn-outline-primary"
+                                   title="Sửa">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="{{ url_for('admin.delete_job', id=job.id) }}" 
+                                   class="btn btn-outline-danger"
+                                   onclick="return confirm('Xóa tin tuyển dụng này?')"
+                                   title="Xóa">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if jobs.pages > 1 %}
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item {% if not jobs.has_prev %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('admin.jobs', page=jobs.prev_num) }}">Trước</a>
+                </li>
+                {% for page_num in jobs.iter_pages(left_edge=1, right_edge=1) %}
+                    {% if page_num %}
+                    <li class="page-item {% if page_num == jobs.page %}active{% endif %}">
+                        <a class="page-link" href="{{ url_for('admin.jobs', page=page_num) }}">{{ page_num }}</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                {% endfor %}
+                <li class="page-item {% if not jobs.has_next %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('admin.jobs', page=jobs.next_num) }}">Sau</a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-briefcase display-1 text-muted"></i>
+            <p class="text-muted mt-3">Chưa có tin tuyển dụng nào</p>
+            <a href="{{ url_for('admin.add_job') }}" class="btn btn-warning">
+                <i class="bi bi-plus-circle"></i> Thêm tin tuyển dụng đầu tiên
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

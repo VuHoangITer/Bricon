@@ -1,0 +1,100 @@
+{% extends "admin/admin_base.html" %}
+
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4><i class="bi bi-shield-lock"></i> {{ title }}</h4>
+    <a href="{{ url_for('admin.roles') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Quay lại
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Tên role (code) *</label>
+                    {{ form.name(class="form-control", placeholder="editor") }}
+                    {% if form.name.errors %}
+                        <div class="text-danger small mt-1">{{ form.name.errors[0] }}</div>
+                    {% endif %}
+                    <small class="text-muted">Chỉ chữ thường, không dấu, không khoảng trắng</small>
+                </div>
+                
+                <div class="col-md-6">
+                    <label class="form-label">Tên hiển thị *</label>
+                    {{ form.display_name(class="form-control", placeholder="Biên tập viên") }}
+                    {% if form.display_name.errors %}
+                        <div class="text-danger small mt-1">{{ form.display_name.errors[0] }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-12">
+                    <label class="form-label">Mô tả</label>
+                    {{ form.description(class="form-control", rows="2", placeholder="Quản lý nội dung blog, sản phẩm...") }}
+                    {% if form.description.errors %}
+                        <div class="text-danger small mt-1">{{ form.description.errors[0] }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6">
+                    <label class="form-label">Độ ưu tiên *</label>
+                    {{ form.priority(class="form-select") }}
+                    {% if form.priority.errors %}
+                        <div class="text-danger small mt-1">{{ form.priority.errors[0] }}</div>
+                    {% endif %}
+                    <small class="text-muted">Số cao = quyền hạn cao</small>
+                </div>
+                
+                <div class="col-md-6">
+                    <label class="form-label">Màu badge *</label>
+                    {{ form.color(class="form-select") }}
+                    {% if form.color.errors %}
+                        <div class="text-danger small mt-1">{{ form.color.errors[0] }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-12">
+                    <div class="form-check form-switch">
+                        {{ form.is_active(class="form-check-input") }}
+                        <label class="form-check-label" for="{{ form.is_active.id }}">
+                            Kích hoạt
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="col-12 mt-4">
+                    {{ form.submit(class="btn btn-warning px-5") }}
+                    <a href="{{ url_for('admin.roles') }}" class="btn btn-secondary">Hủy</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if role %}
+<div class="card mt-4">
+    <div class="card-header bg-light">
+        <h5 class="mb-0">
+            <i class="bi bi-info-circle"></i> Thông tin bổ sung
+        </h5>
+    </div>
+    <div class="card-body">
+        <ul class="list-unstyled">
+            <li><strong>Số users:</strong> {{ role.user_count }}</li>
+            <li><strong>Số permissions:</strong> {{ role.permissions.count() }}</li>
+            <li><strong>Ngày tạo:</strong> {{ role.created_at.strftime('%d/%m/%Y %H:%M') }}</li>
+        </ul>
+        
+        <a href="{{ url_for('admin.edit_role_permissions', id=role.id) }}" class="btn btn-info">
+            <i class="bi bi-key"></i> Chỉnh sửa Permissions
+        </a>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends "admin/admin_base.html" %}
+
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4><i class="bi bi-images"></i> {{ title }}</h4>
+    <a href="{{ url_for('admin.banners') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Quay lại
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Tiêu đề</label>
+                    {{ form.title(class="form-control", placeholder="Khuyến mãi lớn 2024") }}
+                    <small class="text-muted">Tiêu đề chính hiển thị trên banner</small>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Phụ đề</label>
+                    {{ form.subtitle(class="form-control", placeholder="Giảm giá lên đến 50%") }}
+                    <small class="text-muted">Mô tả ngắn dưới tiêu đề</small>
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label">Hình ảnh Banner *</label>
+                    <div class="input-group">
+                        {{ form.image(class="form-control", id="image") }}
+                        <button type="button" class="btn btn-warning" onclick="openMediaPicker('image', 'imagePreview')">
+                            <i class="bi bi-images"></i> Chọn từ thư viện
+                        </button>
+                    </div>
+                    <small class="text-muted">Khuyến nghị: 1920x600px, JPG/PNG (Max 16MB)</small>
+                    {% if form.image.errors %}
+                        <div class="text-danger small mt-1">{{ form.image.errors[0] }}</div>
+                    {% endif %}
+
+                    <!-- Thêm input ẩn này -->
+                    <input type="hidden" name="selected_image_path" id="selectedImagePath" value="">
+
+                    <div class="mt-2">
+                        {% if banner and banner.image %}
+                            <img id="imagePreview" src="{{ banner.image }}" alt="Current" class="img-thumbnail" style="max-width: 100%; max-height: 200px;">
+                        {% else %}
+                            <img id="imagePreview" src="" alt="Preview" class="img-thumbnail" style="max-width: 100%; max-height: 200px; display: none;">
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Đường dẫn (Link)</label>
+                    {{ form.link(class="form-control", placeholder="/products hoặc https://...") }}
+                    <small class="text-muted">URL khi click vào banner</small>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Text nút (Button)</label>
+                    {{ form.button_text(class="form-control", placeholder="Mua ngay") }}
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Thứ tự</label>
+                    {{ form.order(class="form-control", value="0") }}
+                    <small class="text-muted">Số nhỏ hiển thị trước</small>
+                </div>
+
+                <div class="col-12">
+                    <div class="form-check form-switch">
+                        {{ form.is_active(class="form-check-input", checked=true) }}
+                        <label class="form-check-label" for="{{ form.is_active.id }}">
+                            Kích hoạt hiển thị banner
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <hr>
+                    <div class="alert alert-warning">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>Mẹo:</strong> Banner có thứ tự nhỏ nhất sẽ hiển thị đầu tiên trong slider.
+                        Nên có 3-5 banner để tạo hiệu ứng chuyển động đẹp.
+                    </div>
+                </div>
+
+                <div class="col-12 mt-4">
+                    {{ form.submit(class="btn btn-warning px-5") }}
+                    <a href="{{ url_for('admin.banners') }}" class="btn btn-secondary">Hủy</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% include 'admin/components/media_picker_modal.html' %}
+{% endblock %}

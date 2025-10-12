@@ -1,0 +1,276 @@
+{% extends "base.html" %} {% block title %}{{ get_setting('meta_title', 'Giới
+thiệu - BRICON VIỆT NAM') }}{% endblock %} {% block meta_description %}{{
+get_setting('about_meta_description', 'Giới thiệu CÔNG TY TNHH BRICON VIỆT NAM -
+Chuyên sản xuất và phân phối keo dán gạch, keo chà ron, chống thấm. Keo của
+người Việt.') }}{% endblock %} {% block extra_css %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/video_about.css') }}"
+/>
+{% endblock %} {% block content %}
+<!-- ==================== BREADCRUMB ==================== -->
+<div class="page-header bg-light py-4">
+  <div class="container">
+    <h1 class="fw-bold">Giới thiệu</h1>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="{{ url_for('main.index') }}">Trang chủ</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Giới thiệu</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<!-- ==================== ABOUT HERO - LOGO BANNER ==================== -->
+<section class="about-hero" itemscope itemtype="https://schema.org/AboutPage">
+  <div class="container">
+    <!-- Logo ở trên -->
+    <div class="row justify-content-center mb-5">
+      <div class="col-lg-10 col-md-11">
+        <div class="about-logo-container">
+          <div class="about-logo-wrapper">
+            <img
+              src="{{ get_setting('logo_url', url_for('static', filename='img/logo.png')) }}"
+              alt="{{ get_setting('website_name', 'BRICON VIỆT NAM') }}"
+              itemprop="image"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nội dung text ở dưới -->
+    <div class="row justify-content-center">
+      <div class="col-lg-11">
+        <div class="company-info-section text-center">
+          <h2 itemprop="name">Về chúng tôi</h2>
+          <div itemprop="description" class="company-description">
+            {% if get_setting('company_info') %}
+            <p class="intro-text">{{ get_setting('company_info', '') }}</p>
+            {% endif %}
+
+            <p class="intro-text">
+              Lời đầu, <strong>Công Ty TNHH Bricon Việt Nam</strong> xin gửi đến
+              Quý khách hàng và đối tác lời chúc sức khỏe, thành công và thịnh
+              vượng. Chúng tôi xin cảm ơn Quý khách hàng đã tín nhiệm, tin dùng
+              và đồng hành cùng sự phát triển của Công ty trong thời gian qua.
+            </p>
+
+            <p>
+              Chúng tôi chuyên
+              <strong>sản xuất và phân phối Keo xây dựng</strong>: Keo dán gạch,
+              Keo chà ron, Xi măng chống thấm, vữa khô trộn sẵn, vữa xây tô,...
+              và Chống thấm.
+            </p>
+
+            <p>
+              Với diện tích sản xuất và kho chứa
+              <strong>hơn 10.000m²</strong> phân bổ ở 5 chi nhánh và 1 nhà máy.
+              Chúng tôi cung ứng giải pháp thương mại giá sỉ cho các Đại lý, Nhà
+              phân phối, Chủ đầu tư, Thầu xây dựng,... Đáp ứng nhu cầu về sản
+              lượng cho các công trình lớn trong và ngoài nước.
+            </p>
+
+            <p>
+              Hệ thống <strong>KCS bài bản</strong> với phòng thí nghiệm độc lập
+              cùng các kỹ sư nghiên cứu dày dặn kinh nghiệm. Chúng tôi chủ động
+              về công nghệ, đảm bảo về chất lượng của các công trình.
+            </p>
+
+            <p>
+              Hệ thống phân phối của BRICON với
+              <strong>7.820 khách hàng</strong> trên cả nước. Hệ thống vận
+              chuyển đáp ứng nhiều đầu xe và là đối tác của các hãng vận chuyển
+              uy tín Bắc Nam.
+            </p>
+
+            <p>
+              Kết hợp chặt chẽ với các trang bán hàng thương mại điện tử để đáp
+              ứng các nhu cầu nhỏ lẻ từ các khách hàng có lượng cầu nhỏ nhất.
+            </p>
+
+            <p class="highlight-text">
+              BRICON luôn đặt chất lượng sản phẩm, lấy sự hài lòng của Quý khách
+              hàng làm tôn chỉ hành động. Theo tiêu chí
+              <strong>"Số 1 là chất lượng"</strong>. BRICON tin rằng với giải
+              pháp tối ưu cùng chất lượng vượt trội sẽ làm hài lòng Quý khách
+              hàng.
+            </p>
+
+            <p class="closing-text">
+              <em
+                >BRICON xin trân trọng gửi lời chào và lời cảm tạ Quý khách đã
+                giành thời gian thăm website của chúng tôi.</em
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== VIDEO SECTION ==================== -->
+<section class="py-5">
+  <div class="container">
+    <div class="video-section">
+      <div class="row align-items-center">
+        <div class="col-lg-6 order-lg-2">
+          <div class="video-container">
+            <div class="ratio ratio-16x9">
+              <iframe
+                src="https://www.youtube.com/embed/4Hm_h0nTCxY"
+                title="Video giới thiệu {{ get_setting('website_name', 'BRICON VIỆT NAM') }}"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              >
+              </iframe>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-1 ps-lg-4 mt-4 mt-lg-0">
+          <h2 class="fw-bold">
+            Tìm Hiểu Thêm Về
+            <span class="text-warning">
+              {{ get_setting('website_name', 'BRICON VIỆT NAM')|upper }}
+            </span>
+          </h2>
+
+          <p class="lead mb-4">
+            {{ get_setting('website_name', 'BRICON VIỆT NAM') }} tự hào là
+            thương hiệu
+            <strong>“Keo của người Việt”</strong> – nơi hội tụ công nghệ tiên
+            tiến và quy trình kiểm soát chất lượng nghiêm ngặt, mang đến những
+            sản phẩm keo dán gạch, keo chà ron và chống thấm đạt chuẩn cho mọi
+            công trình Việt.
+          </p>
+
+          <ul class="video-features">
+            <li>
+              <i class="bi bi-check-circle-fill text-warning"></i>
+              Công nghệ pha trộn & đóng gói đạt chuẩn châu Âu
+            </li>
+            <li>
+              <i class="bi bi-check-circle-fill text-warning"></i>
+              Kiểm soát chất lượng 100% trong từng công đoạn
+            </li>
+            <li>
+              <i class="bi bi-check-circle-fill text-warning"></i>
+              Đội ngũ kỹ sư & kỹ thuật viên tận tâm, giàu kinh nghiệm
+            </li>
+            <li>
+              <i class="bi bi-check-circle-fill text-warning"></i>
+              Cam kết sản phẩm bền chắc – thẩm mỹ – an toàn cho công trình Việt
+            </li>
+          </ul>
+
+          <a
+            href="{{ url_for('main.contact') }}"
+            class="btn btn-warning btn-lg mt-3"
+          >
+            <i class="bi bi-telephone"></i> Liên hệ ngay
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== STATISTICS ==================== -->
+<section class="statistics-section py-5">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-3 col-6">
+        <div class="stat-card">
+          <i class="bi bi-trophy"></i>
+          <h3>10+</h3>
+          <p>Năm Kinh Nghiệm</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="stat-card">
+          <i class="bi bi-people"></i>
+          <h3>50K+</h3>
+          <p>Khách Hàng Hài Lòng</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="stat-card">
+          <i class="bi bi-box-seam"></i>
+          <h3>30+</h3>
+          <p>Sản Phẩm Đa Dạng</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="stat-card">
+          <i class="bi bi-geo-alt"></i>
+          <h3>34/34</h3>
+          <p>Tỉnh Thành</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SCHEMA.ORG - ABOUT PAGE ==================== -->
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "name": "Giới thiệu {{ get_setting('website_name', 'BRICON VIỆT NAM')|e }}",
+    "url": "{{ url_for('main.about', _external=True) }}",
+    "mainEntity": {
+      "@type": "Organization",
+      "name": "{{ get_setting('website_name', 'CÔNG TY TNHH BRICON VIỆT NAM')|e }}",
+      "url": "{{ get_setting('main_url', request.url_root)|e }}",
+      "logo": "{{ get_setting('logo_url', url_for('static', filename='img/logo.png', _external=True))|e }}",
+      "description": "{{ get_setting('company_info', 'CÔNG TY TNHH BRICON VIỆT NAM - Sản xuất và phân phối keo xây dựng')|e }}",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "171, Đường An Phú Đông 03, Phường An Phú Đông, Quận 12",
+        "addressLocality": "Hồ Chí Minh",
+        "addressCountry": "VN"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+84901180094",
+        "contactType": "customer service",
+        "email": "{{ get_setting('contact_email', 'info@bricon.vn')|e }}",
+        "availableLanguage": "Vietnamese"
+      },
+      "sameAs": [
+        "{{ get_setting('facebook_url', '')|e }}",
+        "{{ get_setting('zalo_url', '')|e }}",
+        "{{ get_setting('youtube_url', '')|e }}",
+        "{{ get_setting('tiktok_url', '')|e }}"
+      ]
+    }
+  }
+</script>
+
+<!-- ==================== SCHEMA.ORG - BREADCRUMB ==================== -->
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Trang chủ",
+        "item": "{{ url_for('main.index', _external=True) }}"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Giới thiệu",
+        "item": "{{ url_for('main.about', _external=True) }}"
+      }
+    ]
+  }
+</script>
+{% endblock %}

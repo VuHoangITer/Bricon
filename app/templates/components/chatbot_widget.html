@@ -1,0 +1,92 @@
+<!-- ================= CHATBOT BRICON VIỆT NAM ================= -->
+<button
+  class="chatbot-button"
+  id="chatbotButton"
+  aria-label="Mở trò chuyện với BRICON"
+>
+  <img
+    src="{{ get_setting('logo_chatbot_url', url_for('static', filename='img/chatbot_logo.png')) }}"
+    alt="Chatbot BRICON Việt Nam"
+  />
+</button>
+
+<!-- Cửa sổ Chat -->
+<div class="chatbot-widget" id="chatbotWidget">
+  <!-- Header -->
+  <div class="chatbot-header bg-warning text-dark">
+    <div class="chatbot-header-info">
+      <div class="chatbot-avatar fw-bold text-dark">B</div>
+      <div>
+        <h3 class="m-0 fw-bold">Trợ lý ảo BRICON</h3>
+        <span class="chatbot-status">
+          <span class="chatbot-status-dot bg-success"></span>
+          Đang hoạt động
+        </span>
+      </div>
+    </div>
+    <button
+      class="chatbot-close-btn text-dark"
+      id="chatbotCloseBtn"
+      aria-label="Đóng cửa sổ chat"
+    >
+      ✕
+    </button>
+  </div>
+
+  <!-- Nội dung tin nhắn -->
+  <div class="chatbot-messages" id="chatbotMessages">
+    <!-- Tin nhắn chào -->
+    <div class="chatbot-message bot">
+      <div class="chatbot-message-content">
+        👋 Xin chào! Tôi là <strong>Trợ lý ảo BRICON</strong> – đại diện của
+        <strong>CÔNG TY TNHH BRICON VIỆT NAM</strong>.<br />
+        Tôi có thể hỗ trợ bạn về:
+        <ul class="mt-2 mb-2">
+          <li>🧱 Keo dán gạch, Keo chà ron & Chống thấm </li>
+          <li>💰 Giá bán & chương trình khuyến mãi</li>
+          <li>📦 Hướng dẫn đặt hàng & giao nhận</li>
+          <li>🛠️ Chính sách đổi trả & tư vấn kỹ thuật</li>
+        </ul>
+        Hãy nhập nội dung bạn cần hỗ trợ – tôi luôn sẵn sàng giúp bạn! 🤝
+      </div>
+    </div>
+  </div>
+
+  <!-- Khu vực nhập tin -->
+  <div class="chatbot-input">
+    <input
+      type="text"
+      id="chatbotInput"
+      placeholder="Nhập câu hỏi của bạn về sản phẩm BRICON..."
+      maxlength="500"
+      autocomplete="off"
+    />
+    <button id="chatbotSendBtn" aria-label="Gửi tin nhắn">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <line x1="22" y1="2" x2="11" y2="13"></line>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Footer -->
+  <div class="chatbot-footer bg-light text-dark">
+    <button
+      id="chatbotResetBtn"
+      class="chatbot-reset-btn btn btn-sm btn-outline-warning"
+    >
+      🔄 Làm mới hội thoại
+    </button>
+    <span class="chatbot-request-count" id="requestCount">
+      Còn <strong>20</strong> lượt chat miễn phí
+    </span>
+  </div>
+</div>

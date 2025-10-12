@@ -1,0 +1,108 @@
+<!-- ==================== FEATURED PROJECTS CAROUSEL ==================== -->
+<section class="py-5 bg-white" id="featured-projects">
+  <div class="container">
+    <!-- Section Title -->
+    <div class="text-center mb-5">
+      <h2 class="fw-bold mb-3">Dự án tiêu biểu</h2>
+      <div class="title-underline mx-auto"></div>
+      <p class="text-muted mt-3">Những dự án BRICON đã triển khai thành công</p>
+    </div>
+
+    <!-- Projects Carousel -->
+    <div class="projects-carousel-wrapper position-relative">
+      <div class="projects-carousel" id="projectsCarousel">
+        {% for project in featured_projects %}
+        <div class="project-slide">
+          <div class="project-card">
+            <!-- Project Image -->
+            <div class="project-image">
+              {% set media_info = project.get_media_seo_info() if project.image
+              else None %}
+
+              <img
+                src="{{ project.image if project.image else 'https://via.placeholder.com/600x400/FFC107/FFFFFF?text=Project' }}"
+                alt="{{ media_info.alt_text if media_info and media_info.alt_text else project.title }}"
+                title="{{ media_info.title if media_info and media_info.title else project.title }}"
+                loading="lazy"
+              />
+
+              <!-- ===================== Project Type Badge ===================== -->
+              {% if project.project_type %}
+              <span
+                class="badge bg-warning text-dark position-absolute top-0 end-0 m-3"
+              >
+                <i class="bi bi-building"></i>
+                {% if project.project_type == 'commercial' %} TTTM & Khách sạn
+                {% elif project.project_type == 'resort_golf' %} Khu du lịch &
+                Sân golf {% elif project.project_type == 'residential' %} Nhà ở
+                & Chung cư {% elif project.project_type == 'industrial' %} Nhà
+                máy & Công nghiệp {% elif project.project_type == 'public' %}
+                Công trình công cộng {% else %} {{
+                project.project_type|capitalize }} {% endif %}
+              </span>
+              {% endif %}
+              <!-- =============================================================== -->
+
+              <!-- Overlay Gradient -->
+              <div class="project-overlay"></div>
+            </div>
+
+            <!-- Project Info -->
+            <div class="project-info">
+              <h3 class="project-title">{{ project.title }}</h3>
+
+              <div class="project-meta mb-3">
+                {% if project.location %}
+                <span class="meta-item">
+                  <i class="bi bi-geo-alt-fill text-warning"></i>
+                  {{ project.location }}
+                </span>
+                {% endif %} {% if project.year %}
+                <span class="meta-item">
+                  <i class="bi bi-calendar-check text-warning"></i>
+                  {{ project.year }}
+                </span>
+                {% endif %}
+              </div>
+
+              <p class="project-description">
+                {{ project.description[:120] if project.description else
+                (media_info.caption[:120] if media_info and media_info.caption
+                else '') }}...
+              </p>
+
+              <a
+                href="{{ url_for('main.project_detail', slug=project.slug) }}"
+                class="btn btn-warning btn-sm px-4"
+              >
+                <i class="bi bi-arrow-right-circle me-2"></i>Xem chi tiết
+              </a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Navigation Buttons -->
+      <button class="carousel-nav prev-btn" id="prevBtn">
+        <i class="bi bi-chevron-left"></i>
+      </button>
+      <button class="carousel-nav next-btn" id="nextBtn">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+
+      <!-- Carousel Dots -->
+      <div class="carousel-dots" id="carouselDots"></div>
+    </div>
+
+    <!-- View All Button -->
+    <div class="text-center mt-5">
+      <a
+        href="{{ url_for('main.projects') }}"
+        class="btn btn-outline-warning btn-lg px-5"
+      >
+        Xem tất cả dự án <i class="bi bi-arrow-right ms-2"></i>
+      </a>
+    </div>
+  </div>
+</section>

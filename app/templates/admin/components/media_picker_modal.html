@@ -1,0 +1,360 @@
+<!--
+File: app/templates/admin/components/media_picker_modal.html
+Media Picker Modal Component - Cho phép chọn ảnh từ thư viện
+-->
+
+<div class="modal fade" id="mediaPickerModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title">
+                    <i class="bi bi-images"></i> Chọn ảnh từ Media Library
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Filters -->
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <select class="form-select" id="albumFilter">
+                            <option value="">Tất cả albums</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" id="searchMedia" placeholder="Tìm kiếm tên file...">
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-outline-secondary" onclick="loadMediaLibrary()">
+                            <i class="bi bi-arrow-clockwise"></i> Làm mới
+                        </button>
+                        <a href="{{ url_for('admin.upload_media') }}" class="btn btn-outline-warning" target="_blank">
+                            <i class="bi bi-cloud-upload"></i> Upload mới
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Media Grid -->
+                <div id="mediaGrid" class="row g-3" style="max-height: 500px; overflow-y: auto;">
+                    <div class="col-12 text-center py-5">
+                        <div class="spinner-border text-warning" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2 text-muted">Đang tải ảnh...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle"></i> Đóng
+                </button>
+                <button type="button" class="btn btn-warning" id="selectMediaBtn" disabled>
+                    <i class="bi bi-check-circle"></i> Chọn ảnh này
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.media-item {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 3px solid #e9ecef;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    background: #fff;
+}
+
+.media-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    border-color: #ffc107;
+}
+
+.media-item.selected {
+    border-color: #ffc107;
+    box-shadow: 0 0 0 4px rgba(255,193,7,0.3);
+}
+
+.media-item img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.media-item-info {
+    padding: 0.5rem;
+    background: #f8f9fa;
+    font-size: 0.75rem;
+}
+
+.media-item .selected-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #ffc107;
+    color: #000;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.7rem;
+    display: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.media-item.selected .selected-badge {
+    display: block;
+    animation: badgePulse 0.3s ease;
+}
+
+@keyframes badgePulse {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.media-item-info .filename {
+    font-weight: 500;
+    color: #212529;
+}
+
+.media-item-info .dimensions {
+    color: #6c757d;
+    font-size: 0.7rem;
+}
+</style>
+
+<script>
+let selectedMediaId = null;
+let selectedMediaPath = null;
+let currentTargetInput = null;
+let currentPreviewImg = null;
+
+function openMediaPicker(inputId, previewId) {
+    currentTargetInput = document.getElementById(inputId);
+    currentPreviewImg = previewId ? document.getElementById(previewId) : null;
+    selectedMediaId = null;
+    selectedMediaPath = null;
+
+    document.getElementById('selectMediaBtn').disabled = true;
+
+    const modal = new bootstrap.Modal(document.getElementById('mediaPickerModal'));
+    modal.show();
+
+    loadMediaLibrary();
+}
+
+function loadMediaLibrary() {
+    const album = document.getElementById('albumFilter').value;
+    const search = document.getElementById('searchMedia').value;
+
+    let url = '{{ url_for("admin.api_media") }}?';
+    if (album) url += `album=${encodeURIComponent(album)}&`;
+    if (search) url += `search=${encodeURIComponent(search)}`;
+
+    fetch(url)
+        .then(response => {
+            if (!response.ok) throw new Error('Network error');
+            return response.json();
+        })
+        .then(data => {
+            renderMediaGrid(data.media);
+            renderAlbumFilter(data.albums);
+        })
+        .catch(error => {
+            console.error('Error loading media:', error);
+            document.getElementById('mediaGrid').innerHTML = `
+                <div class="col-12 text-center py-5 text-danger">
+                    <i class="bi bi-exclamation-triangle fs-1"></i>
+                    <p class="mt-2">Lỗi tải dữ liệu. Vui lòng thử lại.</p>
+                    <button class="btn btn-warning" onclick="loadMediaLibrary()">
+                        <i class="bi bi-arrow-clockwise"></i> Thử lại
+                    </button>
+                </div>
+            `;
+        });
+}
+
+function renderMediaGrid(mediaList) {
+    const grid = document.getElementById('mediaGrid');
+
+    if (!mediaList || mediaList.length === 0) {
+        grid.innerHTML = `
+            <div class="col-12 text-center py-5">
+                <i class="bi bi-image fs-1 text-muted"></i>
+                <p class="text-muted mt-3">Chưa có ảnh nào trong thư viện</p>
+                <a href="{{ url_for('admin.upload_media') }}" class="btn btn-warning" target="_blank">
+                    <i class="bi bi-cloud-upload"></i> Upload ảnh mới
+                </a>
+            </div>
+        `;
+        return;
+    }
+
+    grid.innerHTML = mediaList.map(media => {
+        // ✅ CRITICAL: Đảm bảo filepath không bị thêm "/" ở đầu URL Cloudinary
+        let imageSrc = media.filepath;
+
+        // Debug log
+        console.log('Media item:', media.original_filename, 'filepath:', imageSrc);
+
+        return `
+            <div class="col-lg-2 col-md-3 col-sm-4 col-6">
+                <div class="media-item" data-id="${media.id}" data-path="${imageSrc}">
+                    <span class="selected-badge">✓ Đã chọn</span>
+                    <img src="${imageSrc}"
+                         alt="${media.original_filename}"
+                         loading="lazy"
+                         onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext fill=%22%23999%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E';">
+                    <div class="media-item-info">
+                        <div class="filename text-truncate" title="${media.original_filename}">
+                            ${media.original_filename}
+                        </div>
+                        <div class="dimensions">
+                            ${media.width} × ${media.height}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    // Attach click handlers
+    document.querySelectorAll('.media-item').forEach(item => {
+        item.addEventListener('click', function() {
+            selectMedia(this.dataset.id, this.dataset.path);
+        });
+    });
+}
+
+function renderAlbumFilter(albums) {
+    const select = document.getElementById('albumFilter');
+    const currentValue = select.value;
+
+    let options = '<option value="">Tất cả albums</option>';
+
+    if (albums && albums.length > 0) {
+        albums.forEach(album => {
+            if (typeof album === 'object' && album.name) {
+                options += `<option value="${album.name}">${album.name} (${album.count})</option>`;
+            } else {
+                options += `<option value="${album}">${album}</option>`;
+            }
+        });
+    }
+
+    select.innerHTML = options;
+    select.value = currentValue;
+}
+
+function selectMedia(id, path) {
+    document.querySelectorAll('.media-item').forEach(item => {
+        item.classList.remove('selected');
+    });
+
+    const selectedItem = document.querySelector(`.media-item[data-id="${id}"]`);
+    if (selectedItem) {
+        selectedItem.classList.add('selected');
+    }
+
+    selectedMediaId = id;
+    selectedMediaPath = path;
+
+    document.getElementById('selectMediaBtn').disabled = false;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const selectBtn = document.getElementById('selectMediaBtn');
+    if (!selectBtn) return;
+
+    selectBtn.addEventListener('click', function() {
+        if (!selectedMediaPath || !currentTargetInput) return;
+
+        // ✅ CRITICAL FIX: Trim và kiểm tra kỹ URL
+        let finalPath = selectedMediaPath.trim();
+
+        console.log('[Media Picker] Raw selected path:', selectedMediaPath);
+
+        // ✅ BẮT BUỘC: Kiểm tra Cloudinary URL TRƯỚC KHI làm gì khác
+        if (finalPath.startsWith('http://') || finalPath.startsWith('https://')) {
+            // Giữ nguyên 100%, không thêm gì cả
+            console.log('[Media Picker] Cloudinary URL detected, keeping as-is');
+        }
+        // ⚠️ Trường hợp đặc biệt: Nếu có "/http" thì loại bỏ "/"
+        else if (finalPath.startsWith('/http://') || finalPath.startsWith('/https://')) {
+            finalPath = finalPath.substring(1); // Bỏ "/" ở đầu
+            console.log('[Media Picker] Fixed malformed Cloudinary URL:', finalPath);
+        }
+        // Nếu là đường dẫn local, chuẩn hóa
+        else {
+            if (!finalPath.startsWith('/static/')) {
+                if (finalPath.startsWith('static/')) {
+                    finalPath = '/' + finalPath;
+                } else if (finalPath.startsWith('/uploads/')) {
+                    finalPath = '/static' + finalPath;
+                } else if (finalPath.startsWith('uploads/')) {
+                    finalPath = '/static/' + finalPath;
+                }
+            }
+            console.log('[Media Picker] Local path normalized:', finalPath);
+        }
+
+        // Tìm hoặc tạo hidden input
+        let hiddenInput = document.getElementById('selectedImagePath');
+        if (!hiddenInput) {
+            hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.id = 'selectedImagePath';
+            hiddenInput.name = 'selected_image_path';
+            currentTargetInput.parentNode.appendChild(hiddenInput);
+        }
+        hiddenInput.value = finalPath;
+
+        console.log('[Media Picker] Hidden input value set to:', finalPath);
+
+        // Hiển thị preview
+        if (currentPreviewImg) {
+            currentPreviewImg.src = finalPath;
+            currentPreviewImg.style.display = 'block';
+        }
+
+        // Xóa giá trị file input (nếu có upload)
+        currentTargetInput.value = '';
+
+        // Hiển thị badge thông báo
+        const container = currentTargetInput.closest('.col-12, .col-md-6, .col-md-8, .col-md-4');
+        const label = container?.querySelector('label');
+        if (label) {
+            const oldBadge = label.querySelector('.badge');
+            if (oldBadge) oldBadge.remove();
+
+            const badge = document.createElement('span');
+            badge.className = 'badge bg-success ms-2';
+            badge.innerHTML = '<i class="bi bi-check-circle"></i> Đã chọn từ thư viện';
+            label.appendChild(badge);
+        }
+
+        // Đóng modal
+        bootstrap.Modal.getInstance(document.getElementById('mediaPickerModal')).hide();
+
+        // ✅ Log để debug
+        console.log('✅ [Media Picker] Image selected successfully!');
+        console.log('   - Final path:', finalPath);
+        console.log('   - Is Cloudinary:', finalPath.startsWith('http'));
+    });
+
+    // Event listeners cho filter
+    document.getElementById('albumFilter')?.addEventListener('change', loadMediaLibrary);
+    document.getElementById('searchMedia')?.addEventListener('input', debounce(loadMediaLibrary, 500));
+});
+
+function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+}
+</script>

@@ -1,0 +1,22 @@
+{% extends "admin/admin_base.html" %}
+
+{% block page_title %}Chào mừng{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <!-- Welcome Card -->
+        <div class="card border-0 shadow-lg mb-4">
+            <div class="card-body text-center p-5">
+                <div class="mb-4">
+                    <i class="bi bi-emoji-smile display-1 text-warning"></i>
+                </div>
+                <h2 class="mb-3">Xin chào, <strong class="text-primary">{{ current_user.username }}</strong>!</h2>
+                <p class="lead text-muted mb-4">
+                    Chào mừng bạn đến với hệ thống quản trị nội dung
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

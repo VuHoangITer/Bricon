@@ -1,0 +1,77 @@
+{
+  "company_name": "Hoangvn",
+  "business": "Cung cấp sản phẩm và dịch vụ chất lượng cao",
+  "services": [
+    {
+      "name": "Tư vấn giải pháp",
+      "price": "Liên hệ",
+      "description": "Tư vấn các giải pháp phù hợp với nhu cầu khách hàng"
+    },
+    {
+      "name": "Cung cấp sản phẩm",
+      "price": "Liên hệ",
+      "description": "Đa dạng sản phẩm chất lượng cao, giá cả cạnh tranh"
+    },
+    {
+      "name": "Bảo hành - Bảo trì",
+      "price": "Miễn phí 12 tháng",
+      "description": "Chế độ bảo hành, bảo trì tốt nhất thị trường"
+    },
+    {
+      "name": "Hỗ trợ kỹ thuật",
+      "price": "Miễn phí",
+      "description": "Đội ngũ kỹ thuật hỗ trợ 24/7, giải đáp mọi thắc mắc"
+    }
+  ],
+  "contact": {
+    "phone": "098.422.6602",
+    "email": "info@hoang.vn",
+    "address": "CN 1: 982/l98/a1 Tân Bình, Tân Phú, Nhà Bè, TP.HCM",
+    "zalo": "098.422.6602",
+    "facebook": "https://www.facebook.com/hoang.van.vuz/",
+    "hotline_north": "(024) 1111 1111",
+    "hotline_central": "(024) 1111 1113",
+    "hotline_south": "(028) 1111 1111"
+  },
+  "working_hours": "8:00 - 17:30 (Thứ 2 - Thứ 7)",
+  "strengths": [
+    "Đội ngũ nhân viên chuyên nghiệp, tận tâm, nhiệt tình",
+    "Sản phẩm/dịch vụ chất lượng cao, được kiểm định kỹ lưỡng",
+    "Giá cả cạnh tranh, minh bạch, nhiều ưu đãi hấp dẫn",
+    "Giao hàng nhanh chóng trên toàn quốc",
+    "Chế độ bảo hành, hậu mãi tốt nhất",
+    "Hỗ trợ khách hàng 24/7 qua Hotline, Zalo, Messenger"
+  ],
+  "process": [
+    "Bước 1: Tiếp nhận yêu cầu từ khách hàng (qua điện thoại, email, website)",
+    "Bước 2: Tư vấn và báo giá chi tiết phù hợp với nhu cầu",
+    "Bước 3: Ký hợp đồng và thỏa thuận điều khoản",
+    "Bước 4: Triển khai thực hiện theo kế hoạch",
+    "Bước 5: Kiểm tra chất lượng và bàn giao",
+    "Bước 6: Hỗ trợ sau bán hàng và bảo hành"
+  ],
+  "payment_methods": [
+    "Chuyển khoản ngân hàng",
+    "Thanh toán khi nhận hàng (COD)",
+    "Ví điện tử (MoMo, ZaloPay, VNPay)",
+    "Quẹt thẻ tại văn phòng"
+  ],
+  "faq": [
+    {
+      "question": "Thời gian giao hàng bao lâu?",
+      "answer": "Với hàng có sẵn: 1-3 ngày. Với hàng đặt trước: 7-14 ngày tùy sản phẩm."
+    },
+    {
+      "question": "Có hỗ trợ giao hàng toàn quốc không?",
+      "answer": "Có, chúng tôi hỗ trợ giao hàng toàn quốc qua các đơn vị vận chuyển uy tín."
+    },
+    {
+      "question": "Chính sách bảo hành như thế nào?",
+      "answer": "Bảo hành 12 tháng cho tất cả sản phẩm, hỗ trợ sửa chữa miễn phí trong thời gian bảo hành."
+    },
+    {
+      "question": "Có thể đổi trả hàng không?",
+      "answer": "Có, trong vòng 7 ngày nếu sản phẩm lỗi hoặc không đúng mô tả."
+    }
+  ]
+}

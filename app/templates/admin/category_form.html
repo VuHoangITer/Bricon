@@ -1,0 +1,77 @@
+{% extends "admin/admin_base.html" %}
+
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4><i class="bi bi-tag"></i> {{ title }}</h4>
+    <a href="{{ url_for('admin.categories') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Quay lại
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Tên danh mục *</label>
+                    {{ form.name(class="form-control", placeholder="Nhập tên danh mục") }}
+                    {% if form.name.errors %}
+                        <div class="text-danger small mt-1">{{ form.name.errors[0] }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6">
+                    <label class="form-label">Slug (URL) *</label>
+                    {{ form.slug(class="form-control", placeholder="danh-muc-slug") }}
+                    {% if form.slug.errors %}
+                        <div class="text-danger small mt-1">{{ form.slug.errors[0] }}</div>
+                    {% endif %}
+                    <small class="text-muted">Tự động từ tên danh mục</small>
+                </div>
+                
+                <div class="col-12">
+                    <label class="form-label">Mô tả</label>
+                    {{ form.description(class="form-control", rows="4", placeholder="Mô tả về danh mục") }}
+                </div>
+                
+                <div class="col-md-6">
+                    <label class="form-label d-block">Trạng thái</label>
+                    <div class="form-check form-switch">
+                        {{ form.is_active(class="form-check-input", checked=true) }}
+                        <label class="form-check-label" for="{{ form.is_active.id }}">
+                            Kích hoạt hiển thị
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="col-12 mt-4">
+                    {{ form.submit(class="btn btn-warning px-5") }}
+                    <a href="{{ url_for('admin.categories') }}" class="btn btn-secondary">Hủy</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Auto generate slug from name
+document.querySelector('input[name="name"]').addEventListener('input', function(e) {
+    const slug = e.target.value
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/đ/g, 'd')
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+    
+    document.querySelector('input[name="slug"]').value = slug;
+});
+</script>
+{% endblock %}

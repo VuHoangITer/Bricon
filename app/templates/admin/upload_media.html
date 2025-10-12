@@ -1,0 +1,312 @@
+{% extends "admin/admin_base.html" %}
+
+{% block page_title %}Upload Media{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4><i class="bi bi-cloud-upload"></i> Upload Media Files</h4>
+    <a href="{{ url_for('admin.media') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Quay lại Media Library
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data" id="uploadForm">
+                    <div class="mb-4">
+                        <label class="form-label">Chọn file *</label>
+                        <input type="file"
+                               name="files"
+                               class="form-control"
+                               multiple
+                               accept="image/*"
+                               id="fileInput"
+                               required>
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle"></i> Chọn nhiều file cùng lúc (JPG, PNG, GIF, WebP). Max 16MB/file
+                        </small>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Loại thư mục</label>
+                            <select name="folder" class="form-select">
+                                <option value="general">Chung</option>
+                                <option value="banners">Banner</option>
+                                <option value="products">Sản phẩm</option>
+                                <option value="blogs">Blog</option>
+                                <option value="categories">Danh mục</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Album (tùy chọn)</label>
+                            <input type="text"
+                                   name="album"
+                                   class="form-control"
+                                   list="albumList"
+                                   placeholder="Chọn hoặc nhập tên album mới">
+                            <datalist id="albumList">
+                                {% for album in albums %}
+                                <option value="{{ album.name }}">
+                                {% endfor %}
+                            </datalist>
+                            <small class="text-muted">
+                                Không sử dụng dấu - để trống nếu không phân loại
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- SEO Settings -->
+                    <div class="card bg-light mb-4">
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                <i class="bi bi-search"></i> Cài đặt SEO (Tùy chọn)
+                            </h6>
+                            <p class="small text-muted mb-3">
+                                Thông tin này sẽ được áp dụng cho TẤT CẢ ảnh upload. Bạn có thể chỉnh sửa riêng từng ảnh sau.
+                            </p>
+
+                            <div class="mb-3">
+                                <label class="form-label">Alt Text chung</label>
+                                <input type="text"
+                                       name="default_alt_text"
+                                       class="form-control"
+                                       id="defaultAltText"
+                                       placeholder="VD: Keo dán gạch xám extra">
+                                <small class="text-muted">
+                                    <i class="bi bi-lightbulb"></i> Mô tả ngắn gọn nội dung ảnh (50-125 ký tự). Giúp SEO và người khiếm thị.
+                                </small>
+                            </div>
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="autoAltText" checked>
+                                <label class="form-check-label" for="autoAltText">
+                                    Tự động tạo Alt Text từ tên file
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preview Area -->
+                    <div id="previewArea" class="mb-4"></div>
+
+                    <!-- Upload Progress -->
+                    <div id="uploadProgress" style="display: none;" class="mb-3">
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated"
+                                 role="progressbar"
+                                 style="width: 0%"
+                                 id="progressBar">0%</div>
+                        </div>
+                        <p class="small text-center mt-2" id="uploadStatus">Đang upload...</p>
+                    </div>
+
+                    <button type="submit" class="btn btn-warning btn-lg px-5" id="submitBtn">
+                        <i class="bi bi-cloud-upload"></i> Upload Files
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar: Hướng dẫn -->
+    <div class="col-lg-4">
+        <div class="card mb-3 border-warning">
+            <div class="card-header bg-warning">
+                <h6 class="mb-0"><i class="bi bi-image"></i> Kích thước ảnh tối ưu</h6>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm mb-0">
+                    <tbody>
+                        <tr>
+                            <td><strong>Banner Slider</strong></td>
+                            <td class="text-end">1920×600px</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sản phẩm</strong></td>
+                            <td class="text-end">800×531px</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tin tức</strong></td>
+                            <td class="text-end">1200×630px</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Dự án</strong></td>
+                            <td class="text-end">1200×480 - tỉ lệ 5:2 hoặc 3:1</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="alert alert-info small mt-3 mb-0">
+                    <i class="bi bi-gear"></i> Vui lòng Upload kích thước ảnh đúng!
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-3 border-success">
+            <div class="card-header bg-success text-white">
+                <h6 class="mb-0"><i class="bi bi-check-circle"></i> Tối ưu hóa tự động</h6>
+            </div>
+            <div class="card-body">
+                <ul class="small mb-0">
+                    <li>✓ Resize ảnh > 1920px về kích thước phù hợp</li>
+                    <li>✓ Nén ảnh với quality 85% (cân bằng)</li>
+                    <li>✓ Convert sang Progressive JPEG (load nhanh)</li>
+                    <li>✓ Loại bỏ EXIF data không cần thiết</li>
+                    <li>✓ Tạo tên file SEO-friendly</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card border-info">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0"><i class="bi bi-lightbulb"></i> SEO Tips</h6>
+            </div>
+            <div class="card-body">
+                <ul class="small mb-0">
+                    <li><strong>Alt Text tốt:</strong> Mô tả chính xác nội dung ảnh</li>
+                    <li><strong>Tránh:</strong> "ảnh", "hình", "picture"</li>
+                    <li><strong>Nên:</strong> "Sản phẩm" + "Chức năng" +"Thương hiệu"</li>
+                    <li><strong>Độ dài:</strong> 50-125 ký tự</li>
+                    <li><strong>Keywords:</strong> Tự nhiên, không spam</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Preview images before upload
+document.getElementById('fileInput').addEventListener('change', function(e) {
+    const previewArea = document.getElementById('previewArea');
+    previewArea.innerHTML = '<h6 class="mb-3"><i class="bi bi-eye"></i> Preview:</h6><div class="row g-2" id="previews"></div>';
+
+    const files = Array.from(e.target.files);
+    const previewsContainer = document.getElementById('previews');
+
+    const autoAltText = document.getElementById('autoAltText').checked;
+    const defaultAltText = document.getElementById('defaultAltText').value;
+
+    files.forEach((file, index) => {
+        if (file.type.startsWith('image/')) {
+            // Validate file size
+            const maxSize = 16 * 1024 * 1024; // 16MB
+            if (file.size > maxSize) {
+                alert(`File "${file.name}" quá lớn! Max 16MB`);
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                // Generate alt text preview
+                let altTextPreview = '';
+                if (defaultAltText) {
+                    altTextPreview = defaultAltText;
+                } else if (autoAltText) {
+                    // Remove extension and convert to readable text
+                    altTextPreview = file.name
+                        .replace(/\.[^/.]+$/, '')
+                        .replace(/[-_]/g, ' ')
+                        .replace(/\b\w/g, l => l.toUpperCase());
+                }
+
+                const col = document.createElement('div');
+                col.className = 'col-md-6';
+                col.innerHTML = `
+                    <div class="card border">
+                        <div class="row g-0">
+                            <div class="col-4">
+                                <img src="${e.target.result}"
+                                     class="img-fluid rounded-start"
+                                     style="height: 120px; width: 100%; object-fit: cover;">
+                            </div>
+                            <div class="col-8">
+                                <div class="card-body p-2">
+                                    <p class="small mb-1 text-truncate fw-bold" title="${file.name}">
+                                        ${file.name}
+                                    </p>
+                                    <p class="small text-muted mb-1">
+                                        <i class="bi bi-file-earmark"></i> ${(file.size / 1024).toFixed(1)} KB
+                                    </p>
+                                    ${altTextPreview ? `
+                                    <p class="small mb-0 text-success">
+                                        <i class="bi bi-tag"></i> Alt: ${altTextPreview}
+                                    </p>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                previewsContainer.appendChild(col);
+            };
+
+            reader.readAsDataURL(file);
+        }
+    });
+});
+
+// Form validation and submission
+document.getElementById('uploadForm').addEventListener('submit', function(e) {
+    const files = document.getElementById('fileInput').files;
+
+    if (files.length === 0) {
+        e.preventDefault();
+        alert('Vui lòng chọn ít nhất 1 file!');
+        return false;
+    }
+
+    // Show progress
+    document.getElementById('uploadProgress').style.display = 'block';
+    document.getElementById('submitBtn').disabled = true;
+
+    // Simulate progress (in real app, use XMLHttpRequest for actual progress)
+    let progress = 0;
+    const progressBar = document.getElementById('progressBar');
+    const interval = setInterval(() => {
+        progress += 10;
+        if (progress <= 90) {
+            progressBar.style.width = progress + '%';
+            progressBar.textContent = progress + '%';
+        }
+    }, 200);
+
+    // Clear interval when form actually submits
+    setTimeout(() => clearInterval(interval), 3000);
+});
+
+// Auto Alt Text toggle
+document.getElementById('autoAltText').addEventListener('change', function() {
+    const defaultAltText = document.getElementById('defaultAltText');
+    if (this.checked) {
+        defaultAltText.disabled = false;
+    }
+});
+    // Album input: chỉ cho phép không dấu và space -> _
+const albumInput = document.querySelector('input[name="album"]');
+if (albumInput) {
+    albumInput.addEventListener('input', function() {
+        let val = albumInput.value;
+
+        // Chuyển thành chữ thường
+        val = val.toLowerCase();
+
+        // Bỏ dấu tiếng Việt
+        val = val.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+        // Đổi khoảng trắng thành _
+        val = val.replace(/\s+/g, '_');
+
+        // Loại bỏ ký tự đặc biệt (chỉ giữ a-z, 0-9, _)
+        val = val.replace(/[^a-z0-9_]/g, '');
+
+        albumInput.value = val;
+    });
+}
+</script>
+{% endblock %}
