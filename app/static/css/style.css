@@ -157,20 +157,69 @@ html {
 /* ==================== BANNER CAROUSEL - RESPONSIVE FIX ==================== */
 .carousel-item img {
   height: 500px;
-  object-fit: contain;
+  object-fit: cover; /* Cover cho PC */
   object-position: center;
   width: 100%;
-  background: linear-gradient(135deg, #f8f9fa 0%, #dee2e6 100%);
+  background: #ffffff;
 }
 
 .carousel-item {
   background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   min-height: 500px;
 }
+/* ==================== DOT TRÒN CHUẨN (override Bootstrap) ==================== */
+.carousel-indicators {
+  position: absolute;
+  bottom: 12px;                    /* cách đáy banner */
+  left: 50%;                       /* căn giữa theo chiều ngang */
+  transform: translateX(-50%);     /* dịch ngược 50% để thực sự giữa */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  width: 100%;                     /* đảm bảo chiếm toàn chiều ngang banner */
+  margin: 0;
+  padding: 0;
+  z-index: 10;
+}
+
+
+/* Make sure we override Bootstrap defaults */
+.carousel-indicators button {
+  display: inline-block;           /* bắt buộc để width/height có tác dụng */
+  width: 6px !important;          /* kích thước dot */
+  height: 6px !important;
+  padding: 0 !important;           /* remove internal button padding */
+  border-radius: 50% !important;   /* tròn hoàn toàn */
+  border: none !important;
+  background-color: #ffffff !important; /* chấm  */
+  background-image: none !important;    /* loại bỏ gradient mặc định */
+  opacity: 1 !important;           /* tránh hiệu ứng mờ mặc định */
+  transition: transform .18s ease, background-color .18s ease;
+  margin: 0 6px !important;
+  -webkit-appearance: none;        /* override browser button style */
+  appearance: none;
+  vertical-align: middle;
+  background-clip: padding-box;    /* tránh aliasing */
+}
+
+/* state: hover/focus (tuỳ chọn) */
+.carousel-indicators button:hover,
+.carousel-indicators button:focus {
+  transform: scale(1.15);
+  outline: none;
+}
+
+/* Chấm active (slide hiện tại) */
+.carousel-indicators .active {
+  transform: scale(1.2);
+}
+
 
 @media (max-width: 991px) {
   .carousel-item img {
     height: 400px;
+    object-fit: contain; /* ✅ Contain từ 991px để an toàn */
   }
 
   .carousel-item {
@@ -178,6 +227,19 @@ html {
   }
 }
 
+/* ✅ Breakpoint cho tablet nhỏ - landscape */
+@media (max-width: 850px) {
+  .carousel-item img {
+    height: 350px;
+    object-fit: contain; /* ✅ Chắc chắn không cắt */
+  }
+
+  .carousel-item {
+    min-height: 350px;
+  }
+}
+
+/* ✅ Breakpoint cho tablet/mobile */
 @media (max-width: 768px) {
   .carousel-item img {
     height: 300px;
@@ -194,6 +256,7 @@ html {
     max-width: 95%;
   }
 
+  .carousel-caption h1,
   .carousel-caption h2 {
     font-size: 1.5rem !important;
     margin-bottom: 0.5rem !important;
@@ -208,27 +271,7 @@ html {
     font-size: 0.875rem;
     padding: 0.5rem 1.5rem !important;
   }
-}
 
-@media (max-width: 576px) {
-  .carousel-item img {
-    height: 250px;
-  }
-
-  .carousel-item {
-    min-height: 250px;
-  }
-
-  .carousel-caption h2 {
-    font-size: 1.25rem !important;
-  }
-
-  .carousel-caption p {
-    display: none;
-  }
-}
-
-@media (max-width: 768px) {
   .carousel-control-prev-icon,
   .carousel-control-next-icon {
     width: 2rem;
@@ -241,6 +284,24 @@ html {
   }
 }
 
+@media (max-width: 576px) {
+  .carousel-item img {
+    height: 250px;
+  }
+
+  .carousel-item {
+    min-height: 250px;
+  }
+
+  .carousel-caption h1,
+  .carousel-caption h2 {
+    font-size: 1.25rem !important;
+  }
+
+  .carousel-caption p {
+    display: none;
+  }
+}
 /* ==================== PRODUCT CARD ==================== */
 .product-card {
   transition: all 0.3s ease;
@@ -1409,4 +1470,10 @@ body::-webkit-scrollbar-thumb {
   .return-policy-section {
     padding: 0 1rem;
   }
+}
+/* ==================== Chấm DOT của banner haizzzzzzzz ==================== */
+.carousel-indicators [data-bs-target].active {
+  background-color: #444444 !important;
+  opacity: 1 !important;
+  border: none !important;
 }
