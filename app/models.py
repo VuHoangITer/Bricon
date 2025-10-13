@@ -739,7 +739,24 @@ def get_setting(key, default=None):
 
 def set_setting(key, value, group='general', description=''):
     """Lưu hoặc cập nhật setting"""
+
+    # ✅ BƯỚC 1: XỬ LÝ TUPLE TRƯỚC KHI GÁN (chỉ 1 lần duy nhất)
+    if isinstance(value, tuple):
+        if len(value) >= 1:
+            value = str(value[0])  # Chỉ lấy URL từ tuple (filepath, metadata)
+            # Optional: Lưu metadata vào description
+            if len(value) > 1 and isinstance(value[1], dict):
+                description += f" | Metadata: {value[1]}"
+        else:
+            value = str(value)
+
+    # ✅ BƯỚC 2: ĐẢM BẢO VALUE LÀ STRING
+    if not isinstance(value, str):
+        value = str(value) if value is not None else ''
+
+    # ✅ BƯỚC 3: TÌM HOẶC TẠO SETTING
     setting = Settings.query.filter_by(key=key).first()
+
     if setting:
         setting.value = value
         setting.group = group
@@ -748,18 +765,6 @@ def set_setting(key, value, group='general', description=''):
         setting = Settings(key=key, value=value, group=group, description=description)
         db.session.add(setting)
 
-    # Sửa lỗi tuple/dict: Nếu value là tuple (URL, metadata), chỉ lưu URL string
-    if isinstance(setting.value, tuple):
-        if len(setting.value) >= 1:
-            setting.value = str(setting.value[0])  # Lưu URL string
-            # Metadata (dict) có thể lưu vào description nếu cần
-            if len(setting.value) > 1 and isinstance(setting.value[1], dict):
-                setting.description += f" | Metadata: {setting.value[1]}"  # Optional: lưu metadata vào description
-        else:
-            setting.value = str(setting.value)  # Fallback
-
-    # Đảm bảo value là string
-    setting.value = str(setting.value) if not isinstance(setting.value, str) else setting.value
-
+    # ✅ BƯỚC 4: COMMIT
     db.session.commit()
     return setting
