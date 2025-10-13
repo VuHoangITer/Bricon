@@ -48,7 +48,7 @@
                         <td>{{ job.salary }}</td>
                         <td>
                             {% if job.deadline %}
-                            {{ job.deadline.strftime('%d/%m/%Y') }}
+                            {{ job.deadline|vn_datetime('%Y-%m-%d') }}
                             {% if job.is_expired() %}
                             <br><span class="badge bg-danger">Hết hạn</span>
                             {% endif %}

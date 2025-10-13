@@ -33,9 +33,9 @@
                                     <i class="bi bi-lightning-fill"></i> Tuyển gấp
                                 </span>
                                 {% endif %}
-                                <meta itemprop="datePosted" content="{{ job.created_at.strftime('%Y-%m-%d') if job.created_at else '' }}">
-                                {% if job.deadline %}
-                                <meta itemprop="validThrough" content="{{ job.deadline.strftime('%Y-%m-%d') }}">
+                            <meta itemprop="datePosted" content="{{ job.created_at|vn_datetime('%Y-%m-%d') if job.created_at else '' }}">
+                            {% if job.deadline %}
+                            <meta itemprop="validThrough" content="{{ job.deadline|vn_datetime('%Y-%m-%d') }}">
                                 {% endif %}
                             </div>
                             {% if not job.is_expired() %}
@@ -115,7 +115,7 @@
                         {% if job.deadline and not job.is_expired() %}
                         <div class="alert alert-warning">
                             <i class="bi bi-calendar-event"></i>
-                            <strong>Hạn nộp hồ sơ:</strong> {{ job.deadline.strftime('%d/%m/%Y') }}
+                            <strong>Hạn nộp hồ sơ:</strong> {{ job.deadline|vn_date }}
                         </div>
                         {% endif %}
 

@@ -30,11 +30,11 @@ class ContactForm(FlaskForm):
         Length(min=2, max=100, message='Họ tên từ 2-100 ký tự')
     ])
     email = StringField('Email', validators=[
-        DataRequired(message='Vui lòng nhập email'),
+        Optional(),
         Email(message='Email không hợp lệ')
     ])
     phone = StringField('Số điện thoại', validators=[
-        Optional(),
+        DataRequired(message='Vui lòng nhập số điện thoại'),
         Length(max=20)
     ])
     subject = StringField('Tiêu đề', validators=[

@@ -163,7 +163,7 @@
                     </tr>
                     <tr>
                         <td class="text-muted">Upload lúc:</td>
-                        <td>{{ media.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                        <td>{{ media.created_at|vn_datetime('%d/%m/%Y %H:%M') }}</td>
                     </tr>
                 </table>
 

@@ -67,7 +67,7 @@ gạch, chà ron và chống thấm từ {{ get_setting('website_name', 'BRICON 
                 </a>
                 <p class="text-muted small mb-0">
                   <i class="bi bi-calendar"></i> {{
-                  fb.created_at.strftime('%d/%m/%Y') }}
+                  fb.created_at|vn_date }}
                   <span class="ms-2">
                     <i class="bi bi-eye"></i> {{ fb.views }}
                   </span>
@@ -131,7 +131,7 @@ gạch, chà ron và chống thấm từ {{ get_setting('website_name', 'BRICON 
                     content="{{ blog.created_at.strftime('%Y-%m-%d') }}"
                   >
                     <i class="bi bi-calendar text-warning"></i>
-                    {{ blog.created_at.strftime('%d/%m/%Y') }}
+                    {{ blog.created_at|vn_date }}
                   </span>
                   <span class="ms-3">
                     <i class="bi bi-eye text-warning"></i> {{ blog.views }}
@@ -178,7 +178,7 @@ gạch, chà ron và chống thấm từ {{ get_setting('website_name', 'BRICON 
                 <!-- Hidden Schema Data -->
                 <meta
                   itemprop="dateModified"
-                  content="{{ blog.updated_at.strftime('%Y-%m-%d') if blog.updated_at else blog.created_at.strftime('%Y-%m-%d') }}"
+                  content="{{ blog.updated_at|vn_datetime('%Y-%m-%d') if blog.updated_at else blog.created_at|vn_datetime('%Y-%m-%d') }}"
                 />
                 <div
                   itemprop="publisher"
@@ -280,8 +280,8 @@ gạch, chà ron và chống thấm từ {{ get_setting('website_name', 'BRICON 
           "@type": "BlogPosting",
           "headline": "{{ blog.title|e }}",
           "image": "{{ blog.image|e }}",
-          "datePublished": "{{ blog.created_at.strftime('%Y-%m-%d') }}",
-          "dateModified": "{{ blog.updated_at.strftime('%Y-%m-%d') if blog.updated_at else blog.created_at.strftime('%Y-%m-%d') }}",
+          "datePublished": "{{ blog.created_at|vn_datetime('%Y-%m-%d') }}",
+          "dateModified": "{{ blog.updated_at|vn_datetime('%Y-%m-%d') if blog.updated_at else blog.created_at|vn_datetime('%Y-%m-%d') }}",
           "author": {
             "@type": "Person",
             "name": "{{ blog.author if blog.author else get_setting('website_name', 'BRICON VIỆT NAM')|e }}"

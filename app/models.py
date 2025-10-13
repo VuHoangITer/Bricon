@@ -41,6 +41,19 @@ class User(db.Model, UserMixin):
 
     # ==================== RBAC METHODS ====================
 
+    # ✅ THÊM: TIMEZONE PROPERTIES
+    @property
+    def created_at_vn(self):
+        """Lấy created_at theo múi giờ Việt Nam"""
+        from app.utils import utc_to_vn
+        return utc_to_vn(self.created_at)
+
+    @property
+    def updated_at_vn(self):
+        """Lấy updated_at theo múi giờ Việt Nam"""
+        from app.utils import utc_to_vn
+        return utc_to_vn(self.updated_at)
+
     @property
     def is_admin(self):
         """
@@ -226,10 +239,7 @@ class Blog(db.Model):
     excerpt = db.Column(db.Text)
     content = db.Column(db.Text, nullable=False)
     image = db.Column(db.String(255))
-
-    # ✅ Thêm dòng này
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-
     author = db.Column(db.String(100))
     is_featured = db.Column(db.Boolean, default=False)
     is_active = db.Column(db.Boolean, default=True)
@@ -302,6 +312,18 @@ class Blog(db.Model):
     def __repr__(self):
         return f'<Blog {self.title}>'
 
+    @property
+    def created_at_vn(self):
+        """Lấy created_at theo múi giờ Việt Nam"""
+        from app.utils import utc_to_vn
+        return utc_to_vn(self.created_at)
+
+    @property
+    def updated_at_vn(self):
+        """Lấy updated_at theo múi giờ Việt Nam"""
+        from app.utils import utc_to_vn
+        return utc_to_vn(self.updated_at)
+
 
 # ==================== FAQ MODEL ====================
 class FAQ(db.Model):
@@ -335,6 +357,13 @@ class Contact(db.Model):
 
     def __repr__(self):
         return f'<Contact {self.name} - {self.email}>'
+
+    @property
+    def created_at_vn(self):
+        """Lấy created_at theo múi giờ Việt Nam"""
+        from app.utils import utc_to_vn
+        return utc_to_vn(self.created_at)
+
 
 
 # ==================== MEDIA MODEL ====================
@@ -495,6 +524,20 @@ class Job(db.Model):
             return datetime.utcnow() > self.deadline
         return False
 
+    @property
+    def created_at_vn(self):
+        from app.utils import utc_to_vn
+        return utc_to_vn(self.created_at)
+
+    @property
+    def updated_at_vn(self):
+        from app.utils import utc_to_vn
+        return utc_to_vn(self.updated_at)
+
+    @property
+    def deadline_vn(self):
+        from app.utils import utc_to_vn
+        return utc_to_vn(self.deadline)
 
 # ==================== HELPER FUNCTIONS ====================
 def get_media_by_image_url(image_url):

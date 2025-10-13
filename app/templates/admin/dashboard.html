@@ -109,15 +109,15 @@
                         <thead class="bg-light">
                             <tr>
                                 <th>Tên</th>
-                                <th>Email</th>
-                                <th>Trạng thái</th>
+                                <th>Số Điện Thoại</th>
+                                <th>Trạng Thái</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for contact in recent_contacts %}
                             <tr>
                                 <td>{{ contact.name }}</td>
-                                <td>{{ contact.email }}</td>
+                                <td>{{ contact.phone }}</td>
                                 <td>
                                     {% if contact.is_read %}
                                         <span class="badge bg-secondary">Đã đọc</span>

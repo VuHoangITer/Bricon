@@ -7,12 +7,16 @@ import cloudinary
 import os
 from dotenv import load_dotenv
 from urllib.parse import urlparse
+import pytz
+from datetime import datetime
 
 # Khởi tạo extensions
 db = SQLAlchemy()
 migrate = Migrate()
 login_manager = LoginManager()
 
+# ✅ THÊM: Định nghĩa timezone Việt Nam
+VN_TZ = pytz.timezone('Asia/Ho_Chi_Minh')
 
 def create_app(config_class=Config):
     """Factory function để tạo Flask app"""
@@ -143,5 +147,48 @@ def create_app(config_class=Config):
         if not text:
             return ''
         return text.replace('\n', '<br>\n')
+
+    # ✅ ========== THÊM MỚI: TIMEZONE FILTERS ==========
+    @app.template_filter('vn_datetime')
+    def vn_datetime_filter(dt, format='%d/%m/%Y %H:%M:%S'):
+        """
+        Chuyển UTC datetime sang múi giờ Việt Nam
+        Usage: {{ contact.created_at|vn_datetime }}
+        """
+        if dt is None:
+            return ''
+
+        # Nếu datetime chưa có timezone info, gán UTC
+        if dt.tzinfo is None:
+            dt = pytz.utc.localize(dt)
+
+        # Chuyển sang múi giờ Việt Nam
+        vn_dt = dt.astimezone(VN_TZ)
+        return vn_dt.strftime(format)
+
+    @app.template_filter('vn_date')
+    def vn_date_filter(dt):
+        """
+        Chỉ hiển thị ngày theo múi giờ VN
+        Usage: {{ product.created_at|vn_date }}
+        """
+        return vn_datetime_filter(dt, '%d/%m/%Y')
+
+    @app.template_filter('vn_time')
+    def vn_time_filter(dt):
+        """
+        Chỉ hiển thị giờ theo múi giờ VN
+        Usage: {{ user.updated_at|vn_time }}
+        """
+        return vn_datetime_filter(dt, '%H:%M:%S')
+
+    @app.template_filter('vn_datetime_friendly')
+    def vn_datetime_friendly_filter(dt):
+        """
+        Hiển thị thời gian dễ đọc
+        Usage: {{ blog.created_at|vn_datetime_friendly }}
+        Result: 13/10/2025 lúc 14:30
+        """
+        return vn_datetime_filter(dt, '%d/%m/%Y lúc %H:%M')
 
     return app

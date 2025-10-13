@@ -332,7 +332,7 @@ bền lâu, xây dựng niềm tin.') }}{% endblock %} {% block content %}
             <div class="d-flex align-items-center text-muted small mb-3">
               <span class="me-3">
                 <i class="bi bi-calendar3"></i>
-                {{ blog.created_at.strftime('%d/%m/%Y') }}
+                {{ blog.created_at|vn_date }}
               </span>
               <span>
                 <i class="bi bi-eye"></i>

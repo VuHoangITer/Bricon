@@ -50,7 +50,7 @@ endblock %} {% block content %}
                 </div>
 
                 <div class="col-md-6">
-                  <label class="form-label fw-semibold">Email *</label>
+                  <label class="form-label fw-semibold">Email</label>
                   {{ form.email(class="form-control",
                   placeholder="email@gmail.com", required=False) }} {% if
                   form.email.errors %}
@@ -61,7 +61,7 @@ endblock %} {% block content %}
                 </div>
 
                 <div class="col-md-6">
-                  <label class="form-label fw-semibold">Số điện thoại</label>
+                  <label class="form-label fw-semibold">Số điện thoại *</label>
                   {{ form.phone(class="form-control", placeholder=" Vui lòng nhập sdt", required=True) }}
                 </div>
 

@@ -84,7 +84,7 @@
                             {% endif %}
                         </td>
                         <td>
-                            <small>{{ blog.created_at.strftime('%d/%m/%Y') }}</small>
+                            <small>{{ blog.created_at|vn_datetime('%d/%m/%Y %H:%M') }}</small>
                         </td>
                         <td class="table-actions">
                             <a href="{{ url_for('main.blog_detail', slug=blog.slug) }}"

@@ -53,7 +53,7 @@
                 <div class="mb-3">
                     <label class="text-muted small">Ngày gửi:</label>
                     <p class="mb-0">
-                        <i class="bi bi-calendar"></i> {{ contact.created_at.strftime('%d/%m/%Y %H:%M:%S') }}
+                        <i class="bi bi-calendar"></i> {{ contact.created_at|vn_datetime }}
                     </p>
                 </div>
                 

@@ -6,6 +6,76 @@ from werkzeug.utils import secure_filename
 from flask import current_app
 from app import db
 import cloudinary.uploader
+import pytz
+
+VN_TZ = pytz.timezone('Asia/Ho_Chi_Minh')
+
+
+# ✅ ========== THÊM MỚI: TIMEZONE UTILITY FUNCTIONS ==========
+def get_vn_now():
+    """
+    Lấy thời gian hiện tại theo múi giờ Việt Nam
+    Returns: datetime object với timezone VN
+    """
+    return datetime.now(VN_TZ)
+
+
+def utc_to_vn(utc_dt):
+    """
+    Chuyển đổi UTC datetime sang Việt Nam timezone
+
+    Args:
+        utc_dt: datetime object (UTC)
+
+    Returns:
+        datetime object với timezone VN hoặc None
+    """
+    if utc_dt is None:
+        return None
+
+    # Nếu datetime chưa có timezone info, gán UTC
+    if utc_dt.tzinfo is None:
+        utc_dt = pytz.utc.localize(utc_dt)
+
+    # Chuyển sang múi giờ Việt Nam
+    return utc_dt.astimezone(VN_TZ)
+
+
+def vn_to_utc(vn_dt):
+    """
+    Chuyển đổi Việt Nam datetime sang UTC
+    (Dùng khi cần lưu vào database)
+
+    Args:
+        vn_dt: datetime object (VN timezone)
+
+    Returns:
+        datetime object với timezone UTC hoặc None
+    """
+    if vn_dt is None:
+        return None
+
+    # Nếu datetime chưa có timezone info, gán VN
+    if vn_dt.tzinfo is None:
+        vn_dt = VN_TZ.localize(vn_dt)
+
+    # Chuyển sang UTC
+    return vn_dt.astimezone(pytz.utc)
+
+
+def format_vn_datetime(dt, format='%d/%m/%Y %H:%M:%S'):
+    """
+    Format datetime sang múi giờ VN với custom format
+
+    Args:
+        dt: datetime object
+        format: string format (default: '%d/%m/%Y %H:%M:%S')
+
+    Returns:
+        Formatted string hoặc empty string
+    """
+    vn_dt = utc_to_vn(dt)
+    return vn_dt.strftime(format) if vn_dt else ''
 
 
 def allowed_file(filename):
