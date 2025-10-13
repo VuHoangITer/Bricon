@@ -155,9 +155,20 @@ html {
 }
 
 /* ==================== BANNER CAROUSEL - RESPONSIVE FIX ==================== */
-.carousel-item img {
+
+/* Banner đầu tiên dùng COVER */
+.carousel-item:first-child img {
   height: 500px;
-  object-fit: cover; /* Cover cho PC */
+  object-fit: cover !important; /* ✅ Banner đầu tiên luôn COVER */
+  object-position: center;
+  width: 100%;
+  background: #ffffff;
+}
+
+/* Các banner còn lại dùng CONTAIN */
+.carousel-item:not(:first-child) img {
+  height: 500px;
+  object-fit: contain !important; /* ✅ Banner 2, 3, 4... dùng CONTAIN */
   object-position: center;
   width: 100%;
   background: #ffffff;
@@ -167,64 +178,67 @@ html {
   background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   min-height: 500px;
 }
+
 .carousel-caption .btn {
-    background-color: transparent !important;
-    font-size: 0.725rem;
-    padding: 0.1rem 0.1rem !important;
+  background-color: transparent !important;
+  font-size: 0.725rem;
+  padding: 0.1rem 0.1rem !important;
 }
+
 /* ==================== DOT TRÒN CHUẨN (override Bootstrap) ==================== */
 .carousel-indicators {
   position: absolute;
-  bottom: 12px;                    /* cách đáy banner */
-  left: 50%;                       /* căn giữa theo chiều ngang */
-  transform: translateX(-50%);     /* dịch ngược 50% để thực sự giữa */
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 8px;
-  width: 100%;                     /* đảm bảo chiếm toàn chiều ngang banner */
+  width: 100%;
   margin: 0;
   padding: 0;
   z-index: 10;
 }
 
-
-/* Make sure we override Bootstrap defaults */
 .carousel-indicators button {
-  display: inline-block;           /* bắt buộc để width/height có tác dụng */
-  width: 6px !important;          /* kích thước dot */
+  display: inline-block;
+  width: 6px !important;
   height: 6px !important;
-  padding: 0 !important;           /* remove internal button padding */
-  border-radius: 50% !important;   /* tròn hoàn toàn */
+  padding: 0 !important;
+  border-radius: 50% !important;
   border: none !important;
-  background-color: #ffffff !important; /* chấm  */
-  background-image: none !important;    /* loại bỏ gradient mặc định */
-  opacity: 1 !important;           /* tránh hiệu ứng mờ mặc định */
+  background-color: #ffffff !important;
+  background-image: none !important;
+  opacity: 1 !important;
   transition: transform .18s ease, background-color .18s ease;
   margin: 0 6px !important;
-  -webkit-appearance: none;        /* override browser button style */
+  -webkit-appearance: none;
   appearance: none;
   vertical-align: middle;
-  background-clip: padding-box;    /* tránh aliasing */
+  background-clip: padding-box;
 }
 
-/* state: hover/focus (tuỳ chọn) */
 .carousel-indicators button:hover,
 .carousel-indicators button:focus {
   transform: scale(1.15);
   outline: none;
 }
 
-/* Chấm active (slide hiện tại) */
 .carousel-indicators .active {
   transform: scale(1.2);
 }
 
-
+/* ==================== RESPONSIVE ==================== */
 @media (max-width: 991px) {
-  .carousel-item img {
+  .carousel-item:first-child img {
     height: 400px;
-    object-fit: contain; /* ✅ Contain từ 991px để an toàn */
+    object-fit: cover !important;
+  }
+
+  .carousel-item:not(:first-child) img {
+    height: 400px;
+    object-fit: contain !important;
   }
 
   .carousel-item {
@@ -232,11 +246,15 @@ html {
   }
 }
 
-/* ✅ Breakpoint cho tablet nhỏ - landscape */
 @media (max-width: 850px) {
-  .carousel-item img {
+  .carousel-item:first-child img {
     height: 350px;
-    object-fit: contain; /* ✅ Chắc chắn không cắt */
+    object-fit: cover !important;
+  }
+
+  .carousel-item:not(:first-child) img {
+    height: 350px;
+    object-fit: contain !important;
   }
 
   .carousel-item {
@@ -244,11 +262,15 @@ html {
   }
 }
 
-/* ✅ Breakpoint cho tablet/mobile */
 @media (max-width: 768px) {
-  .carousel-item img {
+  .carousel-item:first-child img {
     height: 300px;
-    object-fit: contain;
+    object-fit: cover !important;
+  }
+
+  .carousel-item:not(:first-child) img {
+    height: 300px;
+    object-fit: contain !important;
   }
 
   .carousel-item {
@@ -290,8 +312,14 @@ html {
 }
 
 @media (max-width: 576px) {
-  .carousel-item img {
+  .carousel-item:first-child img {
     height: 250px;
+    object-fit: cover !important;
+  }
+
+  .carousel-item:not(:first-child) img {
+    height: 250px;
+    object-fit: contain !important;
   }
 
   .carousel-item {
