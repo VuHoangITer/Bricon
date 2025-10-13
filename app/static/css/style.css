@@ -167,6 +167,11 @@ html {
   background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   min-height: 500px;
 }
+.carousel-caption .btn {
+    background-color: transparent !important;
+    font-size: 0.725rem;
+    padding: 0.1rem 0.1rem !important;
+}
 /* ==================== DOT TRÒN CHUẨN (override Bootstrap) ==================== */
 .carousel-indicators {
   position: absolute;
