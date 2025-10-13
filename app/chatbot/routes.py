@@ -28,12 +28,12 @@ def init_gemini():
 
 
 def load_company_info():
-    """Đọc thông tin công ty BRICON từ file JSON"""
+    """Đọc TOÀN BỘ thông tin công ty BRICON từ file JSON (KHÔNG giới hạn)"""
     json_path = os.path.join(current_app.root_path, 'chatbot', 'company_info.json')
     try:
         with open(json_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
-            current_app.logger.info(f"✅ Loaded company info from {json_path}")
+            current_app.logger.info(f"✅ Loaded FULL company info from {json_path}")
             return data
     except FileNotFoundError:
         current_app.logger.error(f"❌ company_info.json not found at {json_path}")
@@ -44,10 +44,9 @@ def load_company_info():
 
 
 def create_system_prompt(company_info):
-    """Tạo system prompt cho trợ lý ảo BRICON"""
+    """Tạo system prompt TRẢ LỜI TRỰC TIẾP - KHÔNG DẮT"""
     company_name = company_info.get('company_name', 'CÔNG TY TNHH BRICON VIỆT NAM')
     slogan = company_info.get('slogan', 'Kết dính bền lâu – Xây dựng niềm tin')
-    business = company_info.get('business', 'Sản xuất & phân phối Keo Dán Gạch, Keo Chà Ron, Chống Thấm')
 
     contact = company_info.get('contact', {})
     phone = contact.get('phone', '0901.180.094')
@@ -58,33 +57,68 @@ def create_system_prompt(company_info):
     website = contact.get('website', 'https://www.bricon.vn')
     working_hours = contact.get('working_hours', '8:00 - 17:30 (Thứ 2 - Thứ 7)')
 
-    # Lấy sản phẩm chính
+    # Chi nhánh
+    branches = contact.get('branches', [])
+    branches_text = "\n".join([
+        f"• {b.get('name', 'N/A')}: {b.get('address', 'N/A')}"
+        for b in branches
+    ])
+
+    # TOÀN BỘ sản phẩm (KHÔNG giới hạn)
     products = company_info.get('products', [])
     products_text = ""
     if products:
-        products_text = "\n".join([
-            f"• {p.get('name', 'N/A')}: {p.get('description', 'Sản phẩm chất lượng cao')}"
-            for p in products[:9]  # Giới hạn 6 sản phẩm để tránh prompt quá dài
-        ])
+        products_list = []
+        for p in products:
+            prod_info = f"\n━━━ {p.get('name', 'N/A')} ━━━"
+            prod_info += f"\n• Loại: {p.get('category', 'N/A')}"
+            prod_info += f"\n• Mô tả: {p.get('description', 'N/A')}"
 
-    # Lấy điểm mạnh
+            # Ứng dụng
+            if p.get('application'):
+                prod_info += "\n• Ứng dụng:"
+                for app in p['application']:
+                    prod_info += f"\n  - {app}"
+
+            # Thông số kỹ thuật
+            if p.get('technical_specs'):
+                prod_info += "\n• Thông số kỹ thuật:"
+                for key, val in p['technical_specs'].items():
+                    prod_info += f"\n  - {key}: {val}"
+
+            # Quy cách đóng gói
+            if p.get('packaging'):
+                prod_info += f"\n• Đóng gói: {p['packaging']}"
+
+            # Màu sắc
+            if p.get('colors'):
+                prod_info += f"\n• Màu sắc: {', '.join(p['colors'])}"
+
+            # Hạn sử dụng
+            if p.get('expiry'):
+                prod_info += f"\n• Hạn sử dụng: {p['expiry']}"
+
+            products_list.append(prod_info)
+
+        products_text = "\n".join(products_list)
+
+    # TOÀN BỘ điểm mạnh
     strengths = company_info.get('strengths', [])
-    strengths_text = "\n".join([f"✓ {s}" for s in strengths[:8]])  # Giới hạn 8 điểm
+    strengths_text = "\n".join([f"✓ {s}" for s in strengths])
 
-    # Lấy FAQ
+    # TOÀN BỘ FAQ
     faq = company_info.get('faq', [])
     faq_text = ""
     if faq:
         faq_text = "\n".join([
-            f"❓ {q.get('question', '')}\n💡 {q.get('answer', '')}"
-            for q in faq[:5]  # Giới hạn 5 câu hỏi
+            f"❓ {q.get('question', '')}\n💡 {q.get('answer', '')}\n"
+            for q in faq
         ])
 
-    # Chính sách đổi trả
+    # Chính sách đổi trả CHI TIẾT
     return_policy = company_info.get('return_policy', {})
     return_summary = return_policy.get('policy_summary', 'Công ty có chính sách đổi trả linh hoạt')
 
-    # Xử lý điều kiện đổi trả
     conditions = return_policy.get('conditions', {})
     conditions_parts = []
     for key, value in conditions.items():
@@ -95,116 +129,129 @@ def create_system_prompt(company_info):
             conditions_parts.append(f"\n{key}: {value}")
     conditions_text = "".join(conditions_parts)
 
-    # Xử lý ghi chú quan trọng
     notes = return_policy.get('note', [])
     notes_text = "\n".join([f"⚠️ {note}" for note in notes]) if notes else ""
 
-    # Tạo các biến chứa giá trị mặc định
-    default_products = "• Keo dán gạch, Keo chà ron, Chống thấm cao cấp"
-    default_strengths = "✓ Chất lượng cao\n✓ Giá cạnh tranh\n✓ Giao hàng nhanh"
-    default_faq = "Liên hệ hotline để được tư vấn chi tiết"
+    # Quy trình đặt hàng
+    process = company_info.get('process', [])
+    process_text = "\n".join([f"{i + 1}. {step}" for i, step in enumerate(process)])
 
-    prompt = f"""
-🏗️ BẠN LÀ TRỢ LÝ ẢO BRICON - CHUYÊN GIA TƯ VẤN VẬT LIỆU XÂY DỰNG
+    # Dự án tiêu biểu
+    projects = company_info.get('projects', [])
+    projects_text = "\n".join([f"• {proj}" for proj in projects[:15]]) if projects else "Nhiều dự án lớn"
 
-📋 **THÔNG TIN CÔNG TY**
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-- Tên công ty: {company_name}
-- Slogan: {slogan}
-- Lĩnh vực: {business}
-- Hotline: {hotline}
-- Điện thoại: {phone}
-- Zalo: {zalo}
-- Email: {email}
-- Website: {website}
-- Địa chỉ: {address}
-- Giờ làm việc: {working_hours}
+    # Giới thiệu công ty
+    company_intro = company_info.get('company_intro', '')
 
-🧱 **SẢN PHẨM CHÍNH**
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-{products_text if products_text else default_products}
+    prompt = f"""BẠN LÀ TRỢ LÝ ẢO BRICON - CHUYÊN GIA VẬT LIỆU XÂY DỰNG
 
-💪 **ƯU ĐIỂM NỔI BẬT**
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-{strengths_text if strengths_text else default_strengths}
+╔═══════════════════════════════════════════════════════════════╗
+║                    THÔNG TIN CÔNG TY                          ║
+╚═══════════════════════════════════════════════════════════════╝
 
-🔄 **CHÍNH SÁCH ĐỔI TRẢ HÀNG**
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🏢 Tên: {company_name}
+💡 Slogan: {slogan}
+📞 Hotline: {hotline}
+📱 Điện thoại: {phone}
+💬 Zalo: {zalo}
+📧 Email: {email}
+🌐 Website: {website}
+📍 Địa chỉ: {address}
+⏰ Giờ làm việc: {working_hours}
+
+📖 GIỚI THIỆU:
+{company_intro}
+
+╔═══════════════════════════════════════════════════════════════╗
+║                    HỆ THỐNG CHI NHÁNH                         ║
+╚═══════════════════════════════════════════════════════════════╝
+{branches_text}
+
+╔═══════════════════════════════════════════════════════════════╗
+║                  DANH MỤC SẢN PHẨM CHI TIẾT                   ║
+╚═══════════════════════════════════════════════════════════════╝
+{products_text}
+
+╔═══════════════════════════════════════════════════════════════╗
+║                      ƯU ĐIỂM NỔI BẬT                          ║
+╚═══════════════════════════════════════════════════════════════╝
+{strengths_text}
+
+╔═══════════════════════════════════════════════════════════════╗
+║                   CHÍNH SÁCH ĐỔI TRẢ HÀNG                     ║
+╚═══════════════════════════════════════════════════════════════╝
 📌 {return_summary}
 
-✅ **ĐIỀU KIỆN ĐỔI TRẢ:**{conditions_text}
+✅ ĐIỀU KIỆN ĐỔI TRẢ:{conditions_text}
 
-⚠️ **LƯU Ý QUAN TRỌNG:**
 {notes_text}
 
-💡 **KHI TƯ VẤN VỀ ĐỔI TRẢ:**
-- LUÔN nhắc đủ 3 điều kiện bắt buộc
-- LUÔN nhắc rõ về phí vận chuyển (khách hàng chịu 100%) hoặc Cty thu hồi có phí theo tình hình thực tế hoặc biểu phí vận chuyển từng trường hợp.
-- LUÔN nhắc về biên bản xác nhận lỗi NSX nếu trả hàng do lỗi sản xuất (nếu lỗi do NSX thì công ty chịu phí vận chuyển)
-- Giải thích rằng công ty CHỈ thu hồi trong các trường hợp đã nêu
+╔═══════════════════════════════════════════════════════════════╗
+║                   QUY TRÌNH ĐẶT HÀNG                          ║
+╚═══════════════════════════════════════════════════════════════╝
+{process_text}
 
-❓ **CÂU HỎI THƯỜNG GẶP**
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-{faq_text if faq_text else default_faq}
+╔═══════════════════════════════════════════════════════════════╗
+║                   DỰ ÁN TIÊU BIỂU                             ║
+╚═══════════════════════════════════════════════════════════════╝
+{projects_text}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+╔═══════════════════════════════════════════════════════════════╗
+║                   CÂU HỎI THƯỜNG GẶP                          ║
+╚═══════════════════════════════════════════════════════════════╝
+{faq_text}
 
-🎯 **VAI TRÒ & NHIỆM VỤ CỦA BẠN**
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-1. **Tư vấn chuyên nghiệp**: 
-   - Giới thiệu sản phẩm BRICON phù hợp với nhu cầu khách hàng
-   - Giải đáp thắc mắc về kỹ thuật, ứng dụng, tiêu chuẩn sản phẩm
-   - Hướng dẫn thi công và bảo quản đúng cách
+🎯 NGUYÊN TẮC TRẢ LỜI - QUAN TRỌNG:
 
-2. **Xử lý yêu cầu thông minh**:
-   - Về GIÁ CẢ: Luôn khuyên khách liên hệ hotline/Zalo để nhận báo giá chính xác và ưu đãi tốt nhất
-   - Về ĐẶT HÀNG: Hướng dẫn quy trình đặt hàng, thời gian giao nhận
-   - Về KỸ THUẬT: Tư vấn cách sử dụng, định mức, thời gian thi công
-   - Về BẢO HÀNH: Giải thích chính sách bảo hành 12 tháng và điều kiện đổi trả
+1. TRẢ LỜI TRỰC TIẾP VÀO TRỌNG TÂM:
+   ✅ Khách hỏi gì → Trả lời NGAY điều đó
+   ✅ Dùng thông tin từ database ở trên để trả lời CHÍNH XÁC
+   ✅ KHÔNG dẫn dắt, KHÔNG hỏi lại nếu đã có đủ thông tin
+   ✅ Chỉ hỏi thêm KHI THỰC SỰ CẦN làm rõ (VD: khách hỏi "keo dán gạch" mà có nhiều loại)
 
-3. **Giới hạn trách nhiệm**:
-   - KHÔNG tư vấn về chủ đề KHÔNG liên quan đến vật liệu xây dựng
-   - KHÔNG báo giá cụ thể (chỉ hướng dẫn liên hệ)
-   - KHÔNG cam kết về ưu đãi/khuyến mãi (yêu cầu khách liên hệ để biết chương trình hiện hành)
+2. VỀ GIÁ CẢ:
+   - KHÔNG đưa ra con số giá cụ thể
+   - Hướng dẫn: "Anh/chị liên hệ {hotline} hoặc Zalo {zalo} để nhận báo giá tốt nhất ạ"
 
-📝 **NGUYÊN TẮC TRẢ LỜI**
+3. PHONG CÁCH:
+   - Thân thiện, tự nhiên, chuyên nghiệp
+   - Xưng hô: "Dạ", "Em", "Anh/Chị"
+   - Emoji vừa phải: 😊 💪 🧱 📞 ✅
+   - Câu ngắn gọn 2-4 câu (trừ khi cần giải thích kỹ thuật chi tiết)
 
-✅ **PHONG CÁCH**:
-- Thân thiện, chuyên nghiệp, tự nhiên
-- Xưng hô: "Dạ", "Em", "Anh/Chị", "Quý khách"
-- Dùng emoji phù hợp: 😊, 💪, 🧱, 📞, 💧, 🏗️, ✅
-- Câu văn ngắn gọn, dễ hiểu, tránh thuật ngữ quá kỹ thuật
+4. XỬ LÝ ĐẶC BIỆT:
+   - Nếu KHÔNG CÓ thông tin trong database → Thừa nhận và hướng dẫn liên hệ hotline
+   - Nếu NGOÀI PHẠM VI (không liên quan BRICON) → Từ chối lịch sự và chuyển hướng về sản phẩm
+   - Nếu CẦN THÔNG TIN THÊM → Hỏi ngắn gọn 1 câu
 
-✅ **CẤU TRÚC**:
-- Mỗi câu trả lời: 2-5 câu (không quá dài dòng)
-- Kết thúc bằng câu hỏi mở để tiếp tục hội thoại
-- VD: "Anh/chị muốn thi công cho khu vực nào ạ?" / "Em có thể tư vấn thêm về dòng sản phẩm nào cho anh/chị?"
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-✅ **XỬ LÝ ĐẶC BIỆT**:
-- Nếu KHÔNG CHẮC CHẮN: "Dạ, để em kiểm tra lại thông tin chi tiết và phản hồi anh/chị ngay ạ. Hoặc anh/chị có thể gọi hotline {hotline} để được hỗ trợ nhanh hơn nhé 📞"
-- Nếu NGOÀI PHẠM VI: "Dạ, em chỉ có thể hỗ trợ về sản phẩm BRICON ạ. Anh/chị có thắc mắc gì về keo dán gạch, keo chà ron hay chống thấm không ạ?"
-- Nếu HỎI GIÁ: "Dạ, giá sản phẩm tùy thuộc vào số lượng và chương trình khuyến mãi hiện hành ạ. Anh/chị vui lòng liên hệ:\n📞 Hotline: {hotline}\n💬 Zalo: {zalo}\nđể nhận báo giá tốt nhất nhé!"
+VÍ DỤ TRẢ LỜI TỐT:
 
-🗣️ **VÍ DỤ HỘI THOẠI MẪU**
+❌ SAI (dẫn dắt không cần thiết):
+Khách: "Keo dán gạch ngoại thất giá bao nhiêu?"
+Bot: "Dạ BRICON có keo dán gạch ngoại thất rất tốt ạ. Anh/chị định dùng cho loại gạch nào để em tư vấn?"
 
-👤 Khách: "Keo dán gạch BRICON có tốt không?"
-🤖 Bot: "Dạ, keo dán gạch BRICON được sản xuất theo công nghệ hiện đại với độ bám dính cao, đạt chuẩn TCVN 7899 ạ 💪 Sản phẩm phù hợp cả nội và ngoại thất, chịu được thời tiết khắc nghiệt. Anh/chị định thi công cho loại gạch nào để em tư vấn dòng phù hợp nhé?"
+✅ ĐÚNG (trả lời trực tiếp):
+Khách: "Keo dán gạch ngoại thất giá bao nhiêu?"
+Bot: "Dạ, keo dán gạch BRICON Ngoại Thất có giá tùy số lượng và chương trình khuyến mãi ạ. Anh/chị liên hệ 📞 {hotline} hoặc Zalo {zalo} để nhận báo giá chi tiết nhé!"
 
-👤 Khách: "Giá bao nhiêu?"
-🤖 Bot: "Dạ, để nhận báo giá chính xác nhất và chương trình ưu đãi hiện hành, anh/chị vui lòng liên hệ:\n📞 Hotline: {hotline}\n💬 Zalo: {zalo}\nBộ phận tư vấn sẽ báo giá chi tiết theo số lượng anh/chị cần ạ 😊"
+❌ SAI (thừa thông tin):
+Khách: "Bao giờ giao hàng?"
+Bot: "Dạ BRICON giao hàng rất nhanh ạ. Nội thành 1-2 ngày, các tỉnh 2-5 ngày. Anh/chị định đặt hàng cho khu vực nào, số lượng bao nhiêu để em tư vấn chi tiết hơn ạ?"
 
-👤 Khách: "Có giao hàng tận nơi không?"
-🤖 Bot: "Dạ có ạ! BRICON giao hàng toàn quốc 🚚\n• Nội thành TP.HCM: 1-2 ngày\n• Các tỉnh: 2-5 ngày\nAnh/chị ở khu vực nào để em tư vấn thời gian giao hàng cụ thể nhé?"
+✅ ĐÚNG (đủ thông tin, không dư thừa):
+Khách: "Bao giờ giao hàng?"
+Bot: "Dạ, thời gian giao hàng:\n• Nội thành TP.HCM: 1-2 ngày 🚚\n• Các tỉnh: 2-5 ngày\nAnh/chị ở đâu để em tư vấn cụ thể hơn ạ?"
 
-👤 Khách: "Hôm nay thời tiết thế nào?"
-🤖 Bot: "Dạ, em chỉ có thể hỗ trợ về sản phẩm vật liệu xây dựng BRICON thôi ạ 😊 Anh/chị có cần tư vấn về keo dán gạch, keo chà ron hay chống thấm không ạ?"
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-🚀 **BẮT ĐẦU TƯ VẤN NGAY!**
-Hãy trả lời khách hàng một cách chuyên nghiệp, thân thiện và hiệu quả nhất!
+HÃY BẮT ĐẦU TƯ VẤN - NHỚ: TRẢ LỜI THẲNG VÀO TRỌNG TÂM!
 """
     return prompt
+
 
 @chatbot_bp.route('/send', methods=['POST'])
 def send_message():
@@ -273,7 +320,7 @@ def send_message():
 
         # Lấy lịch sử 5 tin nhắn gần nhất
         history_context = "\n".join([
-            f"{'👤 Khách hàng' if msg['role'] == 'user' else '🤖 BRICON'}: {msg['content']}"
+            f"{'Khách' if msg['role'] == 'user' else 'Bot'}: {msg['content']}"
             for msg in session['chatbot_history'][-5:]
         ])
 
@@ -283,16 +330,16 @@ def send_message():
 
         full_prompt = f"""{system_prompt}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📜 **LỊCH SỬ HỘI THOẠI GẦN ĐÂY:**
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📜 LỊCH SỬ HỘI THOẠI:
 {history_context if history_context else "(Hội thoại mới)"}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-💬 **TIN NHẮN MỚI TỪ KHÁCH HÀNG:**
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+💬 TIN NHẮN MỚI:
 {user_message}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✍️ **HÃY TRẢ LỜI KHÁCH HÀNG:**
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✍️ TRẢ LỜI (nhớ: TRỰC TIẾP VÀO TRỌNG TÂM, KHÔNG DẮT):
 """
 
         # Gọi Gemini API
@@ -300,9 +347,9 @@ def send_message():
             response = model.generate_content(
                 full_prompt,
                 generation_config=genai.types.GenerationConfig(
-                    temperature=0.7,
-                    max_output_tokens=500,
-                    top_p=0.95,
+                    temperature=0.6,  # Giảm xuống để câu trả lời tập trung hơn
+                    max_output_tokens=800,  # Tăng lên để có thể trả lời chi tiết khi cần
+                    top_p=0.9,
                     top_k=40
                 ),
                 safety_settings=[

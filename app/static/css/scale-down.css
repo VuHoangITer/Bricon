@@ -226,8 +226,26 @@ footer a {
 
 /* Override Bootstrap col-6 trên mobile để hiển thị 4 cột ngang */
 @media (max-width: 576px) {
-  /* Chỉ áp dụng cho trang index - featured products section */
+@media (max-width: 576px) {
+  .products-grid .row.g-4 > .col-6,
   .bg-gray-dark .row.g-4 > .col-6 {
-    flex: 0 0 25% !important; /* 4 cột = 25% mỗi cột */
-    max-width: 25% !important;
+    flex: 0 0 33.333% !important; /* 3 cột */
+    max-width: 33.333% !important;
   }
+
+  /* Điều chỉnh kích thước */
+  .products-grid .product-image,
+  .bg-gray-dark .product-image {
+    height: 140px !important;
+  }
+
+  .products-grid .product-name,
+  .bg-gray-dark .product-name {
+    font-size: 0.85rem !important;
+  }
+
+  .products-grid .product-price .price,
+  .bg-gray-dark .product-price .price {
+    font-size: 0.95rem !important;
+  }
+}
