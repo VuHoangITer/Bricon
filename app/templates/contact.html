@@ -52,7 +52,7 @@ endblock %} {% block content %}
                 <div class="col-md-6">
                   <label class="form-label fw-semibold">Email *</label>
                   {{ form.email(class="form-control",
-                  placeholder="email@gmail.com", required=True) }} {% if
+                  placeholder="email@gmail.com", required=False) }} {% if
                   form.email.errors %}
                   <div class="text-danger small mt-1">
                     {{ form.email.errors[0] }}
@@ -62,7 +62,7 @@ endblock %} {% block content %}
 
                 <div class="col-md-6">
                   <label class="form-label fw-semibold">Số điện thoại</label>
-                  {{ form.phone(class="form-control", placeholder="+84 9xxx xxx") }}
+                  {{ form.phone(class="form-control", placeholder=" Vui lòng nhập sdt", required=True) }}
                 </div>
 
                 <div class="col-md-6">
