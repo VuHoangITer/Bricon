@@ -1,77 +1,359 @@
 {
-  "company_name": "Hoangvn",
-  "business": "Cung cấp sản phẩm và dịch vụ chất lượng cao",
-  "services": [
-    {
-      "name": "Tư vấn giải pháp",
-      "price": "Liên hệ",
-      "description": "Tư vấn các giải pháp phù hợp với nhu cầu khách hàng"
-    },
-    {
-      "name": "Cung cấp sản phẩm",
-      "price": "Liên hệ",
-      "description": "Đa dạng sản phẩm chất lượng cao, giá cả cạnh tranh"
-    },
-    {
-      "name": "Bảo hành - Bảo trì",
-      "price": "Miễn phí 12 tháng",
-      "description": "Chế độ bảo hành, bảo trì tốt nhất thị trường"
-    },
-    {
-      "name": "Hỗ trợ kỹ thuật",
-      "price": "Miễn phí",
-      "description": "Đội ngũ kỹ thuật hỗ trợ 24/7, giải đáp mọi thắc mắc"
-    }
-  ],
+  "company_name": "CÔNG TY TNHH BRICON VIỆT NAM",
+  "slogan": "Kết dính bền lâu – Xây dựng niềm tin",
+  "business": "Sản xuất & phân phối Keo Dán Gạch, Keo Chà Ron, Chống Thấm và Vật Liệu Hoàn Thiện Công Trình",
+  "company_intro": "Lời đầu, Công Ty TNHH BRICON Việt Nam xin gửi đến Quý khách hàng và đối tác lời chúc sức khỏe, thành công và thịnh vượng. Chúng tôi xin cảm ơn Quý khách hàng đã tín nhiệm, tin dùng và đồng hành cùng sự phát triển của Công ty trong thời gian qua. BRICON chuyên sản xuất và phân phối Keo xây dựng: Keo dán gạch, Keo chà ron, Xi măng chống thấm, vữa khô trộn sẵn, vữa xây tô,... và Chống thấm (hiện tại các dòng xi măng chống thấm, vữa xây tô đang tạm ngừng kinh doanh). Với diện tích sản xuất và kho chứa hơn 10.000m², phân bổ ở 5 chi nhánh và 1 nhà máy, chúng tôi cung ứng giải pháp thương mại giá sỉ cho Đại lý, Nhà phân phối, Chủ đầu tư và Thầu xây dựng, đáp ứng nhu cầu các công trình lớn trong và ngoài nước. Hệ thống KCS bài bản với phòng thí nghiệm độc lập cùng đội ngũ kỹ sư giàu kinh nghiệm, chủ động công nghệ và đảm bảo chất lượng. Hệ thống phân phối với hơn 7.820 khách hàng toàn quốc, kết hợp mạng lưới vận chuyển và thương mại điện tử, BRICON luôn đặt chất lượng sản phẩm và sự hài lòng của khách hàng làm tôn chỉ hành động, theo tiêu chí “Số 1 là chất lượng.”",
   "contact": {
-    "phone": "098.422.6602",
-    "email": "info@hoang.vn",
-    "address": "CN 1: 982/l98/a1 Tân Bình, Tân Phú, Nhà Bè, TP.HCM",
-    "zalo": "098.422.6602",
-    "facebook": "https://www.facebook.com/hoang.van.vuz/",
-    "hotline_north": "(024) 1111 1111",
-    "hotline_central": "(024) 1111 1113",
-    "hotline_south": "(028) 1111 1111"
+    "phone": "0901.180.094",
+    "hotline": "1900 63 62 94",
+    "email": "info@bricon.vn",
+    "address": "171 Đường An Phú Đông 03, Phường An Phú Đông, Quận 12, TP.HCM",
+    "website": "https://www.bricon.vn",
+    "zalo": "0901.180.094",
+    "working_hours": "8:00 - 17:30 (Thứ 2 - Thứ 7)",
+    "branches": [
+      {
+        "name": "Chi nhánh 1 (Trụ sở chính)",
+        "address": "171-171A An Phú Đông 3, Phường An Phú Đông, Quận 12, Thành Phố Hồ Chí Minh"
+      },
+      {
+        "name": "Chi nhánh 2",
+        "address": "Tỉnh lộ 52, Ấp Đông Long Phước, Xã Long Phước, TP. Bà Rịa, Tỉnh Bà Rịa - Vũng Tàu"
+      },
+      {
+        "name": "Chi nhánh 3",
+        "address": "65/33 Nguyễn Chí Thanh, Phường Quảng Phú, TP. Quảng Ngãi, Tỉnh Quảng Ngãi"
+      },
+      {
+        "name": "Nhà máy sản xuất",
+        "address": "Thửa đất số 544, Ấp Kiến An, Xã An Lập, Huyện Dầu Tiếng, Tỉnh Bình Dương"
+      }
+    ]
   },
-  "working_hours": "8:00 - 17:30 (Thứ 2 - Thứ 7)",
-  "strengths": [
-    "Đội ngũ nhân viên chuyên nghiệp, tận tâm, nhiệt tình",
-    "Sản phẩm/dịch vụ chất lượng cao, được kiểm định kỹ lưỡng",
-    "Giá cả cạnh tranh, minh bạch, nhiều ưu đãi hấp dẫn",
-    "Giao hàng nhanh chóng trên toàn quốc",
-    "Chế độ bảo hành, hậu mãi tốt nhất",
-    "Hỗ trợ khách hàng 24/7 qua Hotline, Zalo, Messenger"
-  ],
-  "process": [
-    "Bước 1: Tiếp nhận yêu cầu từ khách hàng (qua điện thoại, email, website)",
-    "Bước 2: Tư vấn và báo giá chi tiết phù hợp với nhu cầu",
-    "Bước 3: Ký hợp đồng và thỏa thuận điều khoản",
-    "Bước 4: Triển khai thực hiện theo kế hoạch",
-    "Bước 5: Kiểm tra chất lượng và bàn giao",
-    "Bước 6: Hỗ trợ sau bán hàng và bảo hành"
-  ],
-  "payment_methods": [
-    "Chuyển khoản ngân hàng",
-    "Thanh toán khi nhận hàng (COD)",
-    "Ví điện tử (MoMo, ZaloPay, VNPay)",
-    "Quẹt thẻ tại văn phòng"
+  "return_policy": {
+    "policy_summary": "Công ty thu lại 80% giá bán cho khách hàng nếu thỏa các điều kiện dưới đây.",
+    "conditions": {
+      "Trường hợp 1": "Hàng xuất kho trên 7 ngày",
+      "Trường hợp 2": [
+        "Hàng còn nguyên vẹn:",
+        "Không rách",
+        "Không ẩm ướt",
+        "Không đóng rắn",
+        "Tình trạng sử dụng tốt"
+      ],
+      "Trường hợp 3": "Hàng còn hạn sử dụng ít nhất 90 ngày"
+    },
+    "note": [
+      "Ngoài 3 trường hợp trên, công ty không thu hồi với bất kỳ lý do gì nếu lỗi không phải từ nhà sản xuất (NSX).",
+      "Phải có biên bản xác nhận lỗi từ NSX có chữ ký các bên liên quan.",
+      "Khách hàng chịu 100% phí vận chuyển trả hàng:",
+      "Khách tự vận chuyển đến kho gần nhất, hoặc công ty thu hồi có tính phí thực tế theo biểu phí."
+    ]
+  },
+  "products": [
+    {
+      "name": "Keo Dán Gạch BRICON Nội Thất",
+      "category": "Keo Dán Gạch",
+      "brand": "BRICON",
+      "description": "Keo dán gạch cao cấp dùng cho khu vực nội thất. Độ bám dính cao, dễ thi công, phù hợp với gạch có kích thước đến 80x80cm.",
+      "composition": [
+        "Cát khô siêu mịn <1% độ ẩm",
+        "Xi măng chuyên dụng",
+        "Phụ gia nhập khẩu"
+      ],
+      "production": "Sản xuất dựa trên dây chuyền công nghệ tự động.",
+      "application": [
+        "Phù hợp cho khu vực nội thất",
+        "Khổ gạch/dá thi công tối ưu: nhỏ hơn hoặc bằng 80x80cm",
+        "Có trọng lượng tối đa 45kg/m² và gạch dày từ 3–15mm",
+        "Sử dụng được phương pháp thi công GẠCH CHỒNG GẠCH",
+        "Ốp tường cao lên đến 3m",
+        "Thích hợp trên nền xi măng, sơn, xi măng láng bóng",
+        "Kết hợp với chống thấm BRICON trở thành vữa trát siêu chống thấm và bám dính cao"
+      ],
+      "expiry": "Trong vòng 1 năm kể từ ngày sản xuất",
+      "packaging": "5kg/túi, 25kg/bao, 80 bao/pallet",
+      "colors": [
+        "Xám",
+        "Trắng"
+      ],
+      "technical_specs": {
+        "Định mức sử dụng": "≈ 5kg/m²",
+        "Khối lượng riêng": "≈ 1.4g/m³",
+        "Thời gian trộn tối thiểu": "min 3–4 phút",
+        "Thời gian mở": "15–20 phút",
+        "Thời gian chỉnh gạch": "5 phút",
+        "Thời gian chờ trước khi chà ron": "24 giờ",
+        "Cường độ bám dính (điều kiện chuẩn)": "1.08 N/mm² – ĐẠT",
+        "Cường độ bám dính (sau khi ngâm nước)": "1.15 N/mm² – ĐẠT",
+        "Cường độ bám dính (sau khi gia nhiệt)": "1.02 N/mm² – ĐẠT",
+        "Cường độ bám dính kéo dài": "0.55 N/mm² – ĐẠT",
+        "Độ trượt": "0.37 mm – ĐẠT",
+        "Khả năng bám dính cao": "5.22 mm – ĐẠT"
+      },
+      "standards": "TCVN 7899-2:2008"
+    },
+    {
+      "name": "Keo Dán Gạch BRICON Ngoại Thất",
+      "category": "Keo Dán Gạch",
+      "brand": "BRICON",
+      "description": "Keo dán gạch cao cấp dùng cho khu vực nội và ngoại thất. Độ bám dính cao, chịu thời tiết tốt, phù hợp cho hồ bơi, sân thượng, WC, kho lạnh và showroom oto.",
+      "composition": [
+        "Cát khô siêu mịn <1% độ ẩm",
+        "Xi măng chuyên dụng",
+        "Phụ gia nhập khẩu"
+      ],
+      "production": "Sản xuất dựa trên dây chuyền công nghệ tự động.",
+      "application": [
+        "Phù hợp cho khu vực Nội & Ngoại thất",
+        "Khổ gạch/đá thi công tối ưu: lên đến 1m x 1m",
+        "Gạch-Đá có trọng lượng lên đến 45kg/m² và gạch-đá ít hút nước",
+        "Thi công được cho khu vực Hồ bơi, Sân thượng, WC, kho Lạnh, phòng xông hơi, showroom oto",
+        "Sử dụng được phương pháp thi công GẠCH CHỒNG GẠCH, Ốp tường cao lên đến 3m",
+        "Thích hợp trên nền xi măng, sơn, xi măng láng bóng",
+        "Kết hợp với chống thấm BRICON trở thành vữa trát siêu chống thấm và bám dính cao"
+      ],
+      "expiry": "Trong vòng 1 năm kể từ ngày sản xuất",
+      "packaging": "5kg/túi, 25kg/bao, 80 bao/pallet",
+      "colors": [
+        "Xám",
+        "Trắng"
+      ],
+      "technical_specs": {
+        "Định mức sử dụng": "≈ 5kg/m²",
+        "Khối lượng riêng": "≈ 1.4g/m³",
+        "Thời gian trộn tối thiểu": "min 3–4 phút",
+        "Thời gian mở": "15–20 phút",
+        "Thời gian chỉnh gạch": "10 phút",
+        "Thời gian chờ trước khi chà ron": "24 giờ",
+        "Cường độ bám dính (điều kiện chuẩn)": "1.97 N/mm² – ĐẠT",
+        "Cường độ bám dính (sau khi ngâm nước)": "1.81 N/mm² – ĐẠT",
+        "Cường độ bám dính (sau khi gia nhiệt)": "1.95 N/mm² – ĐẠT",
+        "Cường độ bám dính kéo dài": "0.55 N/mm² – ĐẠT",
+        "Độ trượt": "0.37 mm – ĐẠT",
+        "Khả năng bám dính cao": "5.22 mm – ĐẠT"
+      },
+      "standards": "TCVN 7899-2:2008"
+    },
+    {
+      "name": "Keo Chà Ron BRICON Nội Thất",
+      "category": "Keo Chà Ron",
+      "brand": "BRICON",
+      "description": "Keo chà ron cao cấp dùng cho khu vực nội thất, tường khu nội thất khô ráo và sàn nội thất chịu ẩm nhẹ.",
+      "composition": [
+        "CaCO₃",
+        "Xi măng trắng cao cấp",
+        "Phụ gia"
+      ],
+      "packaging": "1kg/túi, 1 thùng 24 túi",
+      "technical_specs": {
+        "Định mức sử dụng": "≈ 1kg/5m²",
+        "Khối lượng riêng": "≈ 0.9–1.1g/cm³",
+        "Thời gian trộn & sử dụng": "30 phút",
+        "Độ rộng của ron": "1–6mm",
+        "Mặt nền ổn định trước khi chà ron": "24 giờ",
+        "Thời gian chờ trước khi lưu thông": "24 giờ",
+        "Độ chịu mài mòn": "1820 mm³ – ĐẠT",
+        "Cường độ uốn": "2.73 N/mm² – ĐẠT",
+        "Cường độ nén": "16.8 N/mm² – ĐẠT",
+        "Độ rỗng co ngót": "2.55 mm/m – ĐẠT",
+        "Độ hút nước sau 30 phút": "2.87 g – ĐẠT",
+        "Độ hút nước sau 240 phút": "8.22 g – ĐẠT"
+      },
+      "standards": "TCVN 7899-3:2008"
+    },
+    {
+      "name": "Keo Chà Ron BRICON Ngoại Thất (Extra)",
+      "category": "Keo Chà Ron",
+      "brand": "BRICON",
+      "description": "Keo chà ron cao cấp dùng cho khu vực nội & ngoại thất. Chịu được thời tiết khắc nghiệt, thích hợp cho hồ bơi, phòng xông hơi, WC, kho lạnh và khu vực ẩm ướt.",
+      "composition": [
+        "CaCO₃",
+        "Xi măng trắng cao cấp",
+        "Phụ gia"
+      ],
+      "packaging": "1kg/túi, 1 thùng 24 túi",
+      "technical_specs": {
+        "Định mức sử dụng": "≈ 1kg/5m²",
+        "Khối lượng riêng": "≈ 0.9–1.1g/cm³",
+        "Thời gian trộn & sử dụng": "30 phút",
+        "Độ rộng của ron": "1–6mm",
+        "Mặt nền ổn định trước khi chà ron": "24 giờ",
+        "Thời gian chờ trước khi lưu thông": "24 giờ",
+        "Độ chịu mài mòn": "928 mm³ – ĐẠT",
+        "Cường độ uốn": "2.73 N/mm² – ĐẠT",
+        "Cường độ nén": "19.2 N/mm² – ĐẠT",
+        "Độ rỗng co ngót": "2.45 mm/m – ĐẠT",
+        "Độ hút nước sau 30 phút": "1.17 g – ĐẠT",
+        "Độ hút nước sau 240 phút": "3.8 g – ĐẠT"
+      },
+      "standards": "TCVN 7899-3:2008"
+    },
+    {
+      "name": "Keo Chà Ron BRICON Ngoại Thất (Dạng Hộp)",
+      "category": "Keo Chà Ron",
+      "brand": "BRICON",
+      "description": "Keo chà ron cao cấp dạng hộp – dòng sản phẩm đặc trưng của BRICON, dùng cho khu vực nội và ngoại thất. Có khả năng chịu thời tiết, bám dính tốt, phù hợp cho hồ bơi, WC, sân thượng, kho lạnh và khu vực ẩm ướt.",
+      "composition": [
+        "CaCO₃",
+        "Xi măng trắng cao cấp",
+        "Phụ gia"
+      ],
+      "packaging": "1kg/hộp, 1 thùng 30 hộp",
+      "technical_specs": {
+        "Định mức sử dụng": "≈ 1kg/5m²",
+        "Khối lượng riêng": "≈ 0.9–1.1g/cm³",
+        "Thời gian trộn & sử dụng": "30 phút",
+        "Độ rộng của ron": "1–6mm",
+        "Mặt nền ổn định trước khi chà ron": "24 giờ",
+        "Thời gian chờ trước khi lưu thông": "24 giờ",
+        "Độ chịu mài mòn": "928 mm³ – ĐẠT",
+        "Cường độ uốn": "2.73 N/mm² – ĐẠT",
+        "Cường độ nén": "19.2 N/mm² – ĐẠT",
+        "Độ rỗng co ngót": "2.45 mm/m – ĐẠT",
+        "Độ hút nước sau 30 phút": "1.17 g – ĐẠT",
+        "Độ hút nước sau 240 phút": "3.8 g – ĐẠT"
+      },
+      "standards": "TCVN 7899-3:2008"
+    },
+    {
+      "name": "BRICON Chống Thấm Tường 102 Cao Cấp",
+      "category": "Chống Thấm",
+      "brand": "BRICON",
+      "description": "Chống thấm gốc xi măng – polymer dùng cho tường, bể nước, sân thượng, mái, sàn vệ sinh.",
+      "composition": [
+        "Silica siêu mịn 200 Mesh",
+        "Nhựa",
+        "Phụ gia",
+        "Chất bảo quản"
+      ],
+      "packaging": "Lon 1kg (1 thùng 18 lon), Lon 5kg (1 thùng 4 lon)",
+      "technical_specs": {
+        "Cường độ bám dính ban đầu": "0.84 N/mm² – ĐẠT",
+        "Cường độ bám dính sau khi ngâm nước": "0.59 N/mm² – ĐẠT",
+        "Cường độ bám dính sau khi lão hóa nhiệt": "0.83 N/mm² – ĐẠT",
+        "Cường độ uốn đóng – tan băng": "0.76 N/mm² – ĐẠT",
+        "Cường độ uốn trong nước vôi": "0.65 N/mm² – ĐẠT",
+        "Áp lực 150kPa 7 ngày": "Không xuyên qua – ĐẠT",
+        "Tạo cầu vết nứt thường": "0.81 mm – ĐẠT"
+      },
+      "standards": "TCVN 12692:2020"
+    },
+    {
+      "name": "BRICON Chống Thấm Sàn 106 Cao Cấp",
+      "category": "Chống Thấm",
+      "brand": "BRICON",
+      "description": "Chống thấm chuyên dụng cho sàn, sân thượng, hồ bơi, nhà vệ sinh – độ bền cao, kháng kiềm và chịu mài mòn tốt.",
+      "composition": [
+        "Silica siêu mịn 200 Mesh",
+        "Nhựa",
+        "Phụ gia",
+        "Chất bảo quản"
+      ],
+      "packaging": "Lon 1kg (1 thùng 18 lon), Lon 5kg (1 thùng 4 lon)",
+      "technical_specs": {
+        "Cường độ bám dính ban đầu": "0.86 N/mm² – ĐẠT",
+        "Cường độ bám dính sau khi ngâm nước": "0.62 N/mm² – ĐẠT",
+        "Cường độ bám dính sau khi lão hóa nhiệt": "0.81 N/mm² – ĐẠT",
+        "Cường độ uốn đóng – tan băng": "0.74 N/mm² – ĐẠT",
+        "Cường độ uốn trong nước vôi": "0.66 N/mm² – ĐẠT",
+        "Áp lực 150kPa 7 ngày": "Không xuyên qua – ĐẠT",
+        "Tạo cầu vết nứt thường": "0.84 mm – ĐẠT",
+        "Tạo cầu vết nứt -20°C": "0.82 mm – ĐẠT"
+      },
+      "standards": "TCVN 12692:2020"
+    },
+    {
+      "name": "BRICON Keo Bóng Chống Thấm 108 Cao Cấp",
+      "category": "Chống Thấm",
+      "brand": "BRICON",
+      "description": "Keo bóng chống thấm gốc nhựa Acrylic solid cao – tạo bề mặt bóng, chống thấm, chống bụi và tăng độ bền cho công trình.",
+      "composition": [
+        "Nhựa Acrylic solid cao",
+        "Phụ gia",
+        "Chất bảo quản"
+      ],
+      "packaging": "Lon 1kg (1 thùng 18 lon), Lon 5kg (1 thùng 4 lon)",
+      "technical_specs": {
+        "Cường độ bám dính ban đầu": "0.85 N/mm² – ĐẠT",
+        "Cường độ bám dính sau khi ngâm nước": "0.61 N/mm² – ĐẠT",
+        "Cường độ bám dính sau khi lão hóa nhiệt": "0.83 N/mm² – ĐẠT",
+        "Cường độ uốn đóng – tan băng": "0.76 N/mm² – ĐẠT",
+        "Cường độ uốn trong nước vôi": "0.63 N/mm² – ĐẠT",
+        "Áp lực 150kPa 7 ngày": "Không xuyên qua – ĐẠT",
+        "Tạo cầu vết nứt thường": "0.84 mm – ĐẠT"
+      },
+      "standards": "TCVN 12692:2020"
+    }
   ],
   "faq": [
     {
-      "question": "Thời gian giao hàng bao lâu?",
-      "answer": "Với hàng có sẵn: 1-3 ngày. Với hàng đặt trước: 7-14 ngày tùy sản phẩm."
+      "question": "BRICON có giao hàng toàn quốc không?",
+      "answer": "Dạ có ạ. BRICON giao hàng toàn quốc qua các đơn vị vận chuyển uy tín hoặc xe công ty tùy khu vực. Thời gian giao nội thành TP.HCM khoảng 24 giờ, các tỉnh từ 2–5 ngày."
     },
     {
-      "question": "Có hỗ trợ giao hàng toàn quốc không?",
-      "answer": "Có, chúng tôi hỗ trợ giao hàng toàn quốc qua các đơn vị vận chuyển uy tín."
-    },
-    {
-      "question": "Chính sách bảo hành như thế nào?",
-      "answer": "Bảo hành 12 tháng cho tất cả sản phẩm, hỗ trợ sửa chữa miễn phí trong thời gian bảo hành."
+      "question": "Thời gian bảo hành sản phẩm BRICON là bao lâu?",
+      "answer": "Tất cả sản phẩm BRICON được bảo hành 12 tháng theo chính sách của công ty. Nếu phát sinh lỗi do sản xuất, khách hàng sẽ được đổi mới 100%."
     },
     {
       "question": "Có thể đổi trả hàng không?",
-      "answer": "Có, trong vòng 7 ngày nếu sản phẩm lỗi hoặc không đúng mô tả."
+      "answer": "Có ạ. Công ty hỗ trợ thu lại 80% giá bán nếu hàng đạt đủ 3 điều kiện: còn nguyên vẹn, còn hạn sử dụng trên 90 ngày và xuất kho dưới 7 ngày. Ngoài ra, khách hàng chịu phí vận chuyển thực tế khi trả hàng."
+    },
+    {
+      "question": "Keo dán gạch BRICON có dùng được cho gạch 80x80 không?",
+      "answer": "Dạ có ạ. Với gạch 80x80, anh/chị nên dùng dòng BRICON KDG Xám Extra hoặc Trắng Extra – độ bám cao, chịu lực và thời tiết tốt."
+    },
+    {
+      "question": "Keo chà ron BRICON có bao nhiêu màu?",
+      "answer": "Hiện tại BRICON có 2 màu cơ bản là xám và trắng, phù hợp với hầu hết các loại gạch nội – ngoại thất. Nếu cần màu đặc biệt, công ty có thể pha theo yêu cầu đơn hàng."
+    },
+    {
+      "question": "Sản phẩm chống thấm BRICON có dùng được cho hồ bơi không?",
+      "answer": "Dạ có ạ. BRICON 106 và BRICON 108 đều phù hợp cho hồ bơi, sân thượng và khu vực thường xuyên tiếp xúc với nước."
     }
+  ],
+  "process": [
+    "Bước 1: Khách hàng liên hệ hotline 1900 63 62 94 hoặc Zalo 0901.180.094 để được tư vấn sản phẩm phù hợp.",
+    "Bước 2: Nhân viên BRICON tư vấn kỹ thuật, gửi báo giá chi tiết và chương trình khuyến mãi đang áp dụng.",
+    "Bước 3: Xác nhận đơn hàng – Xuất kho – Sắp xếp giao hàng theo lịch xe công ty hoặc đơn vị vận chuyển.",
+    "Bước 4: Giao hàng tận nơi – Khách hàng kiểm tra số lượng, tình trạng hàng trước khi ký nhận.",
+    "Bước 5: Hỗ trợ kỹ thuật, hướng dẫn thi công và bảo hành sau bán hàng."
+  ],
+  "projects": [
+    "Dự án Tổ Hợp Trung Tâm Thương Mại Và Khách Sạn Hoàng Đế",
+    "Dự án Tòa Nhà Câu Lạc Bộ Golf Đà Lạt",
+    "Nara Bình Tiên Golf Club - Bình Thuận",
+    "Swanbay Đại Phước",
+    "Khu du lịch biển Blue Sapphire Resort",
+    "Dự án Vinhome Golden River Ba Son",
+    "Dự án Dream City",
+    "Dự án Biệt Thự Wyndham Graden Phú Quốc",
+    "Dự án Novaworld - Phan Thiết",
+    "Sở Xây Dựng Đồng Nai",
+    "Nhà máy Hwasung Vina – Đồng Nai",
+    "Nhà máy Dược Zuellig Pharma – TP.HCM",
+    "Khách sạn Queen Ann – Nha Trang",
+    "Chung cư Icon 56 – TP.HCM",
+    "Chung cư Bộ Đội Biên Phòng – TP.HCM",
+    "Cao Ốc Long Thịnh – TP.HCM",
+    "Bệnh Viện Vinmec Nha Trang",
+    "Saigon Centre – TP.HCM",
+    "Pullman Saigon Centre – TP.HCM",
+    "Bệnh Viện Đa Khoa Đồng Nai"
+  ],
+  "strengths": [
+    "Sản xuất – phân phối trực tiếp, chủ động nguồn hàng và công nghệ.",
+    "Hơn 10 năm kinh nghiệm trong ngành vật liệu xây dựng",
+    "Diện tích nhà máy & kho hơn 10.000m², hệ thống chi nhánh trải dài 3 miền.",
+    "Độ phủ toàn quốc, hơn 7.820 khách hàng và đối tác trên toàn quốc.",
+    "Hệ thống KCS – kiểm định chất lượng độc lập, đảm bảo tiêu chuẩn kỹ thuật cao.",
+    "Sản phẩm đạt chuẩn TCVN 7899 và TCVN 12692, thân thiện với môi trường.",
+    "Đội ngũ kỹ sư và nhân viên kỹ thuật dày dặn kinh nghiệm, tư vấn chuyên sâu.",
+    "Đội ngũ kỹ thuật và CSKH chuyên nghiệp, tư vấn tận tâm",
+    "Dịch vụ giao hàng nhanh – đúng tiến độ, hỗ trợ kỹ thuật tận công trình.",
+    "Liên kết các kênh thương mại điện tử, đáp ứng cả nhu cầu nhỏ lẻ và dự án lớn.",
+    "Chính sách bảo hành, đổi trả rõ ràng, minh bạch.",
+    "Luôn đặt tiêu chí 'Số 1 là chất lượng' làm kim chỉ nam phát triển.",
+    "Màu sắc keo chà ron phong phú – phù hợp mọi loại gạch"
   ]
 }
