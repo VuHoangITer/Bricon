@@ -2210,6 +2210,7 @@ def settings():
     form.zalo_oa.data = get_setting('zalo_oa', '')
 
     # Content Defaults
+    form.terms_of_service.data = get_setting('terms_of_service', '')
     form.shipping_policy.data = get_setting('shipping_policy', '')
     form.return_policy.data = get_setting('return_policy', '')
     form.warranty_policy.data = get_setting('warranty_policy', '')
