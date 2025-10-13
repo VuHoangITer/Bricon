@@ -74,7 +74,7 @@
           <!-- Badge giảm giá -->
           {% if product.old_price and product.price > 0 %}
           <span class="badge bg-danger position-absolute top-0 start-0 m-3 fs-5">
-            -{{ ((product.old_price - product.price) / product.old_price * 100)|int }}%
+            {{ ((product.old_price - product.price) / product.old_price * 100)|int }}%
           </span>
           {% endif %}
 
@@ -118,7 +118,7 @@
           <p class="text-muted mb-0 mt-2">
             <span class="text-decoration-line-through fs-5">{{ product.old_price|format_price }}đ</span>
             <span class="badge bg-danger ms-2">
-              Tiết kiệm {{ ((product.old_price - product.price) / 1000)|int }}K
+              Tiết kiệm {{ ((product.old_price - product.price) / 1000)|int }}k
             </span>
           </p>
           {% endif %}

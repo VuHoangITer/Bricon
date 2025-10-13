@@ -92,6 +92,53 @@ class ProductForm(FlaskForm):
     ])
     is_featured = BooleanField('Sản phẩm nổi bật')
     is_active = BooleanField('Kích hoạt', default=True)
+    # ========== ✅ THÊM ĐOẠN NÀY - THÔNG TIN KỸ THUẬT ==========
+
+    # Thành phần (textarea → list khi lưu)
+    composition = TextAreaField('Thành phần',
+                                validators=[Optional()],
+                                render_kw={'rows': 4,
+                                           'placeholder': 'Nhập mỗi thành phần trên 1 dòng\nVí dụ:\nXi măng Portland\nCát thạch anh'})
+
+    # Quy trình sản xuất (text thuần)
+    production = TextAreaField('Quy trình sản xuất',
+                               validators=[Optional()],
+                               render_kw={'rows': 5, 'placeholder': 'Mô tả quy trình sản xuất chi tiết'})
+
+    # Ứng dụng (textarea → list khi lưu)
+    application = TextAreaField('Ứng dụng',
+                                validators=[Optional()],
+                                render_kw={'rows': 4,
+                                           'placeholder': 'Nhập mỗi ứng dụng trên 1 dòng\nVí dụ:\nDán gạch ceramic\nDán đá ốp tường'})
+
+    # Hạn sử dụng (string)
+    expiry = StringField('Hạn sử dụng',
+                         validators=[Optional(), Length(max=200)],
+                         render_kw={'placeholder': 'VD: 12 tháng kể từ ngày sản xuất'})
+
+    # Quy cách đóng gói (string)
+    packaging = StringField('Quy cách đóng gói',
+                            validators=[Optional(), Length(max=500)],
+                            render_kw={'placeholder': 'VD: Bao 25kg, Thùng 20kg'})
+
+    # Màu sắc (textarea → list khi lưu)
+    colors = TextAreaField('Màu sắc có sẵn',
+                           validators=[Optional()],
+                           render_kw={'rows': 3,
+                                      'placeholder': 'Nhập mỗi màu trên 1 dòng\nVí dụ:\nTrắng\nXám\nVàng chanh'})
+
+    # Tiêu chuẩn (string)
+    standards = StringField('Tiêu chuẩn',
+                            validators=[Optional(), Length(max=200)],
+                            render_kw={'placeholder': 'VD: TCVN 7957:2008, ISO 9001'})
+
+    # Thông số kỹ thuật (textarea → dict khi lưu)
+    # Format: "Tên thông số: Giá trị" (mỗi dòng)
+    technical_specs = TextAreaField('Thông số kỹ thuật',
+                                    validators=[Optional()],
+                                    render_kw={'rows': 6,
+                                               'placeholder': 'Nhập theo định dạng: Tên thông số: Giá trị\nVí dụ:\nĐộ bám dính: ≥ 1.0 MPa\nĐộ mịn: ≤ 45 µm\npH: 6.5-8.5'})
+
     submit = SubmitField('Lưu sản phẩm')
 
     def __init__(self, *args, **kwargs):

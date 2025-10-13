@@ -111,7 +111,7 @@
 
                                 {% if product.old_price %}
                                 <span class="badge bg-danger position-absolute top-0 start-0 m-2">
-                                    -{{ ((product.old_price - product.price) / product.old_price * 100)|int }}%
+                                    {{ ((product.old_price - product.price) / product.old_price * 100)|int }}%
                                 </span>
                                 {% endif %}
                                 {% if product.is_featured %}
