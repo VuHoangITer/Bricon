@@ -1,0 +1,55 @@
+/* ==================== CHATBOT Z-INDEX FIX - LOAD CUỐI CÙNG ==================== */
+/* File này phải được load SAU tất cả CSS khác trong base.html */
+
+/* Đảm bảo chatbot widget luôn ở trên cùng */
+.chatbot-widget {
+  z-index: 9999 !important;
+}
+
+.chatbot-widget.active {
+  z-index: 9999 !important;
+}
+
+/* Nút chatbot ở dưới widget */
+.chatbot-button {
+  z-index: 9998 !important;
+}
+
+/* Floating buttons ở dưới chatbot */
+.floating-buttons {
+  z-index: 1030 !important;
+}
+
+.floating-btn {
+  z-index: 1030 !important;
+}
+
+/* Scroll to top ở dưới chatbot */
+.scroll-to-top {
+  z-index: 1029 !important;
+}
+
+/* Đảm bảo các phần tử khác không vượt qua chatbot */
+.navbar,
+header {
+  z-index: 1020 !important;
+}
+
+/* Responsive - Trên mobile chatbot che hết */
+@media (max-width: 768px) {
+  .chatbot-widget {
+    z-index: 9999 !important;
+  }
+
+  .chatbot-widget.active {
+    z-index: 9999 !important;
+  }
+
+  /* Ẩn hoặc mờ các nút khi chatbot mở */
+  .chatbot-widget.active ~ .floating-buttons,
+  .chatbot-widget.active ~ .scroll-to-top {
+    opacity: 0.3;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+}

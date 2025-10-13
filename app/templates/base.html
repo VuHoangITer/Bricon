@@ -174,6 +174,7 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='css/scale-down.css') }}"
     />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chatbot-zindex-fix.css') }}" />
     {% block extra_css %}{% endblock %}
   </head>
 
@@ -257,7 +258,7 @@
                   href="{{ url_for('main.index') }}"
                 >
                   <i class="bi bi-house-door d-lg-none me-1"></i>
-                  Trang chủ
+                  Trang Chủ
                 </a>
               </li>
 
@@ -271,12 +272,12 @@
                   aria-expanded="false"
                 >
                   <i class="bi bi-building d-lg-none me-1"></i>
-                  BRICON
+                  Về Bricon
                 </a>
                 <ul class="dropdown-menu">
                   <li>
                     <a class="dropdown-item" href="{{ url_for('main.about') }}">
-                      <i class="bi bi-info-circle me-2"></i>Giới thiệu
+                      <i class="bi bi-info-circle me-2"></i>Giới Thiệu
                     </a>
                   </li>
                   <li>
@@ -284,7 +285,7 @@
                       class="dropdown-item"
                       href="{{ url_for('main.projects') }}"
                     >
-                      <i class="bi bi-building me-2"></i>Dự án tiêu biểu
+                      <i class="bi bi-building me-2"></i>Dự Án Tiêu Biểu
                     </a>
                   </li>
                   <li>
@@ -292,7 +293,7 @@
                       class="dropdown-item"
                       href="{{ url_for('main.contact') }}"
                     >
-                      <i class="bi bi-envelope me-2"></i>Liên hệ
+                      <i class="bi bi-envelope me-2"></i>Liên Hệ
                     </a>
                   </li>
                   <li>
@@ -300,7 +301,7 @@
                       class="dropdown-item"
                       href="{{ url_for('main.policy') }}"
                     >
-                      <i class="bi bi-file-text me-2"></i>Chính sách
+                      <i class="bi bi-file-text me-2"></i>Chính Sách
                     </a>
                   </li>
                 </ul>
@@ -313,7 +314,18 @@
                   href="{{ url_for('main.products') }}"
                 >
                   <i class="bi bi-box-seam d-lg-none me-1"></i>
-                  Sản phẩm
+                  Sản Phẩm
+                </a>
+              </li>
+
+             <!-- Du án -->
+              <li class="nav-item">
+                <a
+                  class="nav-link {% if request.endpoint == 'main.projects' %}active fw-bold{% endif %}"
+                  href="{{ url_for('main.projects') }}"
+                >
+                  <i class="bi bi-briefcase d-lg-none me-1"></i>
+                  Dự Án
                 </a>
               </li>
 
@@ -324,7 +336,7 @@
                   href="{{ url_for('main.careers') }}"
                 >
                   <i class="bi bi-briefcase d-lg-none me-1"></i>
-                  Tuyển dụng
+                  Tuyển Dụng
                 </a>
               </li>
 
@@ -338,18 +350,18 @@
                   aria-expanded="false"
                 >
                   <i class="bi bi-newspaper d-lg-none me-1"></i>
-                  Tin tức
+                  Tin Tức
                 </a>
                 <ul class="dropdown-menu">
                   <li>
                     <a class="dropdown-item" href="{{ url_for('main.blog') }}">
-                      <i class="bi bi-journal-text me-2"></i>Kiến thức thi công
+                      <i class="bi bi-journal-text me-2"></i>Kiến Thức Thi Công
                     </a>
                   </li>
                   <li>
                     <a class="dropdown-item" href="{{ url_for('main.faq') }}">
-                      <i class="bi bi-question-circle me-2"></i>Câu hỏi thường
-                      gặp
+                      <i class="bi bi-question-circle me-2"></i>Câu Hỏi Thường
+                      Gặp
                     </a>
                   </li>
                 </ul>
@@ -595,43 +607,26 @@
 
                   {% if valid_branches|length == 0 %}
                     <!-- Không có chi nhánh: hiển thị mặc định -->
-                    171, Đường An Phú Đông 03, Phường An Phú Đông, Quận 12, TP.HCM
+                    <span>171, Đường An Phú Đông 03, Phường An Phú Đông, Quận 12, TP.HCM</span>
 
                   {% elif valid_branches|length == 1 %}
                     <!-- 1 chi nhánh: hiển thị trực tiếp -->
                     <span>{{ valid_branches[0] }}</span>
 
-                  {% elif valid_branches|length == 2 %}
-                    <!-- 2 chi nhánh: hiển thị cả 2 không dropdown -->
-                    <div>{{ valid_branches[0] }}</div>
-                    <div class="ms-4 mt-2">{{ valid_branches[1] }}</div>
-
                   {% else %}
-                    <!-- 3+ chi nhánh: dùng dropdown -->
-                    <div class="dropdown d-inline-block">
-                      <a
-                        class="text-white text-decoration-none dropdown-toggle"
-                        href="#"
-                        role="button"
-                        id="branchDropdown"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                      >
-                        {{ valid_branches|length }} chi nhánh toàn quốc
-                      </a>
-                      <ul
-                        class="dropdown-menu dropdown-menu-dark"
-                        aria-labelledby="branchDropdown"
-                        style="max-height: 300px; overflow-y: auto;"
-                      >
-                        {% for branch in valid_branches %}
-                        <li>
-                          <a class="dropdown-item small" href="#">
+                    <!-- 2+ chi nhánh: hiển thị tất cả thành list -->
+                    <div>
+                      {% for branch in valid_branches %}
+                        {% if loop.first %}
+                          <!-- Chi nhánh đầu tiên ngang hàng với icon -->
+                          <span>{{ branch }}</span>
+                        {% else %}
+                          <!-- Các chi nhánh còn lại xuống dòng và indent -->
+                          <div class="mt-2 ms-4">
                             <i class="bi bi-geo-alt-fill text-warning me-2"></i>{{ branch }}
-                          </a>
-                        </li>
-                        {% endfor %}
-                      </ul>
+                          </div>
+                        {% endif %}
+                      {% endfor %}
                     </div>
                   {% endif %}
                 </li>
