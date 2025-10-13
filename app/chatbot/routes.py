@@ -64,7 +64,7 @@ def create_system_prompt(company_info):
     if products:
         products_text = "\n".join([
             f"• {p.get('name', 'N/A')}: {p.get('description', 'Sản phẩm chất lượng cao')}"
-            for p in products[:6]  # Giới hạn 6 sản phẩm để tránh prompt quá dài
+            for p in products[:9]  # Giới hạn 6 sản phẩm để tránh prompt quá dài
         ])
 
     # Lấy điểm mạnh
