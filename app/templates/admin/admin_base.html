@@ -318,8 +318,29 @@
             </li>
             {% endif %}
             {% endif %}
+            <!-- ===== QUIZ  ===== -->
+            {% if current_user.has_any_permission('view_quiz', 'manage_quiz') %}
+            <div class="sidebar-section-title">Quiz/Test</div>
+
+            <li class="nav-item">
+                <a class="nav-link {% if request.endpoint == 'quiz_admin.quizzes' %}active{% endif %}"
+                   href="{{ url_for('quiz_admin.quizzes') }}">
+                    <i class="bi bi-card-checklist"></i> Quản lý Câu hỏi
+                </a>
+            </li>
+
+            {% if current_user.has_permission('manage_quiz') %}
+            <li class="nav-item">
+                <a class="nav-link {% if request.endpoint == 'quiz_admin.results' %}active{% endif %}"
+                   href="{{ url_for('quiz_admin.results') }}">
+                    <i class="bi bi-clipboard-data"></i> Kết quả ứng viên
+                </a>
+            </li>
+            {% endif %}
+            {% endif %}
         </ul>
     </div>
+
 
     <!-- Main Content -->
     <div class="main-content">

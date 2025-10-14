@@ -1,0 +1,208 @@
+{% extends "admin/admin_base.html" %}
+
+{% block title %}Chi Tiết Kết Quả - {{ attempt.quiz.title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Result Container */
+.result-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* Result Card */
+.result-card {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+/* Header */
+.result-header {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: #fff;
+    padding: 1.5rem;
+    text-align: center;
+}
+.result-header.failed {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+}
+
+/* Score Display */
+.score-display {
+    padding: 1.5rem;
+    text-align: center;
+    background: #f8f9fa;
+}
+.score-circle {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    box-shadow: 0 0 0 8px rgba(40, 167, 69, 0.1);
+}
+.score-circle.failed {
+    box-shadow: 0 0 0 8px rgba(220, 53, 69, 0.1);
+}
+.score-value {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #28a745;
+}
+.score-value.failed {
+    color: #dc3545;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+}
+.stat-item {
+    background: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* Review Section */
+.review-section {
+    padding: 1.5rem;
+}
+.question-review {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-left: 4px solid #28a745;
+}
+.question-review.wrong {
+    border-left-color: #dc3545;
+    background: #fff5f5;
+}
+.answer-review {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.answer-review.correct {
+    background: #d4edda;
+    border: 1px solid #28a745;
+}
+.answer-review.wrong {
+    background: #f8d7da;
+    border: 1px solid #dc3545;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <h2 class="mb-4"><i class="bi bi-clipboard-data me-2"></i> Chi Tiết Kết Quả</h2>
+
+    <div class="result-container">
+        <div class="result-card">
+            <!-- Header -->
+            <div class="result-header {% if not attempt.passed %}failed{% endif %}">
+                <h3 class="mb-0">
+                    {% if attempt.passed %}✓ ĐẠT{% else %}✗ CHƯA ĐẠT{% endif %}
+                    - {{ attempt.quiz.title }}
+                </h3>
+            </div>
+
+            <!-- Score Display -->
+            <div class="score-display">
+                <div class="score-circle {% if not attempt.passed %}failed{% endif %}">
+                    <div class="score-value {% if not attempt.passed %}failed{% endif %}">
+                        {{ attempt.score|round|int }}
+                    </div>
+                </div>
+                <p class="text-muted">
+                    Ứng viên: <strong>{{ attempt.user_name }}</strong><br>
+                    {% if attempt.user_email %}Email: {{ attempt.user_email }}<br>{% endif %}
+                    Mã kết quả: <strong>#{{ attempt.id }}</strong>
+                </p>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-value">{{ attempt.total_questions }}</div>
+                    <div class="stat-label">Tổng câu hỏi</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-value text-success">{{ attempt.correct_answers }}</div>
+                    <div class="stat-label">Câu đúng</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon">❌</div>
+                    <div class="stat-value text-danger">{{ attempt.wrong_answers }}</div>
+                    <div class="stat-label">Câu sai</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon">⏱️</div>
+                    <div class="stat-value">{{ attempt.get_time_spent_formatted() }}</div>
+                    <div class="stat-label">Thời gian làm</div>
+                </div>
+            </div>
+
+            <!-- Review Section -->
+            <div class="review-section">
+                <h4 class="mb-3">Chi tiết đáp án</h4>
+                {% for item in questions_detail %}
+                <div class="question-review {% if not item.is_correct %}wrong{% endif %}">
+                    <div class="question-review-header">
+                        Câu {{ loop.index }}: {% if item.is_correct %}✓ Đúng{% else %}✗ Sai{% endif %}
+                    </div>
+                    <div class="question-review-text">{{ item.question.question_text }}</div>
+                    <div class="answer-review {% if item.is_correct %}correct{% else %}wrong{% endif %}">
+                        <span class="answer-icon">{% if item.is_correct %}✓{% else %}✗{% endif %}</span>
+                        <strong>Trả lời:</strong> {{ item.selected_answer.answer_text }}
+                    </div>
+                    {% if not item.is_correct %}
+                    <div class="answer-review correct">
+                        <span class="answer-icon">✓</span>
+                        <strong>Đáp án đúng:</strong> {{ item.correct_answer.answer_text }}
+                    </div>
+                    {% endif %}
+                    {% if item.question.explanation %}
+                    <div class="mt-2 p-2 bg-light rounded">
+                        <strong>Giải thích:</strong> {{ item.question.explanation }}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-end p-3">
+                <a href="{{ url_for('quiz_admin.results') }}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Quay lại
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

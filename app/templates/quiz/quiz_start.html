@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}{{ quiz.title }} - Nhập thông tin{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <!-- Quiz Info Card -->
+            <div class="card shadow-lg border-0 mb-4">
+                <div class="card-header bg-warning text-dark text-center py-4">
+                    <h2 class="mb-0 fw-bold">{{ quiz.title }}</h2>
+                </div>
+                <div class="card-body p-4">
+                    {% if quiz.description %}
+                    <p class="text-muted mb-4">{{ quiz.description }}</p>
+                    {% endif %}
+
+                    <!-- Quiz Details -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-question-circle fs-3 text-primary me-3"></i>
+                                <div>
+                                    <div class="fw-bold">{{ quiz.total_questions }} câu hỏi</div>
+                                    <small class="text-muted">Tổng số câu</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-clock fs-3 text-success me-3"></i>
+                                <div>
+                                    <div class="fw-bold">{{ quiz.duration_minutes }} phút</div>
+                                    <small class="text-muted">Thời gian</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-trophy fs-3 text-warning me-3"></i>
+                                <div>
+                                    <div class="fw-bold">{{ quiz.pass_score }}%</div>
+                                    <small class="text-muted">Điểm đạt</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Important Notes -->
+                    <div class="alert alert-info mb-4">
+                        <h6 class="fw-bold mb-2">
+                            <i class="bi bi-info-circle"></i> Lưu ý quan trọng:
+                        </h6>
+                        <ul class="mb-0 small">
+                            <li>Chuyển tab , thoát ra sẽ tự động nộp</li>
+                            <li>Không thể tạm dừng khi đã bắt đầu làm bài</li>
+                            <li>Hãy đảm bảo kết nối internet ổn định</li>
+                            <li>Mỗi câu hỏi chỉ có 1 đáp án đúng</li>
+                            <li>Good luck</li>
+                        </ul>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Form nhập thông tin -->
+                    <form method="POST">
+                        <h5 class="mb-3 fw-bold">Thông tin của bạn</h5>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                Họ và tên <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" 
+                                   name="user_name" 
+                                   class="form-control form-control-lg" 
+                                   placeholder="Trịnh Trần Phương "
+                                   required
+                                   minlength="2">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                Email <small class="text-muted">(không bắt buộc)</small>
+                            </label>
+                            <input type="email" 
+                                   name="user_email" 
+                                   class="form-control" 
+                                   placeholder="123@email.com">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                Số điện thoại <small class="text-muted">(không bắt buộc)</small>
+                            </label>
+                            <input type="tel" 
+                                   name="user_phone" 
+                                   class="form-control" 
+                                   placeholder="09xx xxx">
+                        </div>
+
+                        <button type="submit" class="btn btn-warning btn-lg w-100 fw-bold">
+                            <i class="bi bi-play-circle"></i> Bắt đầu làm bài
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.card-header {
+    border-bottom: none;
+}
+</style>
+{% endblock %}

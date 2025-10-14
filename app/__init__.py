@@ -105,6 +105,11 @@ def create_app(config_class=Config):
     from app.chatbot import chatbot_bp
     app.register_blueprint(chatbot_bp)
 
+    # ========== ĐĂNG KÝ QUIZ BLUEPRINTS ==========
+    from app.quiz import quiz_bp, quiz_admin_bp
+    app.register_blueprint(quiz_bp)  # User routes: /quiz/
+    app.register_blueprint(quiz_admin_bp)  # Admin routes: /admin/quiz/
+
     # Khởi tạo Gemini sau khi app được tạo
     with app.app_context():
         from app.chatbot.routes import init_gemini

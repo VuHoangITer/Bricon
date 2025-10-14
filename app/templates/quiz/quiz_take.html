@@ -1,0 +1,573 @@
+{% extends "base.html" %}
+
+{% block title %}{{ quiz.title }} - Làm bài{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ==================== QUIZ CONTAINER ==================== */
+.quiz-container {
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* ==================== HEADER ==================== */
+.quiz-header {
+    background: linear-gradient(135deg, #FFC107 0%, #FFB300 100%);
+    color: #000;
+    padding: 1.5rem;
+    border-radius: 12px 12px 0 0;
+    font-weight: 700;
+    font-size: 1.25rem;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* ==================== LAYOUT 2 COLUMNS ==================== */
+.quiz-layout {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+/* ==================== QUESTION AREA ==================== */
+.question-container {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    padding: 2rem;
+}
+
+.question-header {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.question-text {
+    font-size: 1.15rem;
+    font-weight: 500;
+    color: #222;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+/* ==================== ANSWERS ==================== */
+.answer-option {
+    background: #f8f9fa;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.answer-option:hover {
+    background: #fff;
+    border-color: #FFC107;
+    transform: translateX(5px);
+}
+
+.answer-option.selected {
+    background: #FFF8E1;
+    border-color: #FFC107;
+    font-weight: 600;
+}
+
+.answer-option input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.answer-label {
+    font-size: 1rem;
+    color: #333;
+    margin: 0;
+    flex: 1;
+    cursor: pointer;
+}
+
+/* ==================== SIDEBAR ==================== */
+.quiz-sidebar {
+    position: sticky;
+    top: 20px;
+    height: fit-content;
+}
+
+.sidebar-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.sidebar-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #666;
+    margin-bottom: 0.75rem;
+    text-align: center;
+}
+
+.info-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    display: block;
+}
+
+/* Timer */
+.timer-display {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    color: #28a745;
+    font-family: 'Courier New', monospace;
+}
+
+.timer-display.warning {
+    color: #ffc107;
+    animation: pulse 1s infinite;
+}
+
+.timer-display.danger {
+    color: #dc3545;
+    animation: pulse 0.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+/* Question Grid */
+.question-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.5rem;
+}
+
+.question-number {
+    aspect-ratio: 1;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #fff;
+}
+
+.question-number:hover {
+    border-color: #FFC107;
+    transform: scale(1.05);
+}
+
+.question-number.answered {
+    background: #28a745;
+    color: #fff;
+    border-color: #28a745;
+}
+
+.question-number.current {
+    background: #FFC107;
+    color: #000;
+    border-color: #FFC107;
+    font-weight: 700;
+}
+
+/* Legend */
+.quiz-legend {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.legend-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+}
+
+.legend-dot.answered { background: #28a745; }
+.legend-dot.unanswered { background: #fff; border: 2px solid #e0e0e0; }
+
+/* Submit Button */
+.submit-quiz-btn {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    border: none;
+    color: #fff;
+    font-weight: 700;
+    padding: 1rem;
+    border-radius: 8px;
+    width: 100%;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+
+.submit-quiz-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+}
+
+/* ==================== NAVIGATION BUTTONS ==================== */
+.question-navigation {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid #f0f0f0;
+}
+
+.nav-btn {
+    flex: 1;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 991px) {
+    .quiz-layout {
+        grid-template-columns: 1fr;
+    }
+    
+    .quiz-sidebar {
+        position: static;
+        order: -1;
+    }
+    
+    .question-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .quiz-header {
+        font-size: 1rem;
+        padding: 1rem;
+    }
+    
+    .question-container {
+        padding: 1.5rem;
+    }
+    
+    .question-text {
+        font-size: 1rem;
+    }
+    
+    .question-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .timer-display {
+        font-size: 2rem;
+    }
+}
+/* ==================== ẨN CHATBOT VÀ FLOATING BUTTONS ==================== */
+.chatbot-widget,
+.floating-buttons,
+.scroll-to-top {
+    display: none !important;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="quiz-container">
+    <!-- Main Layout -->
+    <div class="quiz-layout">
+        <!-- Questions Area -->
+        <div class="question-container">
+            <div id="questions-wrapper">
+                {% for question in questions %}
+                <div class="question-block {% if loop.first %}active{% else %}d-none{% endif %}" 
+                     data-question-id="{{ question.id }}"
+                     data-question-index="{{ loop.index }}">
+                    
+                    <div class="question-text">
+                        Câu {{ loop.index }}: {{ question.question_text }}
+                    </div>
+
+                    <div class="answers-wrapper">
+                        {% for answer in question.shuffled_answers %}
+                        <div class="answer-option" 
+                             data-answer-id="{{ answer.id }}"
+                             data-question-id="{{ question.id }}">
+                            <input type="radio" 
+                                   name="question_{{ question.id }}" 
+                                   id="answer_{{ answer.id }}"
+                                   value="{{ answer.id }}"
+                                   {% if question.id in answered_questions %}checked{% endif %}>
+                                <label class="answer-label" for="answer_{{ answer.id }}">
+                                    {{ 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[loop.index0] }}. {{ answer.answer_text }}
+                                </label>
+
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="question-navigation">
+                        {% if not loop.first %}
+                        <button class="btn btn-outline-secondary nav-btn prev-question">
+                            <i class="bi bi-arrow-left"></i> Câu trước
+                        </button>
+                        {% endif %}
+
+                        {% if not loop.last %}
+                        <button class="btn btn-warning nav-btn next-question">
+                            Câu sau <i class="bi bi-arrow-right"></i>
+                        </button>
+                        {% else %}
+                        <button class="btn btn-success nav-btn" onclick="confirmSubmit()">
+                            <i class="bi bi-check-circle"></i> Hoàn thành
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="quiz-sidebar">
+            <!-- Progress -->
+            <div class="sidebar-card">
+                <div class="sidebar-title">Số câu đã làm</div>
+                <div class="info-value">
+                    <span id="answered-count">{{ answered_questions|length }}</span>/{{ questions|length }}
+                </div>
+            </div>
+
+            <!-- Timer -->
+            <div class="sidebar-card">
+                <div class="sidebar-title">Thời gian còn lại</div>
+                <div class="timer-display" id="timer">
+                    {{ '%02d'|format(remaining_seconds // 60) }}:{{ '%02d'|format(remaining_seconds % 60) }}
+                </div>
+            </div>
+
+            <!-- Question Navigator -->
+            <div class="sidebar-card">
+                <div class="sidebar-title">Danh sách câu hỏi</div>
+                <div class="question-grid" id="question-navigator">
+                    {% for question in questions %}
+                    <div class="question-number {% if loop.first %}current{% endif %} {% if question.id in answered_questions %}answered{% endif %}"
+                         data-question-index="{{ loop.index }}"
+                         onclick="goToQuestion({{ loop.index }})">
+                        {{ loop.index }}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Legend -->
+                <div class="quiz-legend">
+                    <div class="legend-item">
+                        <div class="legend-dot answered"></div>
+                        <span>Câu đã làm</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot unanswered"></div>
+                        <span>Câu chưa làm</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <form method="POST" action="{{ url_for('quiz.submit_quiz') }}" id="submit-form">
+                <button type="button" class="submit-quiz-btn" onclick="confirmSubmit()">
+                    <i class="bi bi-send"></i> NỘP BÀI
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// ==================== GLOBAL VARIABLES ====================
+let currentQuestionIndex = 1;
+const totalQuestions = {{ questions|length }};
+let remainingSeconds = {{ remaining_seconds }};
+let answeredQuestions = new Set({{ answered_questions|list|tojson }});
+
+// ==================== TIMER ====================
+const timerDisplay = document.getElementById('timer');
+
+function updateTimer() {
+    if (remainingSeconds <= 0) {
+        alert('⏰ Hết thời gian làm bài! Bài thi sẽ được nộp tự động.');
+        document.getElementById('submit-form').submit();
+        return;
+    }
+
+    const minutes = Math.floor(remainingSeconds / 60);
+    const seconds = remainingSeconds % 60;
+    
+    timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    
+    // Đổi màu warning/danger
+    if (remainingSeconds <= 60) {
+        timerDisplay.classList.add('danger');
+    } else if (remainingSeconds <= 300) {
+        timerDisplay.classList.add('warning');
+    }
+    
+    remainingSeconds--;
+    setTimeout(updateTimer, 1000);
+}
+
+updateTimer();
+
+// ==================== ANSWER SELECTION ====================
+document.querySelectorAll('.answer-option').forEach(option => {
+    option.addEventListener('click', function() {
+        const radio = this.querySelector('input[type="radio"]');
+        const questionId = parseInt(this.dataset.questionId);
+        const answerId = parseInt(this.dataset.answerId);
+        
+        // Chọn radio
+        radio.checked = true;
+        
+        // Highlight selected
+        this.closest('.answers-wrapper').querySelectorAll('.answer-option').forEach(opt => {
+            opt.classList.remove('selected');
+        });
+        this.classList.add('selected');
+        
+        // Lưu câu trả lời (AJAX)
+        saveAnswer(questionId, answerId);
+    });
+});
+
+// ==================== SAVE ANSWER (AJAX) ====================
+function saveAnswer(questionId, answerId) {
+    fetch('{{ url_for("quiz.save_answer") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            question_id: questionId,
+            answer_id: answerId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Cập nhật UI
+            answeredQuestions.add(questionId);
+            updateAnsweredCount();
+            updateQuestionNavigator();
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+// ==================== UPDATE ANSWERED COUNT ====================
+function updateAnsweredCount() {
+    document.getElementById('answered-count').textContent = answeredQuestions.size;
+}
+
+// ==================== UPDATE QUESTION NAVIGATOR ====================
+function updateQuestionNavigator() {
+    document.querySelectorAll('.question-block').forEach((block, index) => {
+        const questionId = parseInt(block.dataset.questionId);
+        const navBtn = document.querySelector(`.question-number[data-question-index="${index + 1}"]`);
+        
+        if (answeredQuestions.has(questionId)) {
+            navBtn.classList.add('answered');
+        }
+    });
+}
+
+// ==================== NAVIGATION ====================
+function goToQuestion(index) {
+    currentQuestionIndex = index;
+    
+    // Hide all questions
+    document.querySelectorAll('.question-block').forEach(block => {
+        block.classList.add('d-none');
+        block.classList.remove('active');
+    });
+    
+    // Show target question
+    const targetBlock = document.querySelector(`.question-block[data-question-index="${index}"]`);
+    targetBlock.classList.remove('d-none');
+    targetBlock.classList.add('active');
+    
+    // Update navigator
+    document.querySelectorAll('.question-number').forEach(num => {
+        num.classList.remove('current');
+    });
+    document.querySelector(`.question-number[data-question-index="${index}"]`).classList.add('current');
+    
+    // Update header
+    document.getElementById('current-question-num').textContent = index;
+    
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Prev/Next buttons
+document.querySelectorAll('.prev-question').forEach(btn => {
+    btn.addEventListener('click', function() {
+        if (currentQuestionIndex > 1) {
+            goToQuestion(currentQuestionIndex - 1);
+        }
+    });
+});
+
+document.querySelectorAll('.next-question').forEach(btn => {
+    btn.addEventListener('click', function() {
+        if (currentQuestionIndex < totalQuestions) {
+            goToQuestion(currentQuestionIndex + 1);
+        }
+    });
+});
+
+// ==================== CONFIRM SUBMIT ====================
+function confirmSubmit() {
+    const unansweredCount = totalQuestions - answeredQuestions.size;
+
+    if (unansweredCount > 0) {
+        alert(`⚠️ Bạn còn ${unansweredCount} câu chưa trả lời.`);
+        return;
+    }
+
+    if (confirm('✅ Bạn có chắc chắn muốn nộp bài không?')) {
+        document.getElementById('submit-form').submit();
+    }
+}
+// ==================== AUTO SUBMIT WHEN TIME'S UP ====================
+setTimeout(() => {
+    if (remainingSeconds <= 0) {
+        document.getElementById('submit-form').submit();
+    }
+}, remainingSeconds * 1000);
+</script>
+{% endblock %}
