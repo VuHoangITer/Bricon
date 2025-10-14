@@ -222,9 +222,9 @@ footer a {
   }
 }
 
-/* ==================== FIX PRODUCT GRID - 4 SẢN PHẨM NGANG TRÊN MOBILE ==================== */
+/* ==================== FIX PRODUCT GRID - 3 SẢN PHẨM NGANG TRÊN MOBILE ==================== */
 
-/* Override Bootstrap col-6 trên mobile để hiển thị 4 cột ngang */
+/* Override Bootstrap col-6 trên mobile để hiển thị 3 cột ngang */
 @media (max-width: 576px) {
 @media (max-width: 576px) {
   .products-grid .row.g-4 > .col-6,
