@@ -1691,30 +1691,3 @@ body::-webkit-scrollbar-thumb {
   width: 10px !important;
   height: 10px !important;
 }
-/* ==================== FOOTER - HOTLINE SUPPORT ==================== */
-footer .hotline-item {
-  margin-bottom: 1rem;
-}
-
-footer .hotline-item .main-hotline {
-  display: flex;
-  align-items: flex-start;
-  margin-bottom: 0.5rem;
-}
-
-footer .hotline-item .sub-hotline {
-  margin-left: 2rem;
-  padding-left: 1rem;
-  border-left: 2px solid rgba(255, 193, 7, 0.3);
-  font-size: 0.85rem;
-  color: #adb5bd;
-  line-height: 1.8;
-}
-
-footer .hotline-item .sub-hotline div {
-  margin-bottom: 0.25rem;
-}
-
-footer .hotline-item .sub-hotline div:last-child {
-  margin-bottom: 0;
-}
