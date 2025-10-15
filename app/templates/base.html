@@ -13,10 +13,7 @@
       name="description"
       content="{% block meta_description %}{{ get_setting('meta_description', 'BRICON VIỆT NAM - Keo dán gạch, keo chà ron và chống thấm. Keo của người Việt, kết dính bền lâu, xây dựng niềm tin.') }}{% endblock %}"
     />
-    <meta
-      name="keywords"
-      content="{{ get_setting('keo dán gạch, keo chà ron, chống thấm, bricon, vật liệu xây dựng') }}"
-    />
+    <meta name="keywords" content="{{ get_setting('meta_keywords', 'keo dán gạch, keo chà ron, chống thấm, bricon, vật liệu xây dựng') }}" />
 
     <!-- ==================== META ROBOTS - QUAN TRỌNG CHO SEO ==================== -->
     <meta
@@ -101,10 +98,10 @@
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "Công ty TNHH BRICON Việt Nam",
+        "@type": "Organization",
         "name": "{{ get_setting('website_name', 'CÔNG TY TNHH BRICON VIỆT NAM') }}",
-        "url": "{{ get_setting('main_url', request.url_root) }}",
-        "logo": "{{ get_setting('logo_url', url_for('static', filename='img/logo.png', _external=True)) }}",
+        "url": "{{ get_setting('main_url', request.url_root)|e }}",
+        "logo": "{{ get_setting('logo_url', url_for('static', filename='img/logo.png', _external=True))|e }}",
         "description": "keo chà ron, keo dán gạch, vật liệu chống thấm và giải pháp xây dựng chất lượng cao tại Việt Nam.",
         "contactPoint": {
           "@type": "ContactPoint",
@@ -205,14 +202,14 @@
             <a
               href="{{ get_setting('zalo_url', 'https://zalo.me/0901180094') }}"
               class="text-white text-decoration-none me-3"
-              target="_blank"
+              target="_blank" rel="noopener"
             >
               <i class="bi bi-chat-dots-fill text-warning"></i> Chat Zalo
             </a>
             <a
               href="{{ get_setting('facebook_messenger_url', '#') }}"
               class="text-white text-decoration-none"
-              target="_blank"
+              target="_blank" rel="noopener"
             >
               <i class="bi bi-messenger text-warning"></i> Chat Messenger
             </a>
@@ -641,7 +638,7 @@
                 {% if get_setting('facebook_url') %}
                 <a
                   href="{{ get_setting('facebook_url') }}"
-                  target="_blank"
+                  target="_blank" rel="noopener"
                   title="Facebook"
                   aria-label="Facebook"
                 >
@@ -652,7 +649,7 @@
                 {% if get_setting('zalo_url') %}
                 <a
                   href="{{ get_setting('zalo_url') }}"
-                  target="_blank"
+                  target="_blank" rel="noopener"
                   title="Zalo"
                   aria-label="Zalo"
                 >
@@ -663,7 +660,7 @@
                 {% if get_setting('youtube_url') %}
                 <a
                   href="{{ get_setting('youtube_url') }}"
-                  target="_blank"
+                  target="_blank" rel="noopener"
                   title="YouTube"
                   aria-label="YouTube"
                 >
@@ -674,7 +671,7 @@
                 {% if get_setting('tiktok_url') %}
                 <a
                   href="{{ get_setting('tiktok_url') }}"
-                  target="_blank"
+                  target="_blank" rel="noopener"
                   title="TikTok"
                   aria-label="TikTok"
                 >
@@ -706,7 +703,7 @@
       <!-- Zalo -->
       <a
         href="{{ get_setting('zalo_url', 'https://zalo.me/0901180094') }}"
-        target="_blank"
+        target="_blank" rel="noopener"
         class="floating-btn zalo-btn"
         title="Chat Zalo"
         aria-label="Chat Zalo"
