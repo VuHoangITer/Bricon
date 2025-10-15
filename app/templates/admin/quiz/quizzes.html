@@ -58,7 +58,6 @@
             <table class="table table-quiz table-hover mb-0">
                 <thead>
                     <tr>
-                        <th>ID</th>
                         <th>Tên Quiz</th>
                         <th>Số Câu Hỏi</th>
                         <th>Thời Gian (Phút)</th>
@@ -74,7 +73,6 @@
                     {% for stat in quiz_stats %}
                     {% set quiz = stat.quiz %}
                     <tr class="hover-row">
-                        <td>{{ quiz.id }}</td>
                         <td>{{ quiz.title }}</td>
                         <td>{{ stat.total_questions }}</td>
                         <td>{{ quiz.duration_minutes }}</td>
