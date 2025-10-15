@@ -59,83 +59,17 @@ section h2 {
 
 /* ==================== PRODUCT CARDS ==================== */
 .product-image {
-  height: 210px; /* Loại bỏ !important để linh hoạt */
+  height: 210px;
 }
 
 .product-name {
   font-size: 1rem !important;
-  height: auto !important; /* Loại bỏ height cố định để tránh cắt nội dung */
-  -webkit-line-clamp: 3 !important; /* Tăng lên 3 dòng để hiển thị đầy đủ hơn */
+  height: auto !important;
+  -webkit-line-clamp: 3 !important;
 }
 
 .product-price .price {
   font-size: 1.2rem !important;
-}
-
-/* ==================== FIX PRODUCT GRID - 4 SẢN PHẨM NGANG TRÊN MOBILE ==================== */
-
-/* Override Bootstrap col-6 trên mobile để hiển thị 4 cột ngang */
-@media (max-width: 576px) {
-  /* Chỉ áp dụng cho trang index - featured products section */
-  section .row.g-4 > .col-6 {
-    flex: 0 0 25% !important; /* 4 cột = 25% mỗi cột */
-    max-width: 25% !important;
-  }
-
-  /* Giảm padding container để fit 4 cột */
-  .container {
-    padding-left: 0.25rem !important;
-    padding-right: 0.25rem !important;
-  }
-
-  /* Giảm gap giữa các cột */
-  .row.g-4 {
-    --bs-gutter-x: 0.25rem !important;
-    --bs-gutter-y: 0.5rem !important;
-  }
-
-  /* Thu nhỏ product card để fit */
-  .product-image {
-    height: 100px !important; /* Giảm từ 140px xuống 100px */
-  }
-
-  .product-name {
-    font-size: 0.75rem !important; /* Giảm font size */
-    -webkit-line-clamp: 2 !important;
-    line-height: 1.2 !important;
-  }
-
-  .product-price .price {
-    font-size: 0.85rem !important;
-  }
-
-  .product-price .old-price {
-    font-size: 0.7rem !important;
-  }
-
-  .product-card .btn {
-    font-size: 0.7rem !important;
-    padding: 0.3rem 0.5rem !important;
-  }
-
-  .card-body {
-    padding: 0.5rem !important;
-  }
-}
-
-/* Màn hình rất nhỏ (< 360px) */
-@media (max-width: 359px) {
-  .product-image {
-    height: 80px !important;
-  }
-
-  .product-name {
-    font-size: 0.7rem !important;
-  }
-
-  .product-price .price {
-    font-size: 0.75rem !important;
-  }
 }
 
 /* ==================== BLOG CARDS ==================== */
@@ -189,15 +123,17 @@ footer li,
 footer a {
   font-size: 0.85rem !important;
 }
-/* ==================== FIX WHY CHOOSE US - MOBILE 4 COLUMNS ==================== */
-@media (max-width: 576px) {
-  /* Why Choose Us section - 4 cột ngang trên mobile */
-  .bg-white .row.g-4 > .col-lg-3 {
-    flex: 0 0 25% !important;
-    max-width: 25% !important;
-  }
 
-  /* Thu nhỏ nội dung để fit 4 cột */
+/* ==================== ✅ WHY CHOOSE US - 4 COLUMNS (ALL DEVICES) ==================== */
+/* Áp dụng cho TẤT CẢ thiết bị - không có media query */
+.bg-white .row.g-4 > .col-lg-3,
+.bg-white .row.g-4 > .col-md-6 {
+  flex: 0 0 25% !important; /* 4 cột = 25% */
+  max-width: 25% !important;
+}
+
+/* Điều chỉnh responsive cho mobile */
+@media (max-width: 576px) {
   .bg-white .row.g-4 .bi {
     font-size: 1.75rem !important;
   }
@@ -216,36 +152,109 @@ footer a {
     padding: 0.5rem !important;
   }
 
-  /* Giảm gap giữa các cột */
   .bg-white .row.g-4 {
     --bs-gutter-x: 0.25rem !important;
   }
 }
 
-/* ==================== FIX PRODUCT GRID - 3 SẢN PHẨM NGANG TRÊN MOBILE ==================== */
+/* ==================== ✅ PRODUCT GRID - 3 SẢN PHẨM (ALL DEVICES) ==================== */
+/* Áp dụng cho TẤT CẢ thiết bị */
+.products-grid .row.g-4 > .col-lg-4,
+.products-grid .row.g-4 > .col-md-4,
+.products-grid .row.g-4 > .col-sm-6,
+.products-grid .row.g-4 > .col-6,
+.bg-gray-dark .row.g-4 > .col-lg-4,
+.bg-gray-dark .row.g-4 > .col-md-4,
+.bg-gray-dark .row.g-4 > .col-sm-6,
+.bg-gray-dark .row.g-4 > .col-6 {
+  flex: 0 0 33.333% !important; /* 3 cột = 33.333% */
+  max-width: 33.333% !important;
+}
 
-/* Override Bootstrap col-6 trên mobile để hiển thị 3 cột ngang */
+/* Điều chỉnh responsive cho mobile */
 @media (max-width: 576px) {
-@media (max-width: 576px) {
-  .products-grid .row.g-4 > .col-6,
-  .bg-gray-dark .row.g-4 > .col-6 {
-    flex: 0 0 33.333% !important; /* 3 cột */
-    max-width: 33.333% !important;
+  /* Giảm padding container */
+  .container {
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
   }
 
-  /* Điều chỉnh kích thước */
+  /* Giảm gap */
+  .row.g-4 {
+    --bs-gutter-x: 0.25rem !important;
+    --bs-gutter-y: 0.5rem !important;
+  }
+
+  /* Thu nhỏ product card */
   .products-grid .product-image,
   .bg-gray-dark .product-image {
-    height: 140px !important;
+    height: 120px !important;
   }
 
   .products-grid .product-name,
   .bg-gray-dark .product-name {
-    font-size: 0.85rem !important;
+    font-size: 0.8rem !important;
+    -webkit-line-clamp: 2 !important;
+    line-height: 1.2 !important;
   }
 
   .products-grid .product-price .price,
   .bg-gray-dark .product-price .price {
-    font-size: 0.95rem !important;
+    font-size: 0.9rem !important;
+  }
+
+  .products-grid .product-price .old-price,
+  .bg-gray-dark .product-price .old-price {
+    font-size: 0.7rem !important;
+  }
+
+  .products-grid .card-body,
+  .bg-gray-dark .card-body {
+    padding: 0.5rem !important;
+  }
+
+  .products-grid .btn,
+  .bg-gray-dark .btn {
+    font-size: 0.7rem !important;
+    padding: 0.3rem 0.5rem !important;
+  }
+}
+
+/* Điều chỉnh cho tablet */
+@media (min-width: 577px) and (max-width: 991px) {
+  .products-grid .product-image,
+  .bg-gray-dark .product-image {
+    height: 180px !important;
+  }
+
+  .products-grid .product-name,
+  .bg-gray-dark .product-name {
+    font-size: 0.9rem !important;
+  }
+}
+
+/* Điều chỉnh cho desktop */
+@media (min-width: 992px) {
+  .products-grid .product-image,
+  .bg-gray-dark .product-image {
+    height: 210px !important;
+  }
+}
+
+/* Màn hình rất nhỏ (< 360px) */
+@media (max-width: 359px) {
+  .products-grid .product-image,
+  .bg-gray-dark .product-image {
+    height: 100px !important;
+  }
+
+  .products-grid .product-name,
+  .bg-gray-dark .product-name {
+    font-size: 0.7rem !important;
+  }
+
+  .products-grid .product-price .price,
+  .bg-gray-dark .product-price .price {
+    font-size: 0.8rem !important;
   }
 }
