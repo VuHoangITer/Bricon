@@ -64,7 +64,11 @@
       rel="manifest"
       href="{{ url_for('static', filename='site.webmanifest') }}"
     />
+    <link rel="icon" type="image/png" sizes="192x192"
+          href="{{ url_for('static', filename='web-app-manifest-192x192.png') }}">
 
+    <link rel="icon" type="image/png" sizes="512x512"
+          href="{{ url_for('static', filename='web-app-manifest-512x512.png') }}">
     <!-- ==================== DYNAMIC THEME COLORS  ==================== -->
     <style>
       :root {
