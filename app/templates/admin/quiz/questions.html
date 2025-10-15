@@ -22,9 +22,18 @@
 
 {% block content %}
 <div class="container-fluid py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
         <h2 class="mb-0"><i class="bi bi-question-circle me-2"></i> Câu Hỏi cho Quiz: {{ quiz.title }}</h2>
-        <a href="{{ url_for('quiz_admin.quizzes') }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Quay lại</a>
+        <div class="d-flex gap-2">
+            <!-- 🔙 Quay lại -->
+            <a href="{{ url_for('quiz_admin.quizzes') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Quay lại
+            </a>
+            <!-- 📥 Import Excel -->
+            <a href="{{ url_for('quiz_admin.import_excel', quiz_id=quiz.id) }}" class="btn btn-success">
+                <i class="bi bi-file-earmark-excel"></i> Import Excel
+            </a>
+        </div>
     </div>
 
     <!-- Form Thêm Câu Hỏi Nhanh -->
@@ -98,32 +107,7 @@
             </div>
             {% endfor %}
         </div>
-
-        <!-- Phân trang -->
-        {% if pagination.pages > 1 %}
-        <nav class="mt-4">
-            <ul class="pagination justify-content-center">
-                {% if pagination.has_prev %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ pagination.prev_num }}">← Trước</a>
-                </li>
-                {% endif %}
-
-                <li class="page-item disabled">
-                    <a class="page-link">Trang {{ pagination.page }} / {{ pagination.pages }}</a>
-                </li>
-
-                {% if pagination.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ pagination.next_num }}">Sau →</a>
-                </li>
-                {% endif %}
-            </ul>
-        </nav>
-        {% endif %}
-
 </div>
-
 <script>
 function addAnswerField() {
     const container = document.getElementById('answers-container');

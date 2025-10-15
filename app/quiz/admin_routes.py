@@ -170,23 +170,18 @@ def delete_quiz(id):
 def edit_questions(quiz_id):
     """
     Trang quản lý câu hỏi của 1 quiz
-    Hiển thị danh sách câu hỏi + form thêm nhanh + phân trang
+    Hiển thị toàn bộ câu hỏi (KHÔNG PHÂN TRANG)
     """
     quiz = Quiz.query.get_or_404(quiz_id)
 
-    # --- Thêm phân trang ---
-    page = request.args.get('page', 1, type=int)
-    per_page = 6  # mỗi trang hiển thị 6 câu hỏi (2 hàng, 3 cột)
-
-    pagination = Question.query.filter_by(quiz_id=quiz_id)\
-        .order_by(Question.order.asc())\
-        .paginate(page=page, per_page=per_page, error_out=False)
+    # Lấy tất cả câu hỏi, sắp xếp theo thứ tự
+    questions = Question.query.filter_by(quiz_id=quiz_id)\
+        .order_by(Question.order.asc()).all()
 
     return render_template(
         'admin/quiz/questions.html',
         quiz=quiz,
-        questions=pagination.items,
-        pagination=pagination
+        questions=questions
     )
 
 
@@ -510,3 +505,136 @@ def import_questions(quiz_id):
             return redirect(url_for('quiz_admin.import_questions', quiz_id=quiz_id))
 
     return render_template('admin/quiz/import_questions.html', quiz=quiz)
+
+
+# ==================== IMPORT EXCEL V3 - THÊM VÀO admin_routes.py ====================
+
+@quiz_admin_bp.route('/questions/import-excel/<int:quiz_id>', methods=['GET', 'POST'])
+@permission_required('manage_quiz')
+def import_excel(quiz_id):
+    """
+    Import câu hỏi từ file Excel V3
+    Format: Chủ đề | Câu hỏi | A | B | C | D | Đáp án đúng
+    """
+    quiz = Quiz.query.get_or_404(quiz_id)
+
+    if request.method == 'POST':
+        file = request.files.get('file')
+
+        if not file or not file.filename.endswith(('.xlsx', '.xls')):
+            flash('❌ Vui lòng upload file Excel (.xlsx hoặc .xls)', 'danger')
+            return redirect(url_for('quiz_admin.import_excel', quiz_id=quiz_id))
+
+        try:
+            import pandas as pd
+            from io import BytesIO
+
+            # Đọc file Excel
+            df = pd.read_excel(BytesIO(file.read()), sheet_name=0)
+
+            # Kiểm tra cấu trúc file (các cột bắt buộc)
+            required_cols = ['Chủ đề', 'Câu hỏi', 'A', 'B', 'C', 'D', 'Đáp án đúng']
+            missing_cols = [col for col in required_cols if col not in df.columns]
+
+            if missing_cols:
+                flash(f'❌ File Excel thiếu cột: {", ".join(missing_cols)}', 'danger')
+                return redirect(url_for('quiz_admin.import_excel', quiz_id=quiz_id))
+
+            # Đếm số câu import thành công
+            success_count = 0
+            error_rows = []
+
+            for idx, row in df.iterrows():
+                try:
+                    # Lấy nội dung câu hỏi
+                    question_text = str(row['Câu hỏi']).strip()
+
+                    # Kiểm tra câu hỏi có hợp lệ không
+                    if not question_text or question_text == 'nan' or len(question_text) < 5:
+                        error_rows.append(f"Dòng {idx + 2}: Câu hỏi không hợp lệ")
+                        continue
+
+                    # Lấy chủ đề (nếu có)
+                    category = str(row['Chủ đề']).strip() if pd.notna(row['Chủ đề']) else ''
+
+                    # Ghép chủ đề vào câu hỏi (VD: "IQ: Câu hỏi...")
+                    if category and category != 'nan':
+                        question_text = f"{category}: {question_text}"
+
+                    # Lấy các đáp án từ cột A, B, C, D
+                    answers_data = []
+                    for col in ['A', 'B', 'C', 'D']:
+                        answer_text = str(row[col]).strip() if pd.notna(row[col]) else ''
+                        if answer_text and answer_text != 'nan':
+                            answers_data.append(answer_text)
+
+                    # Phải có ít nhất 2 đáp án
+                    if len(answers_data) < 2:
+                        error_rows.append(f"Dòng {idx + 2}: Cần ít nhất 2 đáp án")
+                        continue
+
+                    # Xác định đáp án đúng
+                    correct_answer = str(row['Đáp án đúng']).strip().upper()
+
+                    # Chuyển A/B/C/D thành index (0/1/2/3)
+                    if correct_answer in 'ABCD':
+                        correct_index = ord(correct_answer) - ord('A')
+                    else:
+                        error_rows.append(f"Dòng {idx + 2}: Đáp án đúng không hợp lệ (phải là A/B/C/D)")
+                        continue
+
+                    # Kiểm tra index có vượt quá số đáp án không
+                    if correct_index >= len(answers_data):
+                        error_rows.append(f"Dòng {idx + 2}: Đáp án đúng '{correct_answer}' không tồn tại")
+                        continue
+
+                    # Tạo Question
+                    question = Question(
+                        quiz_id=quiz.id,
+                        question_text=question_text,
+                        question_type='multiple_choice',
+                        points=1,
+                        order=quiz.questions.count() + 1
+                    )
+                    db.session.add(question)
+                    db.session.flush()
+
+                    # Tạo Answers
+                    for ans_idx, ans_text in enumerate(answers_data):
+                        answer = Answer(
+                            question_id=question.id,
+                            answer_text=ans_text,
+                            is_correct=(ans_idx == correct_index),
+                            order=ans_idx
+                        )
+                        db.session.add(answer)
+
+                    success_count += 1
+
+                except Exception as e:
+                    error_rows.append(f"Dòng {idx + 2}: {str(e)}")
+                    continue
+
+            # Cập nhật tổng số câu hỏi
+            quiz.total_questions = quiz.questions.count()
+            db.session.commit()
+
+            # Thông báo kết quả
+            if success_count > 0:
+                flash(f'✅ Đã import thành công {success_count} câu hỏi!', 'success')
+
+            if error_rows:
+                error_msg = f'⚠️ {len(error_rows)} dòng bị lỗi: ' + ' | '.join(error_rows[:10])
+                if len(error_rows) > 10:
+                    error_msg += f' (và {len(error_rows) - 10} lỗi khác...)'
+                flash(error_msg, 'warning')
+
+            return redirect(url_for('quiz_admin.edit_questions', quiz_id=quiz.id))
+
+        except Exception as e:
+            db.session.rollback()
+            flash(f'❌ Lỗi đọc file Excel: {str(e)}', 'danger')
+            import traceback
+            traceback.print_exc()
+
+    return render_template('admin/quiz/import_excel.html', quiz=quiz)
