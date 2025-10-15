@@ -96,105 +96,86 @@ endblock %} {% block content %}
         </div>
       </div>
 
-      <!-- Sidebar -->
-      <div class="col-lg-4 mt-4 mt-lg-0">
-        <!-- Contact Card -->
-        <div class="card border-0 shadow-sm mb-4">
-          <div class="card-header bg-warning">
-            <h5 class="mb-0">
-              <i class="bi bi-headset"></i> Hỗ trợ trực tuyến
-            </h5>
-          </div>
-          <div class="card-body">
-            <p class="mb-3 text-center">
-              <i class="bi bi-telephone-fill text-warning me-2"></i>
-              <strong>Hotline:</strong>
-              <a
-                href="tel:{{ get_setting('hotline', '0901.180.094')|replace('.', '')|replace(' ', '') }}"
-                class="text-decoration-none text-primary fw-bold"
-              >
-                {{ get_setting('hotline', '0901.180.094') }}
-              </a>
-            </p>
-            <p class="mb-3 text-center">
-              <i class="bi bi-envelope-fill text-warning me-2"></i>
-              <strong>Email:</strong>
-              <a
-                href="mailto:{{ get_setting('contact_email', 'info@bricon.vn') }}"
-                class="text-decoration-none text-primary fw-bold"
-              >
-                {{ get_setting('contact_email', 'info@bricon.vn') }}
-              </a>
-            </p>
-            <p class="mb-0 text-center">
-              <i class="bi bi-clock-fill text-warning me-2"></i>
-              <strong>Giờ làm việc:</strong>
-              {{ get_setting('working_hours', '8h - 17h30 (Thứ 2 - Thứ 7)') }}
-            </p>
-            <hr />
-            <div class="d-flex gap-2">
-              {% if get_setting('zalo_url') %}
-              <a
-                href="{{ get_setting('zalo_url') }}"
-                target="_blank"
-                class="btn btn-outline-info btn-sm flex-fill"
-                title="Chat Zalo"
-              >
-                <i class="bi bi-chat-dots"></i> Zalo
-              </a>
-              {% endif %} {% if get_setting('facebook_url') %}
-              <a
-                href="{{ get_setting('facebook_url') }}"
-                target="_blank"
-                class="btn btn-outline-primary btn-sm flex-fill"
-                title="Facebook"
-              >
-                <i class="bi bi-facebook"></i> Facebook
-              </a>
-              {% endif %}
+        <!-- ========================= SIDEBAR Thông tin ========================= -->
+        <div class="col-lg-4 mt-4 mt-lg-0">
+          <div class="sticky-top" style="top: 120px; z-index: 100;">
+
+            <!-- ========================= HỖ TRỢ TRỰC TUYẾN ========================= -->
+            <div class="card border-0 shadow-sm mb-4">
+              <div class="card-header bg-warning">
+                <h5 class="mb-0">
+                  <i class="bi bi-headset"></i> Hỗ trợ trực tuyến
+                </h5>
+              </div>
+              <div class="card-body">
+                <p class="mb-3 text-center">
+                  <i class="bi bi-telephone-fill text-warning me-2"></i>
+                  <strong>Hotline:</strong>
+                  <a href="tel:{{ get_setting('hotline', '0901.180.094')|replace('.', '')|replace(' ', '') }}"
+                     class="text-decoration-none text-primary fw-bold">
+                     {{ get_setting('hotline', '0901.180.094') }}
+                  </a>
+                </p>
+
+                <p class="mb-3 text-center">
+                  <i class="bi bi-envelope-fill text-warning me-2"></i>
+                  <strong>Email:</strong>
+                  <a href="mailto:{{ get_setting('contact_email', 'info@bricon.vn') }}"
+                     class="text-decoration-none text-primary fw-bold">
+                     {{ get_setting('contact_email', 'info@bricon.vn') }}
+                  </a>
+                </p>
+
+                <p class="mb-0 text-center">
+                  <i class="bi bi-clock-fill text-warning me-2"></i>
+                  <strong>Giờ làm việc:</strong>
+                  {{ get_setting('working_hours', '8h - 17h30 (Thứ 2 - Thứ 7)') }}
+                </p>
+
+                <hr />
+
+                <div class="d-flex gap-2">
+                  {% if get_setting('zalo_url') %}
+                  <a href="{{ get_setting('zalo_url') }}" target="_blank"
+                     class="btn btn-outline-info btn-sm flex-fill" title="Chat Zalo">
+                     <i class="bi bi-chat-dots"></i> Zalo
+                  </a>
+                  {% endif %}
+                  {% if get_setting('facebook_url') %}
+                  <a href="{{ get_setting('facebook_url') }}" target="_blank"
+                     class="btn btn-outline-primary btn-sm flex-fill" title="Facebook">
+                     <i class="bi bi-facebook"></i> Facebook
+                  </a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <!-- ========================= LIÊN KẾT HỮU ÍCH ========================= -->
+            <div class="card border-0 shadow-sm">
+              <div class="card-header bg-light">
+                <h6 class="mb-0">
+                  <i class="bi bi-link-45deg"></i> Liên kết hữu ích
+                </h6>
+              </div>
+
+              <div class="list-group list-group-flush">
+                <a href="{{ url_for('main.about') }}" class="list-group-item list-group-item-action">
+                  <i class="bi bi-info-circle text-warning me-2"></i> Giới thiệu
+                </a>
+                <a href="{{ url_for('main.products') }}" class="list-group-item list-group-item-action">
+                  <i class="bi bi-box-seam text-warning me-2"></i> Sản phẩm
+                </a>
+                <a href="{{ url_for('main.policy') }}" class="list-group-item list-group-item-action">
+                  <i class="bi bi-file-text text-warning me-2"></i> Chính sách
+                </a>
+                <a href="{{ url_for('main.contact') }}" class="list-group-item list-group-item-action">
+                  <i class="bi bi-envelope text-warning me-2"></i> Liên hệ
+                </a>
+              </div>
             </div>
           </div>
         </div>
-
-        <!-- Quick Links -->
-        <div class="card border-0 shadow-sm">
-          <div class="card-header bg-light">
-            <h6 class="mb-0">
-              <i class="bi bi-link-45deg"></i> Liên kết hữu ích
-            </h6>
-          </div>
-          <div class="list-group list-group-flush">
-            <a
-              href="{{ url_for('main.about') }}"
-              class="list-group-item list-group-item-action"
-            >
-              <i class="bi bi-info-circle text-warning me-2"></i>
-              Giới thiệu
-            </a>
-            <a
-              href="{{ url_for('main.products') }}"
-              class="list-group-item list-group-item-action"
-            >
-              <i class="bi bi-box-seam text-warning me-2"></i>
-              Sản phẩm
-            </a>
-            <a
-              href="{{ url_for('main.policy') }}"
-              class="list-group-item list-group-item-action"
-            >
-              <i class="bi bi-file-text text-warning me-2"></i>
-              Chính sách
-            </a>
-            <a
-              href="{{ url_for('main.contact') }}"
-              class="list-group-item list-group-item-action"
-            >
-              <i class="bi bi-envelope text-warning me-2"></i>
-              Liên hệ
-            </a>
-          </div>
-        </div>
-      </div>
     </div>
     {% else %}
     <!-- No FAQs -->
