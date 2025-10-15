@@ -565,11 +565,12 @@ class QuizForm(FlaskForm):
     # Phân loại
     category = SelectField('Danh mục', choices=[
         ('', '-- Chọn danh mục --'),
-        ('technical', 'Kỹ thuật'),
-        ('hr', 'Nhân sự'),
-        ('sales', 'Kinh doanh'),
-        ('marketing', 'Marketing'),
-        ('general', 'Kiến thức chung')
+        ('Phong-van', 'Phỏng vấn'),
+        ('San-pham', 'Sản phẩm'),
+        ('CRM', 'CRM'),
+        ('QTUX', 'Quy tắc ứng xử TELESALES'),
+        ('noi-quy-nvcskh', 'NỘI QUY NV CSKH'),
+        ('Ke-toan', 'Kế toán')
     ])
 
     is_active = BooleanField('Kích hoạt', default=True)
