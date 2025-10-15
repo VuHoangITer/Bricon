@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: d32de89c3bde
+Revision ID: c67226e904c8
 Revises: 
-Create Date: 2025-10-14 15:53:39.515506
+Create Date: 2025-10-15 01:29:50.256682
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'd32de89c3bde'
+revision = 'c67226e904c8'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -266,11 +266,13 @@ def upgrade():
     sa.Column('shuffle_questions', sa.Boolean(), nullable=True),
     sa.Column('shuffle_answers', sa.Boolean(), nullable=True),
     sa.Column('category', sa.String(length=100), nullable=True),
-    sa.Column('difficulty', sa.String(length=50), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.Column('created_by', sa.Integer(), nullable=True),
+    sa.Column('qr_code_base64', sa.Text(), nullable=True),
+    sa.Column('quiz_url_cached', sa.String(length=500), nullable=True),
+    sa.Column('qr_generated_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['created_by'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('slug')

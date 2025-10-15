@@ -45,11 +45,13 @@
                     <input type="hidden" name="selected_image_path" id="selectedImagePath" value="">
 
                     <div class="mt-2">
-                        {% if banner and banner.image %}
-                            <img id="imagePreview" src="{{ banner.image }}" alt="Current" class="img-thumbnail" style="max-width: 100%; max-height: 200px;">
-                        {% else %}
-                            <img id="imagePreview" src="" alt="Preview" class="img-thumbnail" style="max-width: 100%; max-height: 200px; display: none;">
-                        {% endif %}
+                        <img
+                            id="imagePreview"
+                            src="{{ banner.image if banner and banner.image else '' }}"
+                            alt="Preview"
+                            class="img-thumbnail"
+                            style="max-width: 100%; max-height: 200px; {{ '' if banner and banner.image else 'display: none;' }}"
+                        >
                     </div>
                 </div>
 
