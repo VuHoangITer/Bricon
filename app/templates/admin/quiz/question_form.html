@@ -2,54 +2,64 @@
 
 {% block title %}Sửa Câu Hỏi{% endblock %}
 
-{% block extra_css %}
-<style>
-.form-card {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    border-radius: 10px;
-}
-</style>
-{% endblock %}
-
 {% block content %}
 <div class="container-fluid py-4">
-    <h2 class="mb-4"><i class="bi bi-question-diamond me-2"></i> Sửa Câu Hỏi</h2>
+    <h2 class="mb-4">
+        <i class="bi bi-question-diamond me-2"></i>
+        Sửa Câu Hỏi
+    </h2>
 
-    <div class="card form-card p-4">
-        <form method="POST">
-            {{ form.hidden_tag() }}
+    <div class="card shadow-sm p-4">
+        <form method="POST" id="questionForm">
+            {{ form.hidden_tag() if form else '' }}
 
             <div class="mb-3">
-                <label class="form-label">{{ form.question_text.label }}</label>
-                {{ form.question_text(class="form-control", rows=3) }}
+                <label class="form-label fw-bold">Nội dung câu hỏi <span class="text-danger">*</span></label>
+                <textarea name="question_text" class="form-control" rows="3" required>{{ question.question_text }}</textarea>
             </div>
 
             <div class="mb-3">
-                <label class="form-label">{{ form.explanation.label }}</label>
-                {{ form.explanation(class="form-control", rows=3) }}
+                <label class="form-label fw-bold">Giải thích đáp án</label>
+                <textarea name="explanation" class="form-control" rows="2">{{ question.explanation or '' }}</textarea>
             </div>
 
             <div class="mb-3">
-                <label class="form-label">{{ form.points.label }}</label>
-                {{ form.points(class="form-control") }}
+                <label class="form-label fw-bold">Điểm <span class="text-danger">*</span></label>
+                <input type="number" name="points" class="form-control" value="{{ question.points }}" min="1" required>
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Đáp Án (Chọn đúng bằng radio)</label>
+                <label class="form-label fw-bold">Đáp Án (Chọn đúng bằng radio) <span class="text-danger">*</span></label>
                 <div id="answers-container">
                     {% for answer in answers %}
-                    <div class="input-group mb-2">
-                        <input type="radio" name="correct_answer" value="{{ loop.index0 }}" {% if answer.is_correct %}checked{% endif %}>
-                        <input type="text" name="answers[]" class="form-control" value="{{ answer.answer_text }}" required>
+                    <div class="input-group mb-2 answer-row">
+                        <div class="input-group-text">
+                            <input type="radio" name="correct_answer" value="{{ loop.index0 }}"
+                                   {% if answer.is_correct %}checked{% endif %} required>
+                        </div>
+                        <input type="text" name="answers[]" class="form-control"
+                               value="{{ answer.answer_text }}" required
+                               placeholder="Đáp án {{ loop.index }}">
+                        <button type="button" class="btn btn-outline-danger btn-sm"
+                                onclick="removeAnswer(this)">
+                            <i class="bi bi-trash"></i>
+                        </button>
                     </div>
                     {% endfor %}
                 </div>
-                <button type="button" class="btn btn-sm btn-info" onclick="addAnswerField()"><i class="bi bi-plus"></i> Thêm Đáp Án</button>
+                <button type="button" class="btn btn-sm btn-outline-primary" onclick="addAnswerField()">
+                    <i class="bi bi-plus-circle"></i> Thêm Đáp Án
+                </button>
             </div>
 
-            <div class="d-flex justify-content-end mt-4">
-                <a href="{{ url_for('quiz_admin.edit_questions', quiz_id=question.quiz_id) }}" class="btn btn-secondary me-2">Hủy</a>
-                <button type="submit" class="btn btn-primary">Lưu</button>
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{{ url_for('quiz_admin.edit_questions', quiz_id=question.quiz_id) }}"
+                   class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Quay lại
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save"></i> Lưu thay đổi
+                </button>
             </div>
         </form>
     </div>
@@ -58,14 +68,54 @@
 <script>
 function addAnswerField() {
     const container = document.getElementById('answers-container');
-    const index = container.children.length;
+    const count = container.children.length;
+
     const div = document.createElement('div');
-    div.className = 'input-group mb-2';
+    div.className = 'input-group mb-2 answer-row';
     div.innerHTML = `
-        <input type="radio" name="correct_answer" value="${index}">
-        <input type="text" name="answers[]" class="form-control" placeholder="Đáp án ${index + 1}" required>
+        <div class="input-group-text">
+            <input type="radio" name="correct_answer" value="${count}" required>
+        </div>
+        <input type="text" name="answers[]" class="form-control"
+               placeholder="Đáp án ${count + 1}" required>
+        <button type="button" class="btn btn-outline-danger btn-sm"
+                onclick="removeAnswer(this)">
+            <i class="bi bi-trash"></i>
+        </button>
     `;
     container.appendChild(div);
 }
+
+function removeAnswer(btn) {
+    const container = document.getElementById('answers-container');
+    if (container.children.length > 2) {
+        btn.closest('.answer-row').remove();
+        // Cập nhật lại value cho radio buttons
+        container.querySelectorAll('.answer-row').forEach((row, idx) => {
+            row.querySelector('input[type="radio"]').value = idx;
+        });
+    } else {
+        alert('⚠️ Phải có ít nhất 2 đáp án!');
+    }
+}
+
+// Validate form trước khi submit
+document.getElementById('questionForm').addEventListener('submit', function(e) {
+    const answers = document.querySelectorAll('input[name="answers[]"]');
+    const validAnswers = Array.from(answers).filter(a => a.value.trim());
+
+    if (validAnswers.length < 2) {
+        e.preventDefault();
+        alert('⚠️ Phải có ít nhất 2 đáp án!');
+        return false;
+    }
+
+    const checkedRadio = document.querySelector('input[name="correct_answer"]:checked');
+    if (!checkedRadio) {
+        e.preventDefault();
+        alert('⚠️ Vui lòng chọn đáp án đúng!');
+        return false;
+    }
+});
 </script>
 {% endblock %}

@@ -246,47 +246,63 @@ def add_question():
     return redirect(url_for('quiz_admin.edit_questions', quiz_id=quiz.id))
 
 
-
 @quiz_admin_bp.route('/questions/edit/<int:id>', methods=['GET', 'POST'])
 @permission_required('manage_quiz')
 def edit_question(id):
-    """Sửa câu hỏi"""
-    from app.forms import QuestionForm
-
+    """Sửa câu hỏi - Xóa user_answers nếu cần"""
     question = Question.query.get_or_404(id)
-    form = QuestionForm(obj=question)
 
-    if form.validate_on_submit():
-        question.question_text = form.question_text.data
-        question.question_type = form.question_type.data
-        question.points = form.points.data
-        question.explanation = form.explanation.data
+    if request.method == 'POST':
+        try:
+            # Lấy dữ liệu từ form
+            question.question_text = request.form.get('question_text', '').strip()
+            question.explanation = request.form.get('explanation', '')
+            question.points = int(request.form.get('points', 1))
 
-        # Cập nhật đáp án
-        Answer.query.filter_by(question_id=question.id).delete()
+            if not question.question_text:
+                flash('❌ Nội dung câu hỏi không được để trống!', 'danger')
+                return redirect(url_for('quiz_admin.edit_question', id=id))
 
-        answers_data = request.form.getlist('answers[]')
-        correct_answer_index = int(request.form.get('correct_answer', 0))
+            correct_index = int(request.form.get('correct_answer', 0))
+            answers_data = request.form.getlist('answers[]')
 
-        for idx, answer_text in enumerate(answers_data):
-            if answer_text.strip():
-                answer = Answer(
-                    question_id=question.id,
-                    answer_text=answer_text.strip(),
-                    is_correct=(idx == correct_answer_index),
-                    order=idx
-                )
-                db.session.add(answer)
+            valid_answers = [a.strip() for a in answers_data if a.strip()]
+            if len(valid_answers) < 2:
+                flash('❌ Phải có ít nhất 2 đáp án!', 'danger')
+                return redirect(url_for('quiz_admin.edit_question', id=id))
 
-        db.session.commit()
+            # ✅ XÓA USER_ANSWERS TRƯỚC (nếu có)
+            UserAnswer.query.filter_by(question_id=question.id).delete()
 
-        flash('✅ Đã cập nhật câu hỏi thành công!', 'success')
-        return redirect(url_for('quiz_admin.edit_questions', quiz_id=question.quiz_id))
+            # Sau đó xóa answers cũ
+            Answer.query.filter_by(question_id=question.id).delete()
 
+            # Tạo answers mới
+            for idx, text in enumerate(answers_data):
+                if text.strip():
+                    answer = Answer(
+                        question_id=question.id,
+                        answer_text=text.strip(),
+                        is_correct=(idx == correct_index),
+                        order=idx
+                    )
+                    db.session.add(answer)
+
+            db.session.commit()
+            flash('✅ Đã cập nhật câu hỏi thành công!', 'success')
+            return redirect(url_for('quiz_admin.edit_questions', quiz_id=question.quiz_id))
+
+        except Exception as e:
+            db.session.rollback()
+            flash(f'❌ Lỗi: {str(e)}', 'danger')
+            print(f"ERROR: {str(e)}")
+            import traceback
+            traceback.print_exc()
+
+    answers = question.answers.order_by(Answer.order).all()
     return render_template('admin/quiz/question_form.html',
-                           form=form,
                            question=question,
-                           answers=question.answers.order_by(Answer.order).all())
+                           answers=answers)
 
 
 @quiz_admin_bp.route('/questions/delete/<int:id>')
