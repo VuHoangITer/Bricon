@@ -18,14 +18,7 @@ bền lâu, xây dựng niềm tin.') }}{% endblock %} {% block content %}
         type="button"
         data-bs-target="#bannerCarousel"
         data-bs-slide-to="{{ loop.index0 }}"
-        {%
-        if
-        loop.first
-        %}class="active"
-        aria-current="true"
-        {%
-        endif
-        %}
+        {% if loop.first %}class="active" aria-current="true"{% endif %}
         aria-label="Slide {{ loop.index }}"
       ></button>
       {% endfor %}
@@ -35,24 +28,34 @@ bền lâu, xây dựng niềm tin.') }}{% endblock %} {% block content %}
     <div class="carousel-inner">
       {% for banner in banners %}
       <div class="carousel-item {% if loop.first %}active{% endif %}">
-        {# Lấy thông tin SEO từ Media nếu có #} {% set media_info =
-        banner.get_media_seo_info() if banner.image else None %}
+        {# Lấy thông tin SEO từ Media nếu có #}
+        {% set media_info = banner.get_media_seo_info() if banner.image else None %}
+        {% set mobile_info = banner.get_mobile_media_seo_info() if banner.image_mobile else media_info %}
 
-        <img
-          src="{{ banner.image if banner.image else 'https://via.placeholder.com/1200x500/FFC107/FFFFFF?text=Banner+' + loop.index|string }}"
-          class="d-block w-100"
-          alt="{{ media_info.alt if media_info else banner.title }}"
-          title="{{ media_info.title if media_info else banner.title }}"
-          loading="lazy"
-        />
+        <!-- ✅ Thêm hỗ trợ ảnh mobile -->
+        <picture>
+          {% if banner.image_mobile %}
+          <!-- Ảnh mobile khi màn hình nhỏ hơn 768px -->
+          <source media="(max-width: 767px)" srcset="{{ banner.image_mobile }}" type="image/webp">
+          {% endif %}
+          <!-- Ảnh desktop -->
+          <source media="(min-width: 768px)" srcset="{{ banner.image }}" type="image/webp">
+
+          <!-- Fallback -->
+          <img
+            src="{{ banner.image if banner.image else 'https://via.placeholder.com/1200x500/FFC107/FFFFFF?text=Banner+' + loop.index|string }}"
+            class="d-block w-100"
+            alt="{{ media_info.alt if media_info else banner.title }}"
+            title="{{ media_info.title if media_info else banner.title }}"
+            loading="lazy"
+          />
+        </picture>
 
         <div class="carousel-caption">
           {% if loop.first %}
           <h1 class="display-4 fw-bold mb-3">{{ banner.title }}</h1>
-          <!-- ✅ chỉ H1 cho banner đầu tiên -->
           {% else %}
           <h2 class="display-4 fw-bold mb-3">{{ banner.title }}</h2>
-          <!-- những banner khác dùng H2 -->
           {% endif %}
           <p class="lead mb-4">{{ banner.subtitle }}</p>
           {% if banner.button_text and banner.link %}
@@ -62,8 +65,7 @@ bền lâu, xây dựng niềm tin.') }}{% endblock %} {% block content %}
           {% endif %}
         </div>
 
-        {# Hiển thị Caption cho SEO nhưng ẩn đi #} {% if media_info and
-        media_info.caption %}
+        {% if media_info and media_info.caption %}
         <div class="visually-hidden">{{ media_info.caption }}</div>
         {% endif %}
       </div>
@@ -91,6 +93,7 @@ bền lâu, xây dựng niềm tin.') }}{% endblock %} {% block content %}
     </button>
   </div>
 </section>
+
 
 <!-- ==================== WHY CHOOSE US ==================== -->
 <section class="py-5 bg-white">
@@ -447,5 +450,22 @@ bền lâu, xây dựng niềm tin.') }}{% endblock %} {% block content %}
     }{% if not loop.last %},{% endif %}
   {% endfor %}
   ]
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ImageGallery",
+  "name": "{{ get_setting('website_name', 'BRICON VIỆT NAM') }} Banner Gallery",
+  "image": [
+    {% for banner in banners %}
+    {
+      "@type": "ImageObject",
+      "url": "{{ banner.image }}",
+      "name": "{{ banner.title }}",
+      "description": "{{ banner.subtitle }}"
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
 </script>
 {% endif %} {% endblock %}

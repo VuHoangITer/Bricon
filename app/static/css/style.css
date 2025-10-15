@@ -153,188 +153,362 @@ html {
 .bg-dark a:hover {
   color: #ffc107 !important;
 }
+/* ==================== BANNER FULL-WIDTH RESPONSIVE ==================== */
 
-/* ==================== BANNER CAROUSEL - RESPONSIVE FIX ==================== */
-
-/* Banner đầu tiên dùng COVER */
-.carousel-item:first-child img {
-  height: 500px;
-  object-fit: cover !important; /* ✅ Banner đầu tiên luôn COVER */
-  object-position: center;
-  width: 100%;
-  background: #ffffff;
+/* ✅ Container full-width */
+.banner-slider-fullwidth {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  overflow: hidden;
+  transform: translateZ(0);
+  will-change: transform;
 }
 
-/* Các banner còn lại dùng CONTAIN */
-.carousel-item:not(:first-child) img {
-  height: 500px;
-  object-fit: contain !important; /* ✅ Banner 2, 3, 4... dùng CONTAIN */
-  object-position: center;
+.banner-slider-fullwidth .carousel {
   width: 100%;
-  background: #ffffff;
+  height: 600px;
 }
 
-.carousel-item {
+.banner-slider-fullwidth .carousel-inner {
+  height: 100%;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.banner-slider-fullwidth .carousel-item {
+  height: 100%;
   background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-  min-height: 500px;
+  position: relative;
 }
 
-.carousel-caption .btn {
-  background-color: transparent !important;
-  font-size: 0.725rem;
-  padding: 0.1rem 0.1rem !important;
+/* ✅ Banner Image */
+.banner-slider-fullwidth .banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: opacity 0.6s ease-in-out;
+  will-change: opacity;
 }
 
-/* ==================== DOT TRÒN CHUẨN (override Bootstrap) ==================== */
-.carousel-indicators {
+.banner-img[loading="lazy"] {
+  opacity: 0;
+  transition: opacity 0.6s ease-in-out;
+}
+
+.banner-img.loaded {
+  opacity: 1;
+}
+
+/* ✅ Carousel Caption */
+.banner-slider-fullwidth .carousel-caption {
   position: absolute;
-  bottom: 12px;
+  bottom: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  text-align: center;
+  max-width: 90%;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+  backdrop-filter: none;
+  background: transparent !important;
+  padding: 0;
+  border-radius: 0;
+}
+
+.banner-slider-fullwidth .carousel-caption h1,
+.banner-slider-fullwidth .carousel-caption h2 {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 1rem;
+  animation: fadeInUp 0.8s ease;
+}
+
+.banner-slider-fullwidth .carousel-caption p {
+  font-size: 1.25rem;
+  color: #fff;
+  margin-bottom: 1.5rem;
+  animation: fadeInUp 1s ease;
+}
+
+.banner-slider-fullwidth .carousel-caption .btn {
+  animation: fadeInUp 1.2s ease;
+}
+
+/* ==================== CAROUSEL INDICATORS - PLACEHOLDER (will override at end of file) ==================== */
+.banner-slider-fullwidth .carousel-indicators {
+  position: absolute;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   width: 100%;
   margin: 0;
   padding: 0;
-  z-index: 10;
+  z-index: 15;
 }
 
-.carousel-indicators button {
-  display: inline-block;
-  width: 6px !important;
-  height: 6px !important;
-  padding: 0 !important;
-  border-radius: 50% !important;
-  border: none !important;
-  background-color: #ffffff !important;
-  background-image: none !important;
-  opacity: 1 !important;
-  transition: transform .18s ease, background-color .18s ease;
-  margin: 0 6px !important;
-  -webkit-appearance: none;
-  appearance: none;
-  vertical-align: middle;
-  background-clip: padding-box;
+/* ==================== CAROUSEL CONTROLS (ARROWS) ==================== */
+.banner-slider-fullwidth .carousel-control-prev,
+.banner-slider-fullwidth .carousel-control-next {
+  width: 60px;
+  height: 60px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
 }
 
-.carousel-indicators button:hover,
-.carousel-indicators button:focus {
-  transform: scale(1.15);
-  outline: none;
+.banner-slider-fullwidth .carousel-control-prev:hover,
+.banner-slider-fullwidth .carousel-control-next:hover {
+  opacity: 1;
 }
 
-.carousel-indicators .active {
-  transform: scale(1.2);
+.banner-slider-fullwidth .carousel-control-prev-icon,
+.banner-slider-fullwidth .carousel-control-next-icon {
+  width: 40px;
+  height: 40px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  padding: 10px;
 }
 
-/* ==================== RESPONSIVE ==================== */
+/* ==================== ANIMATIONS ==================== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* ==================== SKELETON LOADING ==================== */
+.carousel-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, #e0e0e0 0%, #f0f0f0 50%, #e0e0e0 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.carousel-item.loading::before {
+  opacity: 1;
+}
+
+/* ==================== SMOOTH TRANSITIONS ==================== */
+.carousel-fade .carousel-item {
+  opacity: 0;
+  transition: opacity 0.6s ease-in-out;
+}
+
+.carousel-fade .carousel-item.active {
+  opacity: 1;
+}
+
+.carousel-item:first-child .banner-img {
+  content-visibility: auto;
+}
+
+/* ==================== RESPONSIVE - TABLET ==================== */
 @media (max-width: 991px) {
-  .carousel-item:first-child img {
-    height: 400px;
-    object-fit: cover !important;
+  .banner-slider-fullwidth .carousel {
+    height: 500px;
   }
 
-  .carousel-item:not(:first-child) img {
-    height: 400px;
-    object-fit: contain !important;
+  .banner-slider-fullwidth .carousel-caption h1,
+  .banner-slider-fullwidth .carousel-caption h2 {
+    font-size: 2.5rem;
   }
 
-  .carousel-item {
-    min-height: 400px;
-  }
-}
-
-@media (max-width: 850px) {
-  .carousel-item:first-child img {
-    height: 350px;
-    object-fit: cover !important;
-  }
-
-  .carousel-item:not(:first-child) img {
-    height: 350px;
-    object-fit: contain !important;
-  }
-
-  .carousel-item {
-    min-height: 350px;
+  .banner-slider-fullwidth .carousel-caption p {
+    font-size: 1.1rem;
   }
 }
 
-@media (max-width: 768px) {
-  .carousel-item:first-child img {
-    height: 300px;
-    object-fit: cover !important;
-  }
-
-  .carousel-item:not(:first-child) img {
-    height: 300px;
-    object-fit: contain !important;
-  }
-
-  .carousel-item {
-    min-height: 300px;
+/* ==================== RESPONSIVE - MOBILE (< 768px) ==================== */
+@media (max-width: 767px) {
+  .banner-slider-fullwidth .carousel {
+    height: 400px;
   }
 
   .carousel-caption {
     padding: 1rem;
-    bottom: 1rem;
+    border-radius: 8px;
+  }
+
+  .banner-slider-fullwidth .carousel-indicators {
+    gap: 8px;
+  }
+
+  /* Banner image mobile */
+  .banner-slider-fullwidth .banner-img {
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  .banner-slider-fullwidth .carousel-caption {
+    bottom: 10%;
     max-width: 95%;
   }
 
-  .carousel-caption h1,
-  .carousel-caption h2 {
-    font-size: 1.5rem !important;
-    margin-bottom: 0.5rem !important;
+  .banner-slider-fullwidth .carousel-caption h1,
+  .banner-slider-fullwidth .carousel-caption h2 {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
   }
 
-  .carousel-caption p {
-    font-size: 0.85rem;
-    margin-bottom: 0.75rem !important;
+  .banner-slider-fullwidth .carousel-caption p {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
   }
 
-  .carousel-caption .btn {
+  .banner-slider-fullwidth .carousel-caption .btn {
     font-size: 0.875rem;
-    padding: 0.5rem 1.5rem !important;
+    padding: 0.5rem 1.5rem;
   }
 
-  .carousel-control-prev-icon,
-  .carousel-control-next-icon {
-    width: 2rem;
-    height: 2rem;
+  /* Arrows mobile */
+  .banner-slider-fullwidth .carousel-control-prev,
+  .banner-slider-fullwidth .carousel-control-next {
+    width: 45px;
+    height: 45px;
   }
 
-  .carousel-indicators button {
-    width: 8px;
-    height: 8px;
+  .banner-slider-fullwidth .carousel-control-prev-icon,
+  .banner-slider-fullwidth .carousel-control-next-icon {
+    width: 30px;
+    height: 30px;
   }
 }
 
-@media (max-width: 576px) {
-  .carousel-item:first-child img {
-    height: 250px;
-    object-fit: cover !important;
+/* ==================== RESPONSIVE - SMALL MOBILE (< 576px) ==================== */
+@media (max-width: 575px) {
+  .banner-slider-fullwidth .carousel {
+    height: 350px;
   }
 
-  .carousel-item:not(:first-child) img {
-    height: 250px;
-    object-fit: contain !important;
+  .banner-slider-fullwidth .carousel-caption h1,
+  .banner-slider-fullwidth .carousel-caption h2 {
+    font-size: 1.5rem;
   }
 
-  .carousel-item {
-    min-height: 250px;
-  }
-
-  .carousel-caption h1,
-  .carousel-caption h2 {
-    font-size: 1.25rem !important;
-  }
-
-  .carousel-caption p {
+  .banner-slider-fullwidth .carousel-caption p {
     display: none;
   }
+
+  .banner-slider-fullwidth .carousel-caption .btn {
+    font-size: 0.8rem;
+    padding: 0.4rem 1.2rem;
+  }
 }
+
+/* ==================== HOVER EFFECTS (DESKTOP ONLY) ==================== */
+@media (min-width: 768px) {
+  .banner-slider-fullwidth .carousel-item:hover .banner-img {
+    transform: scale(1.02);
+    transition: transform 0.6s ease;
+  }
+
+  .banner-slider-fullwidth .carousel-control-prev:hover .carousel-control-prev-icon,
+  .banner-slider-fullwidth .carousel-control-next:hover .carousel-control-next-icon {
+    background-color: rgba(255, 193, 7, 0.8);
+    transform: scale(1.1);
+  }
+}
+
+/* ==================== ⚠️ CRITICAL: DOTS OVERRIDE - MUST BE AFTER BANNER SECTION ==================== */
+/* This section MUST stay at the end of the banner code to override Bootstrap */
+.banner-slider-fullwidth .carousel-indicators button,
+.banner-slider-fullwidth .carousel-indicators [data-bs-target] {
+  width: 10px !important;
+  height: 10px !important;
+  min-width: 10px !important;
+  min-height: 10px !important;
+  max-width: 10px !important;
+  max-height: 10px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 50% !important;
+  background-color: rgba(255, 255, 255, 0.6) !important;
+  background-image: none !important;
+  opacity: 1 !important;
+  text-indent: -999px !important;
+  overflow: hidden !important;
+  transition: all 0.3s ease !important;
+  flex: 0 0 auto !important;
+  box-sizing: border-box !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  vertical-align: middle !important;
+  background-clip: padding-box !important;
+}
+
+.banner-slider-fullwidth .carousel-indicators button:hover,
+.banner-slider-fullwidth .carousel-indicators button:focus {
+  transform: scale(1.15) !important;
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  outline: none !important;
+}
+
+.banner-slider-fullwidth .carousel-indicators button.active,
+.banner-slider-fullwidth .carousel-indicators [data-bs-target].active {
+  width: 10px !important;
+  height: 10px !important;
+  background-color: #ffc107 !important;
+  transform: scale(1.2) !important;
+}
+
+/* Mobile dots override */
+@media (max-width: 767px) {
+  .banner-slider-fullwidth .carousel-indicators button,
+  .banner-slider-fullwidth .carousel-indicators [data-bs-target] {
+    width: 8px !important;
+    height: 8px !important;
+    min-width: 8px !important;
+    min-height: 8px !important;
+    max-width: 8px !important;
+    max-height: 8px !important;
+  }
+
+  .banner-slider-fullwidth .carousel-indicators button.active,
+  .banner-slider-fullwidth .carousel-indicators [data-bs-target].active {
+    width: 8px !important;
+    height: 8px !important;
+    transform: scale(1.25) !important;
+  }
+}
+
+  /*
 /* ==================== PRODUCT CARD ==================== */
 .product-card {
   transition: all 0.3s ease;
@@ -1504,9 +1678,16 @@ body::-webkit-scrollbar-thumb {
     padding: 0 1rem;
   }
 }
-/* ==================== Chấm DOT của banner haizzzzzzzz ==================== */
+/* ==================== FORCE ROUND DOTS - MUST BE AT END OF FILE ==================== */
+.carousel-indicators button,
+.carousel-indicators [data-bs-target] {
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 50% !important;
+}
+
+.carousel-indicators button.active,
 .carousel-indicators [data-bs-target].active {
-  background-color: #444444 !important;
-  opacity: 1 !important;
-  border: none !important;
+  width: 10px !important;
+  height: 10px !important;
 }

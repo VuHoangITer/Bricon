@@ -160,7 +160,11 @@ class BannerForm(FlaskForm):
         Optional(),
         Length(max=255)
     ])
-    image = FileField('Hình ảnh', validators=[
+    # ✅ THÊM FIELD UPLOAD CHO MOBILE
+    image = FileField('Hình ảnh Desktop (PC)', validators=[
+        FileAllowed(['jpg', 'png', 'jpeg', 'gif', 'webp'], 'Chỉ chấp nhận ảnh!')
+    ])
+    image_mobile = FileField('Hình ảnh Mobile (Optional)', validators=[
         FileAllowed(['jpg', 'png', 'jpeg', 'gif', 'webp'], 'Chỉ chấp nhận ảnh!')
     ])
     link = StringField('Link', validators=[Optional(), Length(max=255)])

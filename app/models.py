@@ -217,6 +217,7 @@ class Banner(db.Model):
     title = db.Column(db.String(200))
     subtitle = db.Column(db.String(255))
     image = db.Column(db.String(255), nullable=False)
+    image_mobile = db.Column(db.String(255))  # Ảnh Mobile (optional)
     link = db.Column(db.String(255))
     button_text = db.Column(db.String(50))
     order = db.Column(db.Integer, default=0)
@@ -226,6 +227,36 @@ class Banner(db.Model):
 
     def __repr__(self):
         return f'<Banner {self.title}>'
+
+    def get_media_seo_info(self):
+        """Lấy thông tin SEO từ Media Library cho Banner Desktop"""
+        if not self.image:
+            return None
+        media = get_media_by_image_url(self.image)
+        if media:
+            return {
+                'alt_text': media.alt_text or self.title,
+                'title': media.title or self.title,
+                'caption': media.caption or self.subtitle
+            }
+        return {
+            'alt_text': self.title,
+            'title': self.title,
+            'caption': self.subtitle
+        }
+
+    def get_mobile_media_seo_info(self):
+        """Lấy thông tin SEO cho ảnh Mobile"""
+        if not self.image_mobile:
+            return self.get_media_seo_info()  # Fallback về ảnh desktop
+
+        media = get_media_by_image_url(self.image_mobile)
+        if media:
+            return {
+                'alt_text': media.alt_text or f"{self.title} - Mobile",
+                'title': media.title or self.title,
+                'caption': media.caption or self.subtitle
+            }
 
 
 # ==================== BLOG MODEL ====================

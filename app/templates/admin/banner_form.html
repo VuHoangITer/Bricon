@@ -16,80 +16,102 @@
             {{ form.hidden_tag() }}
 
             <div class="row g-3">
+                <!-- Tiêu đề & Phụ đề -->
                 <div class="col-md-6">
                     <label class="form-label">Tiêu đề</label>
                     {{ form.title(class="form-control", placeholder="Khuyến mãi lớn 2024") }}
-                    <small class="text-muted">Tiêu đề chính hiển thị trên banner</small>
                 </div>
 
                 <div class="col-md-6">
                     <label class="form-label">Phụ đề</label>
                     {{ form.subtitle(class="form-control", placeholder="Giảm giá lên đến 50%") }}
-                    <small class="text-muted">Mô tả ngắn dưới tiêu đề</small>
                 </div>
 
+                <!-- ✅ HÌNH ẢNH DESKTOP (PC) -->
                 <div class="col-12">
-                    <label class="form-label">Hình ảnh Banner *</label>
+                    <label class="form-label fw-bold">
+                        <i class="bi bi-laptop"></i> Hình ảnh Desktop (PC) *
+                    </label>
                     <div class="input-group">
                         {{ form.image(class="form-control", id="image") }}
                         <button type="button" class="btn btn-warning" onclick="openMediaPicker('image', 'imagePreview')">
                             <i class="bi bi-images"></i> Chọn từ thư viện
                         </button>
                     </div>
-                    <small class="text-muted">Khuyến nghị: 1920x600px, JPG/PNG (Max 16MB)</small>
-                    {% if form.image.errors %}
-                        <div class="text-danger small mt-1">{{ form.image.errors[0] }}</div>
-                    {% endif %}
-
-                    <!-- Thêm input ẩn này -->
+                    <small class="text-muted">Khuyến nghị: 1920x600px, JPG/PNG (Max 2MB)</small>
                     <input type="hidden" name="selected_image_path" id="selectedImagePath" value="">
 
                     <div class="mt-2">
-                        <img
-                            id="imagePreview"
-                            src="{{ banner.image if banner and banner.image else '' }}"
-                            alt="Preview"
-                            class="img-thumbnail"
-                            style="max-width: 100%; max-height: 200px; {{ '' if banner and banner.image else 'display: none;' }}"
-                        >
+                        <img id="imagePreview"
+                             src="{{ banner.image if banner and banner.image else '' }}"
+                             alt="Desktop Preview"
+                             class="img-thumbnail"
+                             style="max-width: 100%; max-height: 200px; {{ '' if banner and banner.image else 'display: none;' }}">
                     </div>
                 </div>
 
+                <!-- ✅ HÌNH ẢNH MOBILE -->
+                <div class="col-12">
+                    <label class="form-label fw-bold">
+                        <i class="bi bi-phone"></i> Hình ảnh Mobile (Optional)
+                    </label>
+                    <div class="input-group">
+                        {{ form.image_mobile(class="form-control", id="image_mobile") }}
+                        <button type="button" class="btn btn-info" onclick="openMediaPicker('image_mobile', 'imageMobilePreview')">
+                            <i class="bi bi-images"></i> Chọn từ thư viện
+                        </button>
+                    </div>
+                    <small class="text-muted">Khuyến nghị: 768x1024px (dọc), JPG/PNG. Nếu bỏ trống sẽ dùng ảnh Desktop.</small>
+                    <input type="hidden" name="selected_image_mobile_path" id="selectedImageMobilePath" value="">
+
+                    <div class="mt-2">
+                        <img id="imageMobilePreview"
+                             src="{{ banner.image_mobile if banner and banner.image_mobile else '' }}"
+                             alt="Mobile Preview"
+                             class="img-thumbnail"
+                             style="max-width: 300px; max-height: 200px; {{ '' if banner and banner.image_mobile else 'display: none;' }}">
+                    </div>
+                </div>
+
+                <!-- Link & Button -->
                 <div class="col-md-6">
                     <label class="form-label">Đường dẫn (Link)</label>
                     {{ form.link(class="form-control", placeholder="/products hoặc https://...") }}
-                    <small class="text-muted">URL khi click vào banner</small>
                 </div>
 
                 <div class="col-md-3">
-                    <label class="form-label">Text nút (Button)</label>
+                    <label class="form-label">Text nút</label>
                     {{ form.button_text(class="form-control", placeholder="Mua ngay") }}
                 </div>
 
                 <div class="col-md-3">
                     <label class="form-label">Thứ tự</label>
                     {{ form.order(class="form-control", value="0") }}
-                    <small class="text-muted">Số nhỏ hiển thị trước</small>
                 </div>
 
+                <!-- Active -->
                 <div class="col-12">
                     <div class="form-check form-switch">
                         {{ form.is_active(class="form-check-input", checked=true) }}
-                        <label class="form-check-label" for="{{ form.is_active.id }}">
-                            Kích hoạt hiển thị banner
-                        </label>
+                        <label class="form-check-label">Kích hoạt hiển thị banner</label>
                     </div>
                 </div>
 
+                <!-- Info Box -->
                 <div class="col-12">
                     <hr>
-                    <div class="alert alert-warning">
+                    <div class="alert alert-info">
                         <i class="bi bi-lightbulb"></i>
-                        <strong>Mẹo:</strong> Banner có thứ tự nhỏ nhất sẽ hiển thị đầu tiên trong slider.
-                        Nên có 3-5 banner để tạo hiệu ứng chuyển động đẹp.
+                        <strong>Mẹo Responsive:</strong>
+                        <ul class="mb-0 mt-2">
+                            <li><strong>Desktop:</strong> 1920x600px (ngang) - hiển thị trên PC/Laptop</li>
+                            <li><strong>Mobile:</strong> 768x1024px (dọc) - hiển thị trên điện thoại</li>
+                            <li>Nếu không upload ảnh Mobile, hệ thống sẽ tự động dùng ảnh Desktop</li>
+                        </ul>
                     </div>
                 </div>
 
+                <!-- Buttons -->
                 <div class="col-12 mt-4">
                     {{ form.submit(class="btn btn-warning px-5") }}
                     <a href="{{ url_for('admin.banners') }}" class="btn btn-secondary">Hủy</a>
@@ -100,4 +122,42 @@
 </div>
 
 {% include 'admin/components/media_picker_modal.html' %}
+
+<script>
+// ✅ Override openMediaPicker để hỗ trợ cả Desktop và Mobile
+function openMediaPicker(inputId, previewId) {
+    // Lưu thông tin input đang được chọn
+    window.currentImageInput = inputId;
+    window.currentImagePreview = previewId;
+
+    // Mở modal
+    const modal = new bootstrap.Modal(document.getElementById('mediaPickerModal'));
+    modal.show();
+
+    // Load media
+    loadMediaLibrary();
+}
+
+// ✅ Khi chọn ảnh từ media picker
+function selectMediaImage(filepath) {
+    const inputId = window.currentImageInput;
+    const previewId = window.currentImagePreview;
+
+    // Set hidden input tương ứng
+    if (inputId === 'image') {
+        document.getElementById('selectedImagePath').value = filepath;
+    } else if (inputId === 'image_mobile') {
+        document.getElementById('selectedImageMobilePath').value = filepath;
+    }
+
+    // Hiển thị preview
+    const preview = document.getElementById(previewId);
+    preview.src = filepath;
+    preview.style.display = 'block';
+
+    // Đóng modal
+    const modal = bootstrap.Modal.getInstance(document.getElementById('mediaPickerModal'));
+    modal.hide();
+}
+</script>
 {% endblock %}

@@ -959,22 +959,28 @@ def banners():
 
 
 @admin_bp.route('/banners/add', methods=['GET', 'POST'])
-@permission_required('manage_banners')  # ✅ Quản lý banners
+@permission_required('manage_banners')
 def add_banner():
-    """Thêm banner mới"""
+    """Thêm banner mới với hỗ trợ ảnh mobile"""
     form = BannerForm()
 
     if form.validate_on_submit():
+        # Upload ảnh Desktop
         image_path = get_image_from_form(form.image, 'image', folder='banners')
-
         if not image_path:
             flash('Vui lòng chọn hoặc upload ảnh banner!', 'danger')
             return render_template('admin/banner_form.html', form=form, title='Thêm banner')
+
+        # ✅ Upload ảnh Mobile (nếu có)
+        image_mobile_path = None
+        if form.image_mobile.data:
+            image_mobile_path = get_image_from_form(form.image_mobile, 'image_mobile', folder='banners/mobile')
 
         banner = Banner(
             title=form.title.data,
             subtitle=form.subtitle.data,
             image=image_path,
+            image_mobile=image_mobile_path,  # ✅ Lưu ảnh mobile
             link=form.link.data,
             button_text=form.button_text.data,
             order=form.order.data or 0,
@@ -991,16 +997,22 @@ def add_banner():
 
 
 @admin_bp.route('/banners/edit/<int:id>', methods=['GET', 'POST'])
-@permission_required('manage_banners')  # ✅ Quản lý banners
+@permission_required('manage_banners')
 def edit_banner(id):
-    """Sửa banner"""
+    """Sửa banner với hỗ trợ ảnh mobile"""
     banner = Banner.query.get_or_404(id)
     form = BannerForm(obj=banner)
 
     if form.validate_on_submit():
+        # Cập nhật ảnh Desktop (nếu có upload mới)
         new_image = get_image_from_form(form.image, 'image', folder='banners')
         if new_image:
             banner.image = new_image
+
+        # ✅ Cập nhật ảnh Mobile (nếu có upload mới)
+        new_image_mobile = get_image_from_form(form.image_mobile, 'image_mobile', folder='banners/mobile')
+        if new_image_mobile:
+            banner.image_mobile = new_image_mobile
 
         banner.title = form.title.data
         banner.subtitle = form.subtitle.data
@@ -1014,7 +1026,7 @@ def edit_banner(id):
         flash('Đã cập nhật banner thành công!', 'success')
         return redirect(url_for('admin.banners'))
 
-    return render_template('admin/banner_form.html', form=form, title='Sửa banner')
+    return render_template('admin/banner_form.html', form=form, title='Sửa banner', banner=banner)
 
 
 @admin_bp.route('/banners/delete/<int:id>')
