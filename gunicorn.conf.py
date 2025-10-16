@@ -1,82 +1,60 @@
 """
-Gunicorn configuration file - Tối ưu cho Render Starter (512MB RAM)
+Gunicorn configuration - Tối ưu cho Render Starter (512MB RAM, 0.5 CPU)
 Đặt file này cùng cấp với run.py
 """
 
 import os
-import multiprocessing
 
 # ==================== WORKER CONFIGURATION ====================
-# 🔥 TỐI ƯU: Chỉ dùng 2 workers cho 512MB RAM
-# Công thức: (2 × CPU cores) + 1 = (2 × 0.5) + 1 ≈ 2 workers
-workers = 2
-
-# Threads per worker (tăng concurrency mà không tốn nhiều RAM)
+# ⚡ Giữ ở mức nhẹ: chỉ 1 worker và 2 threads để tránh OOM (Out of Memory)
+workers = 1
 threads = 2
-
-# Worker class
-worker_class = 'sync'  # hoặc 'gthread' nếu muốn thread-based
+worker_class = "gthread"  # Dùng thread-based để xử lý nhiều request cùng lúc nhẹ hơn fork
 
 # ==================== TIMEOUT ====================
-# Timeout cho requests (giây)
-timeout = 120  # 2 phút cho requests chậm (chatbot, AI)
-graceful_timeout = 30  # Thời gian để worker shutdown gracefully
-keepalive = 5  # Keep-alive timeout
+timeout = 90  # Giảm còn 90s để tránh giữ kết nối quá lâu
+graceful_timeout = 20
+keepalive = 5
 
 # ==================== MEMORY MANAGEMENT ====================
-# Restart worker sau N requests để tránh memory leak
-max_requests = 1000
-max_requests_jitter = 50  # Random jitter để tránh restart đồng thời
+max_requests = 500
+max_requests_jitter = 30
 
 # ==================== PRELOAD ====================
-# Preload app trước khi fork workers (tiết kiệm RAM)
-preload_app = True
+# Không preload để tránh tốn RAM khi forking (chỉ 1 worker nên không cần preload)
+preload_app = False
 
 # ==================== BINDING ====================
 bind = f"0.0.0.0:{os.environ.get('PORT', '10000')}"
 
 # ==================== LOGGING ====================
-accesslog = '-'  # Log to stdout
-errorlog = '-'   # Log to stderr
-loglevel = 'info'
+accesslog = "-"
+errorlog = "-"
+loglevel = "info"
 
 # ==================== PERFORMANCE ====================
-# Backlog queue size
-backlog = 2048
-
-# Worker connections (cho async workers)
-# worker_connections = 1000  # Chỉ dùng nếu worker_class = 'gevent' hoặc 'eventlet'
+backlog = 512  # Giảm backlog để tiết kiệm RAM
 
 # ==================== HOOKS ====================
 def on_starting(server):
-    """Chạy khi Gunicorn khởi động"""
-    print("🚀 [Gunicorn] Starting with:")
+    print("🚀 [Gunicorn] Starting (Render Starter mode)")
     print(f"   - Workers: {workers}")
-    print(f"   - Threads/worker: {threads}")
+    print(f"   - Threads: {threads}")
+    print(f"   - Worker class: {worker_class}")
     print(f"   - Timeout: {timeout}s")
-    print(f"   - RAM limit: ~512MB")
+
+
+def post_fork(server, worker):
+    print(f"✅ [Worker {worker.pid}] Spawned")
 
 
 def worker_int(worker):
-    """Xử lý khi worker bị interrupt"""
     print(f"⚠️ [Worker {worker.pid}] Interrupted")
 
 
 def worker_abort(worker):
-    """Xử lý khi worker bị abort"""
     print(f"❌ [Worker {worker.pid}] Aborted")
 
 
-def post_fork(server, worker):
-    """Chạy sau khi fork worker mới"""
-    print(f"✅ [Worker {worker.pid}] Spawned")
-
-
-def pre_fork(server, worker):
-    """Chạy trước khi fork worker"""
-    pass
-
-
 def worker_exit(server, worker):
-    """Chạy khi worker exit"""
     print(f"👋 [Worker {worker.pid}] Exited")
