@@ -233,11 +233,191 @@ document.querySelector('input[name="title"]').addEventListener('input', function
 });
 </script>
 
-<script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js"></script>
+<!-- ==================== CKEDITOR 5 VỚI RESIZE ẢNH BẰNG CHUỘT ==================== -->
+<script src="https://cdn.ckeditor.com/ckeditor5/43.3.1/ckeditor5.umd.js"></script>
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.3.1/ckeditor5.css" />
+
 <script>
+const {
+    ClassicEditor,
+    Essentials,
+    Bold,
+    Italic,
+    Underline,
+    Strikethrough,
+    Font,
+    Paragraph,
+    Heading,
+    Link,
+    List,
+    Image,
+    ImageCaption,
+    ImageStyle,
+    ImageToolbar,
+    ImageUpload,
+    ImageResize,
+    LinkImage,
+    Table,
+    TableToolbar,
+    BlockQuote,
+    Code,
+    Alignment,
+    Undo
+} = CKEDITOR;
+
 let editorInstance;
-ClassicEditor.create(document.querySelector('#editor'))
+
+// ✅ CUSTOM UPLOAD ADAPTER CLASS
+class MyUploadAdapter {
+    constructor(loader) {
+        this.loader = loader;
+    }
+
+    upload() {
+        return this.loader.file.then(file => {
+            return new Promise((resolve, reject) => {
+                const formData = new FormData();
+                formData.append('upload', file);
+
+                const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+
+                console.log('🚀 Starting upload:', file.name);
+
+                fetch('{{ url_for("admin.ckeditor_upload_image") }}', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': csrfToken
+                    }
+                })
+                .then(response => {
+                    console.log('📡 Response status:', response.status);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('📦 Response data:', data);
+
+                    if (data.url) {
+                        console.log('✅ Upload success:', data.url);
+                        resolve({ default: data.url });
+                    } else if (data.error) {
+                        console.error('❌ Upload error:', data.error.message);
+                        reject(data.error.message);
+                    } else {
+                        console.error('❌ Unknown response format');
+                        reject('Upload thất bại');
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Network error:', error);
+                    reject('Lỗi kết nối: ' + error.message);
+                });
+            });
+        });
+    }
+
+    abort() {
+        console.log('⚠️ Upload aborted');
+    }
+}
+
+// ✅ PLUGIN ĐỂ ĐĂNG KÝ UPLOAD ADAPTER
+function MyCustomUploadAdapterPlugin(editor) {
+    editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+        console.log('🔌 Creating upload adapter');
+        return new MyUploadAdapter(loader);
+    };
+}
+
+// ✅ KHỞI TẠO CKEDITOR 5
+ClassicEditor
+    .create(document.querySelector('#editor'), {
+        plugins: [
+            Essentials,
+            Bold, Italic, Underline, Strikethrough,
+            Font,
+            Paragraph, Heading,
+            Link, List,
+            Image, ImageCaption, ImageStyle, ImageToolbar, ImageUpload, ImageResize, LinkImage,
+            Table, TableToolbar,
+            BlockQuote, Code,
+            Alignment,
+            Undo,
+            MyCustomUploadAdapterPlugin
+        ],
+
+        toolbar: {
+            items: [
+                'heading', '|',
+                'bold', 'italic', 'underline', 'strikethrough', '|',
+                'fontSize', 'fontColor', 'fontBackgroundColor', '|',
+                'link', 'bulletedList', 'numberedList', '|',
+                'uploadImage', 'insertTable', 'blockQuote', 'code', '|',
+                'alignment', '|',
+                'undo', 'redo'
+            ],
+            shouldNotGroupWhenFull: true
+        },
+
+        image: {
+            toolbar: [
+                'imageStyle:inline',
+                'imageStyle:wrapText',
+                'imageStyle:breakText',
+                '|',
+                'toggleImageCaption',
+                '|',
+                'imageTextAlternative',
+                '|',
+                'linkImage'
+            ],
+            styles: [
+                'full',
+                'alignLeft',
+                'alignCenter',
+                'alignRight'
+            ],
+            upload: {
+                types: ['jpeg', 'png', 'gif', 'webp', 'jpg']
+            }
+        },
+
+        fontSize: {
+            options: [
+                'tiny',
+                'small',
+                'default',
+                'big',
+                'huge'
+            ]
+        },
+
+        alignment: {
+            options: ['left', 'center', 'right', 'justify']
+        },
+
+        table: {
+            contentToolbar: [
+                'tableColumn', 'tableRow', 'mergeTableCells',
+                'tableProperties', 'tableCellProperties'
+            ]
+        },
+
+        link: {
+            decorators: {
+                openInNewTab: {
+                    mode: 'manual',
+                    label: 'Mở tab mới',
+                    attributes: {
+                        target: '_blank',
+                        rel: 'noopener noreferrer'
+                    }
+                }
+            }
+        }
+    })
     .then(editor => {
+        console.log('✅ CKEditor 5 với ImageResize khởi tạo thành công!');
         editorInstance = editor;
         const textarea = document.querySelector('#editor');
         textarea.removeAttribute('required');
@@ -247,6 +427,7 @@ ClassicEditor.create(document.querySelector('#editor'))
             debounceCheckSEO();
         });
 
+        // Submit form handler
         document.querySelector('form').addEventListener('submit', function(e) {
             const content = editorInstance.getData().trim();
             textarea.value = content;
@@ -259,9 +440,115 @@ ClassicEditor.create(document.querySelector('#editor'))
         });
     })
     .catch(error => {
-        console.error('Lỗi khởi tạo CKEditor:', error);
+        console.error('❌ Lỗi khởi tạo CKEditor:', error);
+        alert('Không thể khởi tạo trình soạn thảo. Vui lòng refresh trang.');
     });
 </script>
+
+<!-- ✅ CSS ĐỂ ẢNH RESPONSIVE -->
+<style>
+.ck-content img {
+    max-width: 100%;
+    height: auto;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.ck-content img:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.ck-content figure.image {
+    margin: 1em 0;
+}
+
+.ck-content figure.image img {
+    margin: 0 auto;
+}
+
+.ck-content figure.image figcaption {
+    text-align: center;
+    font-style: italic;
+    color: #666;
+    padding: 0.5em;
+    background: #f5f5f5;
+    margin-top: 0.5em;
+}
+
+.ck-content .image-style-align-left,
+.ck-content .image-style-side {
+    float: left;
+    margin-right: 1.5em;
+    max-width: 50%;
+}
+
+.ck-content .image-style-align-right {
+    float: right;
+    margin-left: 1.5em;
+    max-width: 50%;
+}
+
+.ck-content .image-style-align-center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+</style>
+
+<!-- ✅ THÊM CSS ĐỂ ẢNH RESPONSIVE TRÊN FRONTEND -->
+<style>
+/* CSS cho ảnh trong CKEditor */
+.ck-content img {
+    max-width: 100%;
+    height: auto;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.ck-content img:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* CSS cho figure (ảnh có caption) */
+.ck-content figure.image {
+    margin: 1em 0;
+}
+
+.ck-content figure.image img {
+    margin: 0 auto;
+}
+
+.ck-content figure.image figcaption {
+    text-align: center;
+    font-style: italic;
+    color: #666;
+    padding: 0.5em;
+    background: #f5f5f5;
+    margin-top: 0.5em;
+}
+
+/* CSS cho ảnh căn trái/phải */
+.ck-content .image-style-align-left,
+.ck-content .image-style-side {
+    float: left;
+    margin-right: 1.5em;
+    max-width: 50%;
+}
+
+.ck-content .image-style-align-right {
+    float: right;
+    margin-left: 1.5em;
+    max-width: 50%;
+}
+
+.ck-content .image-style-align-center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+</style>
 
 <script>
 // Character counters và SEO Preview

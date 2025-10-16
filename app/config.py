@@ -33,8 +33,8 @@ class Config:
     BLOGS_PER_PAGE = 9
 
     # SEO
-    SITE_NAME = 'Hoangvn'
-    SITE_DESCRIPTION = 'Website doanh nghiệp chuyên nghiệp'
+    SITE_NAME = 'Briconvn'
+    SITE_DESCRIPTION = 'Doanh nghiệp chuyên sản xuất và phân phối keo dán gạch , keo chả ron & chống thấm'
 
     # ========== THÊM MỚI: GEMINI CHATBOT CONFIGURATION ==========
     GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')

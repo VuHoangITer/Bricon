@@ -90,7 +90,10 @@ blog.content[:160]|striptags }}{% endblock %}
             <!-- Social Share -->
             <div class="border-top border-bottom py-3 mb-4">
               <div class="d-flex align-items-center gap-2">
-                <span class="text-muted small me-2">Chia sẻ:</span>
+                <i class="bi bi-tags text-warning"></i>
+                <span class="text-muted small">Tags:</span>
+                <span class="badge bg-light text-dark">Tin tức</span>
+                <span class="badge bg-light text-dark">Kiến thức</span>
                 <a
                   href="https://www.facebook.com/sharer/sharer.php?u={{ request.url }}"
                   target="_blank"
@@ -152,17 +155,6 @@ blog.content[:160]|striptags }}{% endblock %}
           <div class="blog-content-detail" itemprop="articleBody">
             {{ blog.content|safe }}
           </div>
-
-          <!-- Tags (if any) -->
-          <div class="mt-4 pt-3 border-top">
-            <div class="d-flex align-items-center gap-2">
-              <i class="bi bi-tags text-warning"></i>
-              <span class="text-muted small">Tags:</span>
-              <span class="badge bg-light text-dark">Tin tức</span>
-              <span class="badge bg-light text-dark">Kiến thức</span>
-            </div>
-          </div>
-
           <!-- Hidden Schema Data -->
           <meta
             itemprop="dateModified"
