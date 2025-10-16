@@ -35,7 +35,7 @@ body {
 }
 
 .carousel-caption p {
-  font-size: 1.05rem !important;
+  font-size: 1.25rem !important;
 }
 
 @media (max-width: 768px) {
@@ -281,7 +281,7 @@ footer a {
 /* ==================== ✅ BANNER TEXT COLOR BLACK (DESKTOP + MOBILE) ==================== */
 .carousel-caption h1,
 .carousel-caption h2 {
-  color: #EEAD0E!important;
+  color: #ffd700!important;
   text-shadow: 0 0 6px rgba(255,255,255,0.8) !important;
 }
 
