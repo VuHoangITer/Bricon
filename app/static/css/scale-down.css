@@ -22,11 +22,11 @@ body {
 
 /* ==================== BANNER ==================== */
 .carousel-item img {
-  height: 750px !important;
+  height: 568px !important;
 }
 
 .carousel-item {
-  min-height: 750px !important;
+  min-height: 568px !important;
 }
 
 .carousel-caption h1,
