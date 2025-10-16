@@ -268,3 +268,14 @@ footer a {
     text-align: center !important;
   }
 }
+/* ==================== ✅ BANNER TEXT COLOR BLACK (DESKTOP + MOBILE) ==================== */
+.carousel-caption h1,
+.carousel-caption h2 {
+  color: #000 !important;
+  text-shadow: 0 0 6px rgba(255,255,255,0.8) !important;
+}
+
+.carousel-caption p {
+  color: #111 !important;
+}
+
