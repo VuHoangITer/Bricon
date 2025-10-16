@@ -1,3 +1,24 @@
 .env
 
 seed/
+
+# Môi trường ảo
+venv/
+
+# Cache Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Flask & config
+instance/
+*.db
+*.sqlite3
+
+# VSCode / PyCharm
+.idea/
+.vscode/
+
+# Logs
+*.log
