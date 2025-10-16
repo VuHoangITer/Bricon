@@ -22,11 +22,11 @@ body {
 
 /* ==================== BANNER ==================== */
 .carousel-item img {
-  height: 450px !important;
+  height: 750px !important;
 }
 
 .carousel-item {
-  min-height: 450px !important;
+  min-height: 750px !important;
 }
 
 .carousel-caption h1,
@@ -256,5 +256,15 @@ footer a {
   .products-grid .product-price .price,
   .bg-gray-dark .product-price .price {
     font-size: 0.8rem !important;
+  }
+}
+/* ==================== ✅ CENTER CAPTION ON DESKTOP ==================== */
+@media (min-width: 992px) {
+  .carousel-caption {
+    top: 50% !important;
+    bottom: auto !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    text-align: center !important;
   }
 }
