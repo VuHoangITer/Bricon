@@ -2,6 +2,8 @@ import os
 from app import create_app, db
 from app.models import User, Category, Product, Banner, Blog, FAQ, Contact
 
+# 🔥 TỐI ƯU: Lấy config từ environment variable
+config_name = os.environ.get('FLASK_ENV', 'production')
 app = create_app()
 
 
@@ -29,5 +31,12 @@ def init_db():
     print("ℹ Để seed dữ liệu mẫu, chạy: python seed/seed_data.py")
 
 
+# 🔥 TỐI ƯU: Chỉ chạy dev server khi chạy trực tiếp
+# Gunicorn sẽ import app object, không chạy phần này
 if __name__ == '__main__':
-    app.run()
+    # Development mode
+    app.run(
+        host='0.0.0.0',
+        port=int(os.environ.get('PORT', 5000)),
+        debug=True
+    )

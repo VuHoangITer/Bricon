@@ -1,18 +1,36 @@
+# ==================== CORE FLASK ====================
 Flask==3.0.0
 Flask-SQLAlchemy==3.1.1
 Flask-Migrate==4.0.5
 Flask-Login==0.6.3
 Flask-WTF==1.2.1
 WTForms==3.1.1
+
+# ==================== UTILITIES ====================
+python-dotenv==1.0.0
 email-validator==2.1.0
-python-dotenv==1.0.0
-Pillow
-gunicorn
-psycopg2-binary==2.9.9
-Werkzeug==3.0.1
-cloudinary
-google-generativeai==0.3.2
-python-dotenv==1.0.0
-slugify
+Pillow==10.0.0
 pytz==2024.1
-qrcode[pil]
+python-slugify==8.0.1
+
+# ==================== DATABASE ====================
+psycopg2-binary==2.9.9
+
+# ==================== PRODUCTION SERVER ====================
+gunicorn==21.2.0
+Werkzeug==3.0.1
+
+# ==================== CLOUD SERVICES ====================
+cloudinary==1.36.0
+
+# ==================== AI/CHATBOT ====================
+google-generativeai==0.3.2
+
+# ==================== PERFORMANCE ====================
+Flask-Compress==1.14
+
+# ==================== UTILITIES (QR CODE) ====================
+qrcode[pil]==7.4.2
+
+# ==================== CACHING (OPTIONAL) ====================
+Flask-Caching==2.1.0  # Uncomment nếu muốn dùng caching nâng cao
