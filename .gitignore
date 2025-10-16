@@ -1,24 +1,79 @@
-.env
-
-seed/
-
-# Môi trường ảo
+# ================= ENVIRONMENT =================
+# Virtual environments
 venv/
+env/
+.venv/
+ENV/
+env.bak/
 
-# Cache Python
+# Environment variables
+.env
+.env.*
+
+# ================= PYTHON =================
+# Cache / compiled
 __pycache__/
-*.pyc
+*.py[cod]
 *.pyo
 *.pyd
+*$py.class
 
-# Flask & config
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+pip-wheel-metadata/
+*.whl
+
+# Unit test / coverage reports
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+htmlcov/
+
+# ================= FLASK / APP =================
 instance/
 *.db
 *.sqlite3
-
-# VSCode / PyCharm
-.idea/
-.vscode/
-
-# Logs
 *.log
+*.pid
+*.bak
+*.swp
+
+# Migrations
+migrations/versions/*.pyc
+
+# ================= IDEs =================
+# PyCharm
+.idea/
+# VSCode
+.vscode/
+# Sublime
+*.sublime-project
+*.sublime-workspace
+
+# ================= OS FILES =================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+# Windows
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ================= OTHER =================
+# Temporary / backup files
+*.tmp
+*.temp
+*.old
+*.orig
+*.save
+
+# ================= DATA / SEED =================
+seed/
