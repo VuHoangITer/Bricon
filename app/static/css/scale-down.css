@@ -45,6 +45,12 @@ body {
   .carousel-item {
     min-height: 280px !important;
   }
+  .carousel-caption h1,
+  .carousel-caption h2,
+  .carousel-caption p,
+  .carousel-caption a.btn {
+    display: none !important;
+  }
 }
 
 /* ==================== SECTIONS ==================== */
@@ -271,7 +277,7 @@ footer a {
 /* ==================== ✅ BANNER TEXT COLOR BLACK (DESKTOP + MOBILE) ==================== */
 .carousel-caption h1,
 .carousel-caption h2 {
-  color: #000 !important;
+  color: #68838B!important;
   text-shadow: 0 0 6px rgba(255,255,255,0.8) !important;
 }
 
