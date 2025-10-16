@@ -1,6 +1,6 @@
 /**
- * Hoangvn Chatbot Widget
- * Tích hợp Gemini AI cho tư vấn khách hàng
+ * Chatbot Widget - MOBILE OPTIMIZED
+ * ✅ Full màn hình + Tắt auto-focus bàn phím
  */
 
 class ChatbotWidget {
@@ -19,7 +19,6 @@ class ChatbotWidget {
         this.resetBtn = document.getElementById('chatbotResetBtn');
         this.requestCountEl = document.getElementById('requestCount');
 
-        // Kiểm tra các elements có tồn tại
         if (!this.chatButton || !this.chatWidget) {
             console.error('Chatbot elements not found');
             return;
@@ -29,13 +28,11 @@ class ChatbotWidget {
     }
 
     init() {
-        // Event listeners
         this.chatButton.addEventListener('click', () => this.toggleChat());
         this.closeBtn.addEventListener('click', () => this.toggleChat());
         this.sendBtn.addEventListener('click', () => this.sendMessage());
         this.resetBtn.addEventListener('click', () => this.resetChat());
 
-        // Enter để gửi tin nhắn
         this.userInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -43,12 +40,8 @@ class ChatbotWidget {
             }
         });
 
-        // Auto-focus input khi mở chat
-        this.chatWidget.addEventListener('transitionend', () => {
-            if (this.isOpen) {
-                this.userInput.focus();
-            }
-        });
+        // ❌ XÓA AUTO-FOCUS - KHÔNG CÒN TỰ ĐỘNG MỞ BÀN PHÍM
+        // Không dùng transitionend để focus nữa
 
         console.log('Chatbot initialized successfully');
     }
@@ -57,10 +50,37 @@ class ChatbotWidget {
         this.isOpen = !this.isOpen;
         this.chatWidget.classList.toggle('active');
 
+        // ✅ THÊM/XÓA CLASS VÀO BODY
         if (this.isOpen) {
-            this.userInput.focus();
+            document.body.classList.add('chatbot-open');
+
+            // ❌ KHÔNG FOCUS INPUT - TRÁNH TỰ ĐỘNG MỞ BÀN PHÍM
+            // this.userInput.focus(); // Đã xóa dòng này
+
             this.scrollToBottom();
+
+            // Fix cho iOS: Ngăn body scroll
+            if (this.isMobile()) {
+                document.body.style.overflow = 'hidden';
+                document.body.style.position = 'fixed';
+                document.body.style.width = '100%';
+                document.body.style.top = '0';
+            }
+        } else {
+            document.body.classList.remove('chatbot-open');
+
+            // Khôi phục scroll
+            if (this.isMobile()) {
+                document.body.style.overflow = '';
+                document.body.style.position = '';
+                document.body.style.width = '';
+                document.body.style.top = '';
+            }
         }
+    }
+
+    isMobile() {
+        return window.innerWidth <= 768;
     }
 
     async sendMessage() {
@@ -70,24 +90,17 @@ class ChatbotWidget {
             return;
         }
 
-        // Kiểm tra độ dài tin nhắn
         if (message.length > 500) {
             alert('Tin nhắn quá dài! Vui lòng nhập tối đa 500 ký tự.');
             return;
         }
 
-        // Hiển thị tin nhắn người dùng
         this.addMessage(message, 'user');
         this.userInput.value = '';
-
-        // Disable input khi đang gửi
         this.setInputState(false);
-
-        // Hiển thị typing indicator
         this.showTyping();
 
         try {
-            // Gửi request đến backend
             const response = await fetch('/chatbot/send', {
                 method: 'POST',
                 headers: {
@@ -97,21 +110,16 @@ class ChatbotWidget {
             });
 
             const data = await response.json();
-
-            // Ẩn typing indicator
             this.hideTyping();
 
             if (response.ok) {
-                // Hiển thị phản hồi từ bot
                 this.addMessage(data.response, 'bot');
 
-                // Cập nhật số request còn lại
                 if (data.remaining_requests !== undefined) {
                     this.remainingRequests = data.remaining_requests;
                     this.updateRequestCount();
                 }
             } else {
-                // Hiển thị lỗi
                 this.addMessage(
                     data.error || data.response || 'Xin lỗi, đã có lỗi xảy ra. Vui lòng thử lại! 😊',
                     'bot'
@@ -126,9 +134,9 @@ class ChatbotWidget {
                 'bot'
             );
         } finally {
-            // Enable lại input
             this.setInputState(true);
-            this.userInput.focus();
+            // ❌ KHÔNG FOCUS SAU KHI GỬI - TRÁNH MỞ BÀN PHÍM
+            // this.userInput.focus(); // Đã xóa dòng này
         }
     }
 
@@ -138,14 +146,10 @@ class ChatbotWidget {
 
         const contentDiv = document.createElement('div');
         contentDiv.className = 'chatbot-message-content';
-
-        // Chuyển đổi line breaks thành <br>
         contentDiv.innerHTML = this.escapeHtml(text).replace(/\n/g, '<br>');
 
         messageDiv.appendChild(contentDiv);
         this.messagesContainer.appendChild(messageDiv);
-
-        // Scroll to bottom
         this.scrollToBottom();
     }
 
@@ -168,7 +172,6 @@ class ChatbotWidget {
 
         typingDiv.appendChild(typingContent);
         this.messagesContainer.appendChild(typingDiv);
-
         this.scrollToBottom();
     }
 
@@ -183,16 +186,10 @@ class ChatbotWidget {
     setInputState(enabled) {
         this.userInput.disabled = !enabled;
         this.sendBtn.disabled = !enabled;
-
-        if (enabled) {
-            this.sendBtn.style.opacity = '1';
-        } else {
-            this.sendBtn.style.opacity = '0.5';
-        }
+        this.sendBtn.style.opacity = enabled ? '1' : '0.5';
     }
 
     scrollToBottom() {
-        // Smooth scroll to bottom
         setTimeout(() => {
             this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
         }, 100);
@@ -212,19 +209,15 @@ class ChatbotWidget {
             });
 
             if (response.ok) {
-                // Xóa tất cả tin nhắn (trừ tin nhắn chào mừng)
                 const messages = this.messagesContainer.querySelectorAll('.chatbot-message');
                 messages.forEach((msg, index) => {
-                    if (index > 0) { // Giữ lại tin nhắn đầu tiên
+                    if (index > 0) {
                         msg.remove();
                     }
                 });
 
-                // Reset counter
                 this.remainingRequests = 20;
                 this.updateRequestCount();
-
-                // Thông báo thành công
                 this.addMessage('Đã làm mới hội thoại! Tôi có thể giúp gì cho bạn? 😊', 'bot');
             }
         } catch (error) {
@@ -240,9 +233,7 @@ class ChatbotWidget {
     }
 }
 
-// Khởi tạo chatbot khi DOM loaded
 document.addEventListener('DOMContentLoaded', () => {
-    // Kiểm tra xem các elements có tồn tại không
     if (document.getElementById('chatbotButton')) {
         new ChatbotWidget();
     }
