@@ -478,5 +478,10 @@ document.addEventListener("DOMContentLoaded", function() {
     showPage(currentPage);
   }
 });
+  // Ngăn chặn quay lại trang trước
+  history.pushState(null, null, window.location.href);
+  window.onpopstate = function () {
+    history.pushState(null, null, window.location.href);
+  };
 </script>
 {% endblock %}

@@ -354,6 +354,10 @@
 
 {% block extra_js %}
 <script>
+// ✅ DÁN VÀO ĐÂY: NHẬN CONFIG TỪ FLASK
+    const MEDIA_KEYWORDS = {{ media_keywords|tojson }};
+    const KEYWORD_SCORES = {{ keyword_scores|tojson }};
+
 // Initialize tooltips
 var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
 var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -387,59 +391,90 @@ altTextInput.addEventListener('input', updateAltTextCounter);
 
 // Live SEO Score Calculator
 function calculateLiveSEOScore() {
+    // Lấy giá trị từ các input
     const altText = document.querySelector('[name="alt_text"]').value;
     const title = document.querySelector('[name="title"]').value;
     const caption = document.querySelector('[name="caption"]').value;
     const album = document.querySelector('[name="album"]').value;
+    const altTextLower = altText.toLowerCase();
 
     let score = 0;
     let checklist = [];
 
-    // Alt Text (50 points)
-    const altLen = altText.length;
-    if (altLen >= 30 && altLen <= 125) {
-        score += 40;
-        checklist.push('<li class="text-success">✓ Alt Text có độ dài tối ưu</li>');
+    // --- LOGIC TÍNH ĐIỂM MỚI (Sử dụng config đã nhận) ---
 
-        // Keywords bonus
-        const keywords = ['máy', 'lọc', 'nước', 'sản phẩm', 'thiết bị'];
-        const hasKeywords = keywords.some(kw => altText.toLowerCase().includes(kw));
-        if (hasKeywords) {
-            score += 10;
-            checklist.push('<li class="text-success">✓ Alt Text có keywords</li>');
+    // 1. Alt Text (50 điểm)
+    const altLen = altText.length;
+    if (altLen > 0) {
+        // 1.1. Độ dài (30 điểm)
+        if (altLen >= 30 && altLen <= 125) {
+            score += 30;
+            checklist.push('<li class="text-success">✓ Alt Text có độ dài tối ưu</li>');
+        } else if (altLen >= 10) {
+            score += 15;
+            checklist.push('<li class="text-warning">⚠ Alt Text hơi ngắn/dài</li>');
         } else {
-            checklist.push('<li class="text-warning">⚠ Nên thêm keywords</li>');
+            score += 5;
+            checklist.push('<li class="text-danger">✗ Alt Text quá ngắn</li>');
         }
-    } else if (altLen > 0) {
-        score += 20;
-        checklist.push('<li class="text-warning">⚠ Alt Text chưa tối ưu</li>');
+
+        // 1.2. Keywords (20 điểm) - DÙNG BIẾN TOÀN CỤC
+        const hasPrimary = MEDIA_KEYWORDS.primary.some(kw => altTextLower.includes(kw));
+        const hasSecondary = MEDIA_KEYWORDS.secondary.some(kw => altTextLower.includes(kw));
+        const hasBrand = MEDIA_KEYWORDS.brand.some(kw => altTextLower.includes(kw));
+
+        if (hasPrimary) {
+            score += KEYWORD_SCORES.primary; // Lấy điểm từ config
+            checklist.push('<li class="text-success">✓ Có keyword chính</li>');
+        } else if (hasSecondary && hasBrand) {
+            score += KEYWORD_SCORES.secondary_brand;
+            checklist.push('<li class="text-success">✓ Có keyword phụ + thương hiệu</li>');
+        } else if (hasSecondary) {
+            score += KEYWORD_SCORES.secondary;
+            checklist.push('<li class="text-info">ℹ Có keyword phụ (nên thêm thương hiệu)</li>');
+        } else if (hasBrand) {
+            score += KEYWORD_SCORES.brand;
+            checklist.push('<li class="text-warning">⚠ Chỉ có thương hiệu (nên thêm mô tả)</li>');
+        } else {
+            checklist.push('<li class="text-danger">✗ Không có keywords quan trọng</li>');
+        }
+
     } else {
         checklist.push('<li class="text-danger">✗ Thiếu Alt Text</li>');
     }
 
-    // Title (15 points)
-    if (title.length > 0) {
+    // 2. Title (15 điểm)
+    if (title.length >= 20 && title.length <= 100) {
         score += 15;
-        checklist.push('<li class="text-success">✓ Có Title</li>');
+        checklist.push('<li class="text-success">✓ Có Title tối ưu</li>');
+    } else if (title.length > 0) {
+        score += 10;
+        checklist.push('<li class="text-info">ℹ Có Title (độ dài chưa tối ưu)</li>');
     } else {
         checklist.push('<li class="text-warning">⚠ Nên thêm Title</li>');
     }
 
-    // Caption (15 points)
-    if (caption.length > 20) {
+    // 3. Caption (15 điểm)
+    if (caption.length >= 50) {
         score += 15;
-        checklist.push('<li class="text-success">✓ Có Caption</li>');
+        checklist.push('<li class="text-success">✓ Có Caption chi tiết</li>');
+    } else if (caption.length > 20) {
+        score += 10;
+        checklist.push('<li class="text-info">ℹ Có Caption (nhưng hơi ngắn)</li>');
     } else {
         checklist.push('<li class="text-warning">⚠ Nên thêm Caption</li>');
     }
 
-    // Album (10 points)
-    if (album.length > 0) {
+    // 4. Album (10 điểm)
+    if (album && album.length > 0) {
         score += 10;
         checklist.push('<li class="text-success">✓ Đã phân loại Album</li>');
     } else {
         checklist.push('<li class="text-warning">⚠ Nên phân loại Album</li>');
     }
+
+    // Giới hạn điểm tối đa là 100
+    score = Math.min(Math.round(score), 100);
 
     // Update progress bar
     const seoScoreBar = document.getElementById('liveSeoScore');
@@ -447,15 +482,17 @@ function calculateLiveSEOScore() {
     seoScoreBar.textContent = score + '%';
 
     // Color coding
-    if (score >= 80) {
-        seoScoreBar.className = 'progress-bar bg-success';
-    } else if (score >= 60) {
-        seoScoreBar.className = 'progress-bar bg-info';
-    } else if (score >= 40) {
-        seoScoreBar.className = 'progress-bar bg-warning';
-    } else {
-        seoScoreBar.className = 'progress-bar bg-danger';
+    let gradeClass = 'danger';
+    if (score >= 80) gradeClass = 'success';
+    else if (score >= 70) gradeClass = 'info';
+    else if (score >= 50) gradeClass = 'warning';
+
+    const currentClasses = seoScoreBar.className.split(' ');
+    const bgClass = currentClasses.find(c => c.startsWith('bg-'));
+    if (bgClass) {
+        seoScoreBar.classList.remove(bgClass);
     }
+    seoScoreBar.classList.add(`bg-${gradeClass}`);
 
     // Update checklist
     document.getElementById('liveSeoChecklist').innerHTML = checklist.join('');

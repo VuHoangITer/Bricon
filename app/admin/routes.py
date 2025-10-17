@@ -17,9 +17,8 @@ from app.seo_config import MEDIA_KEYWORDS, KEYWORD_SCORES
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta
 
+
 # ==================== Giữ nguyên các hàm calculate_seo_score, calculate_blog_seo_score ====================
-
-
 def calculate_seo_score(media):
     """Tính SEO score - dùng config từ seo_config.py"""
     score = 0
@@ -59,7 +58,7 @@ def calculate_seo_score(media):
         elif has_secondary:
             score += KEYWORD_SCORES['secondary']
             checklist.append(('info', 'ℹ Có keyword phụ (nên thêm thương hiệu)'))
-            recommendations.append('Thêm "A.O Smith" để tăng điểm')
+            recommendations.append('Thêm "Bricon" để tăng điểm')
         elif has_brand:
             score += KEYWORD_SCORES['brand']
             checklist.append(('warning', '⚠ Chỉ có thương hiệu'))
@@ -368,7 +367,7 @@ def calculate_blog_seo_score(blog):
 
     # === 6. INTERNAL LINKS (10 điểm) ===
     if blog.content:
-        internal_links = len(re.findall(r'href=["\'](?:/|(?:https?://)?(?:www\.)?aosmith\.com\.vn)', blog.content))
+        internal_links = len(re.findall(r'href=["\'](?:/|(?:https?://)?(?:www\.)?bricon\.com\.vn)', blog.content))
         if internal_links >= 3:
             score += 10
             checklist.append(('success', f'✓ Có {internal_links} liên kết nội bộ'))
@@ -548,18 +547,18 @@ def login():
                 lockout_time = datetime.now() + timedelta(minutes=30)
                 session[lockout_key] = lockout_time.isoformat()
 
-                flash(f'🔒 Tài khoản đã bị khóa 30 phút do đăng nhập sai {max_attempts} lần liên tiếp!', 'danger')
+                flash(f'Tài khoản đã bị khóa 30 phút do đăng nhập sai {max_attempts} lần liên tiếp!', 'danger')
                 return render_template('admin/login.html', form=form)
 
             # ⚠️ CẢNH BÁO LẦN CUỐI CÙNG
             elif remaining == 1:
                 flash(
-                    f'⚠️ CẢNH BÁO: Email hoặc mật khẩu không đúng! Đây là lần thử cuối cùng. Tài khoản sẽ bị khóa 30 phút nếu nhập sai.',
+                    f'⚠CẢNH BÁO: Email hoặc mật khẩu không đúng! Đây là lần thử cuối cùng. Tài khoản sẽ bị khóa 30 phút nếu nhập sai.',
                     'danger')
 
             # ℹ️ CÒN NHIỀU LƯỢT
             else:
-                flash(f'❌ Email hoặc mật khẩu không đúng! Còn {remaining} lần thử.', 'warning')
+                flash(f'Email hoặc mật khẩu không đúng! Còn {remaining} lần thử.', 'warning')
 
     return render_template('admin/login.html', form=form)
 
@@ -1364,33 +1363,43 @@ def media():
 
     media_with_seo = []
     for m in media_files.items:
-        seo_result = calculate_seo_score(m)
+        # Sử dụng get_seo_info() để lấy điểm đã lưu, không tính lại
+        seo_result = m.get_seo_info()
+        db.session.commit()  # Commit các thay đổi điểm số nếu có
         media_with_seo.append({
             'media': m,
             'seo': seo_result
         })
 
+    # File: routes.py - bên trong hàm media()
+    query = Media.query
+    if album_filter:
+        query = query.filter_by(album=album_filter)
+
     if seo_filter:
         if seo_filter == 'excellent':
-            media_with_seo = [m for m in media_with_seo if m['seo']['score'] >= 85]
+            query = query.filter(Media.seo_score >= 85)
         elif seo_filter == 'good':
-            media_with_seo = [m for m in media_with_seo if 65 <= m['seo']['score'] < 85]
+            query = query.filter(Media.seo_score.between(65, 84))
         elif seo_filter == 'fair':
-            media_with_seo = [m for m in media_with_seo if 50 <= m['seo']['score'] < 65]
+            query = query.filter(Media.seo_score.between(50, 64))
         elif seo_filter == 'poor':
-            media_with_seo = [m for m in media_with_seo if m['seo']['score'] < 50]
+            query = query.filter(Media.seo_score < 50)
+
+    media_files = query.order_by(Media.created_at.desc()).paginate(
+        page=page, per_page=24, error_out=False
+    )
 
     albums = get_albums()
     total_files = Media.query.count()
     total_size = db.session.query(db.func.sum(Media.file_size)).scalar() or 0
     total_size_mb = round(total_size / (1024 * 1024), 2)
 
-    all_media = Media.query.all()
     seo_stats = {
-        'excellent': sum(1 for m in all_media if calculate_seo_score(m)['score'] >= 85),
-        'good': sum(1 for m in all_media if 65 <= calculate_seo_score(m)['score'] < 85),
-        'fair': sum(1 for m in all_media if 50 <= calculate_seo_score(m)['score'] < 65),
-        'poor': sum(1 for m in all_media if calculate_seo_score(m)['score'] < 50),
+        'excellent': db.session.query(Media).filter(Media.seo_score >= 85).count(),
+        'good': db.session.query(Media).filter(Media.seo_score.between(65, 84)).count(),
+        'fair': db.session.query(Media).filter(Media.seo_score.between(50, 64)).count(),
+        'poor': db.session.query(Media).filter(Media.seo_score < 50).count(),
     }
 
     return render_template(
@@ -1461,6 +1470,8 @@ def upload_media():
                             title=file_alt_text,
                             uploaded_by=current_user.id
                         )
+                        media.update_seo_score()  # ✅ TÍNH ĐIỂM SEO LẦN ĐẦU
+
                         db.session.add(media)
                         uploaded_count += 1
                     else:
@@ -1650,7 +1661,9 @@ def edit_media(id):
                            media=media,
                            form=form,
                            albums=albums,
-                           seo_result=seo_result)
+                           seo_result=seo_result,
+                           media_keywords=MEDIA_KEYWORDS,
+                           keyword_scores=KEYWORD_SCORES)
 
 
 @admin_bp.route('/media/bulk-edit', methods=['POST'])

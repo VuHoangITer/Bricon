@@ -754,7 +754,9 @@
     {% block extra_js %}{% endblock %}
 
     <!-- ==================== CHATBOT WIDGET ==================== -->
-    {% include 'components/chatbot_widget.html' %}
+      {% if not request.endpoint or 'quiz.' not in request.endpoint %}
+        {% include 'components/chatbot_widget.html' %}
+      {% endif %}
 
   </body>
 </html>
