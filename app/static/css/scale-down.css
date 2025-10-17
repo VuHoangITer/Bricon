@@ -40,10 +40,10 @@ body {
 
 @media (max-width: 768px) {
   .carousel-item img {
-    height: 280px !important;
+    height: 300px !important;
   }
   .carousel-item {
-    min-height: 280px !important;
+    min-height: 300px !important;
   }
 .carousel-caption h1,
 .carousel-caption h2 {

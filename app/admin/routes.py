@@ -998,20 +998,34 @@ def add_banner():
 @admin_bp.route('/banners/edit/<int:id>', methods=['GET', 'POST'])
 @permission_required('manage_banners')
 def edit_banner(id):
-    """Sửa banner với hỗ trợ ảnh mobile"""
+    """Sửa banner với hỗ trợ ảnh mobile và xóa ảnh"""
     banner = Banner.query.get_or_404(id)
     form = BannerForm(obj=banner)
 
     if form.validate_on_submit():
+        # ✅ XỬ LÝ XÓA ẢNH DESKTOP
+        delete_desktop = request.form.get('delete_desktop_image') == '1'
+        if delete_desktop:
+            banner.image = None  # Xóa đường dẫn trong DB
+            flash('Đã xóa ảnh Desktop', 'info')
+
+        # ✅ XỬ LÝ XÓA ẢNH MOBILE
+        delete_mobile = request.form.get('delete_mobile_image') == '1'
+        if delete_mobile:
+            banner.image_mobile = None  # Xóa đường dẫn trong DB
+            flash('Đã xóa ảnh Mobile', 'info')
+
         # Cập nhật ảnh Desktop (nếu có upload mới)
-        new_image = get_image_from_form(form.image, 'image', folder='banners')
-        if new_image:
-            banner.image = new_image
+        if not delete_desktop:
+            new_image = get_image_from_form(form.image, 'image', folder='banners')
+            if new_image:
+                banner.image = new_image
 
         # ✅ Cập nhật ảnh Mobile (nếu có upload mới)
-        new_image_mobile = get_image_from_form(form.image_mobile, 'image_mobile', folder='banners/mobile')
-        if new_image_mobile:
-            banner.image_mobile = new_image_mobile
+        if not delete_mobile:
+            new_image_mobile = get_image_from_form(form.image_mobile, 'image_mobile', folder='banners/mobile')
+            if new_image_mobile:
+                banner.image_mobile = new_image_mobile
 
         banner.title = form.title.data
         banner.subtitle = form.subtitle.data

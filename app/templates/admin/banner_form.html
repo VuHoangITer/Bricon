@@ -12,7 +12,7 @@
 
 <div class="card">
     <div class="card-body">
-        <form method="POST" enctype="multipart/form-data">
+        <form method="POST" enctype="multipart/form-data" id="bannerForm">
             {{ form.hidden_tag() }}
 
             <div class="row g-3">
@@ -41,12 +41,33 @@
                     <small class="text-muted">Khuyến nghị: 1920x600px, JPG/PNG (Max 2MB)</small>
                     <input type="hidden" name="selected_image_path" id="selectedImagePath" value="">
 
-                    <div class="mt-2">
+                    <!-- ✅ INPUT HIDDEN ĐỂ GỬI THÔNG BÁO XÓA ẢNH -->
+                    <input type="hidden" name="delete_desktop_image" id="deleteDesktopImage" value="0">
+
+                    <div class="mt-2" id="desktopImageContainer">
+                        {% if banner and banner.image %}
+                        <div class="position-relative d-inline-block">
+                            <img id="imagePreview"
+                                 src="{{ banner.image }}"
+                                 alt="Desktop Preview"
+                                 class="img-thumbnail"
+                                 style="max-width: 100%; max-height: 200px;">
+
+                            <!-- ✅ NÚT XÓA ẢNH DESKTOP -->
+                            <button type="button"
+                                    class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2"
+                                    onclick="removeImage('desktop')"
+                                    title="Xóa ảnh Desktop">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                        {% else %}
                         <img id="imagePreview"
-                             src="{{ banner.image if banner and banner.image else '' }}"
+                             src=""
                              alt="Desktop Preview"
                              class="img-thumbnail"
-                             style="max-width: 100%; max-height: 200px; {{ '' if banner and banner.image else 'display: none;' }}">
+                             style="max-width: 100%; max-height: 200px; display: none;">
+                        {% endif %}
                     </div>
                 </div>
 
@@ -61,15 +82,36 @@
                             <i class="bi bi-images"></i> Chọn từ thư viện
                         </button>
                     </div>
-                    <small class="text-muted">Khuyến nghị: 768x1024px (dọc), JPG/PNG. Nếu bỏ trống sẽ dùng ảnh Desktop.</small>
+                    <small class="text-muted">Khuyến nghị: 1080x1080px (vuông) hoặc 1080x1350px (4:5). Nếu bỏ trống sẽ dùng ảnh Desktop.</small>
                     <input type="hidden" name="selected_image_mobile_path" id="selectedImageMobilePath" value="">
 
-                    <div class="mt-2">
+                    <!-- ✅ INPUT HIDDEN ĐỂ GỬI THÔNG BÁO XÓA ẢNH MOBILE -->
+                    <input type="hidden" name="delete_mobile_image" id="deleteMobileImage" value="0">
+
+                    <div class="mt-2" id="mobileImageContainer">
+                        {% if banner and banner.image_mobile %}
+                        <div class="position-relative d-inline-block">
+                            <img id="imageMobilePreview"
+                                 src="{{ banner.image_mobile }}"
+                                 alt="Mobile Preview"
+                                 class="img-thumbnail"
+                                 style="max-width: 300px; max-height: 200px;">
+
+                            <!-- ✅ NÚT XÓA ẢNH MOBILE -->
+                            <button type="button"
+                                    class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2"
+                                    onclick="removeImage('mobile')"
+                                    title="Xóa ảnh Mobile">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                        {% else %}
                         <img id="imageMobilePreview"
-                             src="{{ banner.image_mobile if banner and banner.image_mobile else '' }}"
+                             src=""
                              alt="Mobile Preview"
                              class="img-thumbnail"
-                             style="max-width: 300px; max-height: 200px; {{ '' if banner and banner.image_mobile else 'display: none;' }}">
+                             style="max-width: 300px; max-height: 200px; display: none;">
+                        {% endif %}
                     </div>
                 </div>
 
@@ -105,8 +147,9 @@
                         <strong>Mẹo Responsive:</strong>
                         <ul class="mb-0 mt-2">
                             <li><strong>Desktop:</strong> 1920x600px (ngang) - hiển thị trên PC/Laptop</li>
-                            <li><strong>Mobile:</strong> 768x1024px (dọc) - hiển thị trên điện thoại</li>
+                            <li><strong>Mobile:</strong> 1080x1080px (vuông) hoặc 1080x1350px (dọc) - hiển thị trên điện thoại</li>
                             <li>Nếu không upload ảnh Mobile, hệ thống sẽ tự động dùng ảnh Desktop</li>
+                            <li>Nhấn nút <i class="bi bi-trash text-danger"></i> để xóa ảnh đã upload</li>
                         </ul>
                     </div>
                 </div>
@@ -124,17 +167,55 @@
 {% include 'admin/components/media_picker_modal.html' %}
 
 <script>
+// ✅ XÓA ẢNH (DESKTOP HOẶC MOBILE)
+function removeImage(type) {
+    if (!confirm('Bạn có chắc muốn xóa ảnh này?')) {
+        return;
+    }
+
+    if (type === 'desktop') {
+        // Xóa preview desktop
+        const preview = document.getElementById('imagePreview');
+        preview.src = '';
+        preview.style.display = 'none';
+
+        // Clear input
+        document.getElementById('image').value = '';
+        document.getElementById('selectedImagePath').value = '';
+
+        // Đánh dấu để backend xóa
+        document.getElementById('deleteDesktopImage').value = '1';
+
+        // Xóa container button
+        const container = document.getElementById('desktopImageContainer');
+        container.innerHTML = '<img id="imagePreview" src="" alt="Desktop Preview" class="img-thumbnail" style="max-width: 100%; max-height: 200px; display: none;">';
+
+    } else if (type === 'mobile') {
+        // Xóa preview mobile
+        const preview = document.getElementById('imageMobilePreview');
+        preview.src = '';
+        preview.style.display = 'none';
+
+        // Clear input
+        document.getElementById('image_mobile').value = '';
+        document.getElementById('selectedImageMobilePath').value = '';
+
+        // Đánh dấu để backend xóa
+        document.getElementById('deleteMobileImage').value = '1';
+
+        // Xóa container button
+        const container = document.getElementById('mobileImageContainer');
+        container.innerHTML = '<img id="imageMobilePreview" src="" alt="Mobile Preview" class="img-thumbnail" style="max-width: 300px; max-height: 200px; display: none;">';
+    }
+}
+
 // ✅ Override openMediaPicker để hỗ trợ cả Desktop và Mobile
 function openMediaPicker(inputId, previewId) {
-    // Lưu thông tin input đang được chọn
     window.currentImageInput = inputId;
     window.currentImagePreview = previewId;
 
-    // Mở modal
     const modal = new bootstrap.Modal(document.getElementById('mediaPickerModal'));
     modal.show();
-
-    // Load media
     loadMediaLibrary();
 }
 
@@ -146,8 +227,10 @@ function selectMediaImage(filepath) {
     // Set hidden input tương ứng
     if (inputId === 'image') {
         document.getElementById('selectedImagePath').value = filepath;
+        document.getElementById('deleteDesktopImage').value = '0'; // Reset delete flag
     } else if (inputId === 'image_mobile') {
         document.getElementById('selectedImageMobilePath').value = filepath;
+        document.getElementById('deleteMobileImage').value = '0'; // Reset delete flag
     }
 
     // Hiển thị preview
@@ -160,4 +243,16 @@ function selectMediaImage(filepath) {
     modal.hide();
 }
 </script>
+
+<style>
+/* Style cho nút xóa ảnh */
+.position-relative .btn-danger {
+    opacity: 0.9;
+    transition: opacity 0.3s;
+}
+
+.position-relative .btn-danger:hover {
+    opacity: 1;
+}
+</style>
 {% endblock %}
