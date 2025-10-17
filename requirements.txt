@@ -32,5 +32,5 @@ Flask-Compress==1.14
 # ==================== UTILITIES (QR CODE) ====================
 qrcode[pil]==7.4.2
 
-# ==================== CACHING (OPTIONAL) ====================
-Flask-Caching==2.1.0  # Uncomment nếu muốn dùng caching nâng cao
+# ==================== CACHING  ====================
+Flask-Caching==2.1.0

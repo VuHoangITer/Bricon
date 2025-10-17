@@ -1,1 +1,1 @@
-web: gunicorn --workers 2 --threads 2 --timeout 120 --keep-alive 5 --max-requests 1000 --max-requests-jitter 50 --preload --access-logfile - --error-logfile - run:app
+web: gunicorn --workers 1 --threads 2 --timeout 120 --keep-alive 5 --max-requests 1000 --max-requests-jitter 50 --preload --access-logfile - --error-logfile - run:app
