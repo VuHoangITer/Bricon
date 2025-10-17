@@ -1,60 +1,49 @@
 """
-Gunicorn configuration - Tối ưu cho Render Starter (512MB RAM, 0.5 CPU)
-Đặt file này cùng cấp với run.py
+Gunicorn config - Render Starter (512MB RAM, 0.5 CPU)
 """
 
 import os
 
-# ==================== WORKER CONFIGURATION ====================
-# ⚡ Giữ ở mức nhẹ: chỉ 1 worker và 2 threads để tránh OOM (Out of Memory)
+# ===== WORKERS / THREADS =====
 workers = 1
-threads = 2
-worker_class = "gthread"  # Dùng thread-based để xử lý nhiều request cùng lúc nhẹ hơn fork
+threads = int(os.environ.get("GTHREADS", "3"))  # bắt đầu 3; nâng 4 nếu cần
+worker_class = "gthread"
 
-# ==================== TIMEOUT ====================
-timeout = 90  # Giảm còn 90s để tránh giữ kết nối quá lâu
-graceful_timeout = 20
-keepalive = 5
+# ===== TIMEOUTS =====
+timeout = int(os.environ.get("GUNICORN_TIMEOUT", "60"))
+graceful_timeout = int(os.environ.get("GUNICORN_GRACEFUL", "30"))
+keepalive = int(os.environ.get("GUNICORN_KEEPALIVE", "2"))
 
-# ==================== MEMORY MANAGEMENT ====================
-max_requests = 500
-max_requests_jitter = 30
+# ===== MEMORY LEAK GUARD =====
+max_requests = int(os.environ.get("GUNICORN_MAX_REQ", "300"))
+max_requests_jitter = int(os.environ.get("GUNICORN_MAX_JITTER", "60"))
 
-# ==================== PRELOAD ====================
-# Không preload để tránh tốn RAM khi forking (chỉ 1 worker nên không cần preload)
-preload_app = False
-
-# ==================== BINDING ====================
+# ===== SOCKET =====
 bind = f"0.0.0.0:{os.environ.get('PORT', '10000')}"
+backlog = int(os.environ.get("GUNICORN_BACKLOG", "256"))
 
-# ==================== LOGGING ====================
+# ===== PERF / PROXY COMPAT =====
+preload_app = True           # 1 worker → an toàn, warm-up nhanh
+sendfile = False             # tránh lỗi với reverse proxy
+
+# ===== LOGGING =====
 accesslog = "-"
 errorlog = "-"
-loglevel = "info"
+loglevel = os.environ.get("GUNICORN_LOGLEVEL", "warning")
 
-# ==================== PERFORMANCE ====================
-backlog = 512  # Giảm backlog để tiết kiệm RAM
-
-# ==================== HOOKS ====================
+# ===== HOOKS =====
 def on_starting(server):
-    print("🚀 [Gunicorn] Starting (Render Starter mode)")
-    print(f"   - Workers: {workers}")
-    print(f"   - Threads: {threads}")
-    print(f"   - Worker class: {worker_class}")
-    print(f"   - Timeout: {timeout}s")
-
+    print("🚀 Gunicorn starting (Render 512MB)")
+    print(f"   Workers: {workers} | Threads: {threads} | Timeout: {timeout}s | Preload: {preload_app}")
 
 def post_fork(server, worker):
-    print(f"✅ [Worker {worker.pid}] Spawned")
-
+    print(f"✅ Worker {worker.pid} ready")
 
 def worker_int(worker):
-    print(f"⚠️ [Worker {worker.pid}] Interrupted")
-
+    print(f"⚠️ Worker {worker.pid} received SIGINT")
 
 def worker_abort(worker):
-    print(f"❌ [Worker {worker.pid}] Aborted")
-
+    print(f"❌ Worker {worker.pid} aborted (timeout/crash)")
 
 def worker_exit(server, worker):
-    print(f"👋 [Worker {worker.pid}] Exited")
+    print(f"👋 Worker {worker.pid} exited")

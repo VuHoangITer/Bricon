@@ -5,6 +5,7 @@ from app.forms import ContactForm
 from sqlalchemy import or_
 from app.project_config import PROJECT_TYPES
 from jinja2 import Template
+from sqlalchemy.orm import joinedload, load_only
 import os
 
 # Tạo Blueprint cho frontend
@@ -22,21 +23,21 @@ def index():
     featured_products = Product.query.filter_by(
         is_featured=True,
         is_active=True
-    ).limit(8).all()
+    ).limit(3).all()
 
     # Lấy sản phẩm mới nhất
     latest_products = Product.query.filter_by(
         is_active=True
-    ).order_by(Product.created_at.desc()).limit(8).all()
+    ).order_by(Product.created_at.desc()).limit(3).all()
 
     # Lấy tin tức nổi bật
-    featured_blogs = Blog.query.filter_by(
-        is_featured=True,
-        is_active=True
-    ).limit(3).all()
+    featured_blogs = (Blog.query
+                      .options(load_only(Blog.slug, Blog.title, Blog.created_at, Blog.image))
+                      .filter_by(is_featured=True, is_active=True)
+                      ).limit(3).all()
 
     featured_projects = Project.query.filter_by(is_featured=True, is_active=True).order_by(
-        Project.created_at.desc()).all()
+        Project.created_at.desc()).limit(6).all()
 
     return render_template('index.html',
                            banners=banners,
@@ -99,7 +100,7 @@ def products(category_slug=None):
                             code=301)
 
     # Query cơ bản
-    query = Product.query.filter_by(is_active=True)
+    query = Product.query.options(joinedload(Product.category)).filter_by(is_active=True)
     current_category = None
 
     # Filter theo danh mục slug
@@ -151,14 +152,16 @@ from datetime import datetime, timedelta
 @main_bp.route('/san-pham/<slug>')
 def product_detail(slug):
     """Trang chi tiết sản phẩm với render động meta description"""
-    product = Product.query.filter_by(slug=slug, is_active=True).first_or_404()
+    product = Product.query.options(joinedload(Product.category)) \
+        .filter_by(slug=slug, is_active=True).first_or_404()
 
     # Tăng lượt xem
     product.views += 1
     db.session.commit()
 
     # Lấy sản phẩm liên quan (cùng danh mục)
-    related_products = Product.query.filter(
+    related_products = Product.query.options(joinedload(Product.category)) \
+        .filter(
         Product.category_id == product.category_id,
         Product.id != product.id,
         Product.is_active == True
@@ -215,7 +218,16 @@ def blog():
     search = request.args.get('search', '')
 
     # Query
-    query = Blog.query.filter_by(is_active=True)
+    query = (Blog.query
+             .options(
+        joinedload(Blog.author_obj),
+        load_only(
+            Blog.id, Blog.slug, Blog.title, Blog.excerpt, Blog.image,
+            Blog.created_at, Blog.updated_at, Blog.views, Blog.author, Blog.is_featured
+        )
+    )
+             .filter_by(is_active=True)
+             )
 
     # Search
     if search:
@@ -241,10 +253,10 @@ def blog():
     blogs = pagination.items
 
     # Bài viết nổi bật sidebar
-    featured_blogs = Blog.query.filter_by(
-        is_featured=True,
-        is_active=True
-    ).limit(5).all()
+    featured_blogs = (Blog.query
+                      .options(load_only(Blog.slug, Blog.title, Blog.created_at, Blog.views, Blog.image))
+                      .filter_by(is_featured=True, is_active=True)
+                      ).limit(5).all()
 
     return render_template('blog.html',
                            blogs=blogs,
@@ -256,17 +268,21 @@ def blog():
 @main_bp.route('/tin-tuc/<slug>')
 def blog_detail(slug):
     """Trang chi tiết blog"""
-    blog = Blog.query.filter_by(slug=slug, is_active=True).first_or_404()
+    blog = (Blog.query
+            .options(joinedload(Blog.author_obj))
+            .filter_by(slug=slug, is_active=True)
+            ).first_or_404()
 
     # Tăng lượt xem
     blog.views += 1
     db.session.commit()
 
     # Bài viết liên quan
-    related_blogs = Blog.query.filter(
-        Blog.id != blog.id,
-        Blog.is_active == True
-    ).order_by(Blog.created_at.desc()).limit(3).all()
+    related_blogs = (Blog.query
+                     .options(load_only(Blog.slug, Blog.title, Blog.created_at, Blog.image))
+                     .filter(Blog.id != blog.id, Blog.is_active == True)
+                     .order_by(Blog.created_at.desc())
+                     ).limit(3).all()
 
     return render_template('blog_detail.html',
                            blog=blog,
@@ -392,7 +408,16 @@ def projects():
     page = request.args.get('page', 1, type=int)
     project_type = request.args.get('type', '')
 
-    query = Project.query.filter_by(is_active=True)
+    query = (Project.query
+             .options(
+        load_only(
+            Project.id, Project.slug, Project.title, Project.image,
+            Project.description, Project.location, Project.year,
+            Project.project_type, Project.is_featured
+        )
+    )
+             .filter_by(is_active=True)
+             )
 
     if project_type:
         query = query.filter_by(project_type=project_type)
@@ -401,7 +426,10 @@ def projects():
         page=page, per_page=12, error_out=False
     )
 
-    featured_projects = Project.query.filter_by(is_featured=True, is_active=True).limit(6).all()
+    featured_projects = (Project.query
+                         .options(load_only(Project.slug, Project.title, Project.image))
+                         .filter_by(is_featured=True, is_active=True)
+                         ).limit(6).all()
 
     return render_template('projects.html',
                            projects=projects,
@@ -420,10 +448,13 @@ def project_detail(slug):
     db.session.commit()
 
     # Dự án liên quan
-    related = Project.query.filter(
+    related = (Project.query
+    .options(load_only(Project.slug, Project.title, Project.image, Project.location))
+    .filter(
         Project.id != project.id,
         Project.project_type == project.project_type,
         Project.is_active == True
+    )
     ).limit(4).all()
 
     return render_template('project_detail.html',

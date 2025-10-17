@@ -1,33 +1,35 @@
-from flask import Flask
+from flask import Flask, g, request  # ✅ thêm request
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
-from flask_compress import Compress  # 🔥 THÊM
+from flask_compress import Compress
 from app.config import Config
 import cloudinary
 import os
 from dotenv import load_dotenv
-from urllib.parse import urlparse
 import pytz
 
 # Khởi tạo extensions
 db = SQLAlchemy()
 migrate = Migrate()
 login_manager = LoginManager()
-compress = Compress()  # 🔥 THÊM: Nén response
+compress = Compress()
 
-# Định nghĩa timezone Việt Nam
+# Timezone Việt Nam
 VN_TZ = pytz.timezone('Asia/Ho_Chi_Minh')
+
+# ===== CACHE GLOBAL (TTL) =====
+_CATEGORIES_CACHE = None
+_CACHE_TIMESTAMP = None
+_CACHE_TTL = 300  # 5 phút
 
 
 def create_app(config_class=Config):
     """Factory function để tạo Flask app - Tối ưu cho Render"""
     app = Flask(__name__)
-
-    # Load environment variables
     load_dotenv()
 
-    # ==================== CONFIGURATION ====================
+    # ==================== CONFIG ====================
     app.config.from_object(config_class)
     app.config['GEMINI_API_KEY'] = os.getenv('GEMINI_API_KEY')
     app.config['CHATBOT_ENABLED'] = True
@@ -36,10 +38,9 @@ def create_app(config_class=Config):
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
-    compress.init_app(app)  # 🔥 Bật compression
+    compress.init_app(app)  # ✅ bật nén HTTP
 
-    # ==================== CLOUDINARY - SIMPLE CONFIG ====================
-    # 🔥 TỐI ƯU: Đơn giản hóa config, bỏ phần parse phức tạp
+    # ==================== CLOUDINARY ====================
     cloudinary.config(
         cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
         api_key=os.getenv('CLOUDINARY_API_KEY'),
@@ -69,24 +70,34 @@ def create_app(config_class=Config):
         from app.chatbot.routes import init_gemini
         init_gemini()
 
-    # Khởi tạo cấu hình
+    # Khởi tạo cấu hình logging, v.v.
     config_class.init_app(app)
 
-    # ==================== CONTEXT PROCESSOR - HỢP NHẤT ====================
-    # 🔥 TỐI ƯU: Gộp 2 context processors thành 1 để tránh duplicate queries
+    # ==================== CONTEXT PROCESSOR (TTL + per-request g) ====================
     @app.context_processor
     def inject_globals():
         """
-        Inject các biến toàn cục vào tất cả templates
-        ⚠️ CHÚ Ý: Function này chạy cho MỌI request → phải nhanh
+        - TTL cache (process-level) 5 phút để tránh query lặp qua nhiều request
+        - Per-request cache bằng g.* để 1 request không query lại
         """
-        from app.models import Category, get_setting
+        from app.models import get_setting, Category
         from datetime import datetime
+        import time
 
-        # 🔥 TỐI ƯU: Cache categories trong g object (per-request cache)
-        from flask import g
+        global _CATEGORIES_CACHE, _CACHE_TIMESTAMP
+
+        # per-request guard
         if not hasattr(g, 'all_categories'):
-            g.all_categories = Category.query.filter_by(is_active=True).all()
+            now = time.time()
+            need_refresh = (
+                _CATEGORIES_CACHE is None or
+                _CACHE_TIMESTAMP is None or
+                (now - _CACHE_TIMESTAMP) > _CACHE_TTL
+            )
+            if need_refresh:
+                _CATEGORIES_CACHE = Category.query.filter_by(is_active=True).all()
+                _CACHE_TIMESTAMP = now
+            g.all_categories = _CATEGORIES_CACHE  # dùng cache process-level
 
         return {
             'get_setting': get_setting,
@@ -141,7 +152,6 @@ def create_app(config_class=Config):
         return vn_datetime_filter(dt, '%d/%m/%Y lúc %H:%M')
 
     # ==================== ERROR HANDLERS ====================
-    # 🔥 THÊM: Xử lý lỗi để tránh crash
     @app.errorhandler(404)
     def not_found_error(error):
         from flask import render_template
@@ -150,7 +160,48 @@ def create_app(config_class=Config):
     @app.errorhandler(500)
     def internal_error(error):
         from flask import render_template
-        db.session.rollback()  # Rollback để tránh stale session
+        db.session.rollback()
         return render_template('500.html'), 500
 
+    # Render đôi khi trả 502/503 khi cold start/quá tải
+    @app.errorhandler(502)
+    @app.errorhandler(503)
+    def service_unavailable(error):
+        from flask import render_template
+        return render_template('500.html'), 503
+
+    # ==================== BEFORE/AFTER/TEARDOWN ====================
+    @app.before_request
+    def before_request():
+        # pool_pre_ping đã xử lý stale connections
+        pass
+
+    @app.after_request
+    def after_request(response):
+        """
+        - Cache static mạnh tay
+        - Thêm security headers cơ bản
+        """
+        if request.path.startswith('/static/'):
+            response.cache_control.max_age = 31536000  # 1 năm
+            response.cache_control.public = True
+
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+        response.headers['X-XSS-Protection'] = '1; mode=block'
+        return response
+
+    @app.teardown_appcontext
+    def shutdown_session(exception=None):
+        """Đảm bảo đóng session sau mỗi request"""
+        db.session.remove()
+
     return app
+
+
+# ==================== CLEAR CACHE FUNCTION ====================
+def clear_categories_cache():
+    """Helper function để clear cache khi cần"""
+    global _CATEGORIES_CACHE, _CACHE_TIMESTAMP
+    _CATEGORIES_CACHE = None
+    _CACHE_TIMESTAMP = None

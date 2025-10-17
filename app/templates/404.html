@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Trang không tồn tại{% endblock %}
+
+{% block content %}
+<section class="py-5 text-center" style="min-height: 60vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+  <h1 style="font-size: 6rem; font-weight: bold; color: #dc3545;">404</h1>
+  <h3 class="mb-3">Trang bạn tìm kiếm không tồn tại</h3>
+  <p class="text-muted mb-4">Có thể đường dẫn đã bị thay đổi hoặc trang đã bị xóa.</p>
+<a href="{{ url_for('main.index') }}" class="btn btn-warning px-4 py-2" style="border-radius: 8px;">
+  ← Quay lại trang chủ
+</a>
+</section>
+{% endblock %}
