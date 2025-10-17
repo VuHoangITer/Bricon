@@ -35,25 +35,27 @@ resort, khách sạn, nhà máy, chung cư, bệnh viện. {% endblock %} {% blo
 <!-- ==================== FILTER SECTION ==================== -->
 <section class="filter-section py-3 bg-light">
   <div class="container">
-    <div class="d-flex flex-wrap gap-2 justify-content-center">
-      <!-- Nút "Tất cả" -->
-      <a
-        href="{{ url_for('main.projects') }}"
-        class="btn btn-sm {% if not current_type %}btn-warning{% else %}btn-outline-secondary{% endif %}"
-      >
-        <i class="bi bi-grid"></i> Tất cả
-      </a>
+    <div class="project-filters">
+      <div class="d-flex flex-wrap gap-2 justify-content-center">
+        <!-- Nút "Tất cả" -->
+        <a
+          href="{{ url_for('main.projects') }}"
+          class="btn btn-sm {% if not current_type %}btn-warning{% else %}btn-outline-secondary{% endif %}"
+        >
+          <i class="bi bi-grid"></i> Tất cả
+        </a>
 
-      <!-- Render từ config -->
-      {% for project_type in project_types %}
-      <a
-        href="{{ url_for('main.projects', type=project_type.value) }}"
-        class="btn btn-sm {% if current_type == project_type.value %}btn-warning{% else %}btn-outline-secondary{% endif %}"
-        title="{{ project_type.description }}"
-      >
-        <i class="bi {{ project_type.icon }}"></i> {{ project_type.label }}
-      </a>
-      {% endfor %}
+        <!-- Render từ config -->
+        {% for project_type in project_types %}
+        <a
+          href="{{ url_for('main.projects', type=project_type.value) }}"
+          class="btn btn-sm {% if current_type == project_type.value %}btn-warning{% else %}btn-outline-secondary{% endif %}"
+          title="{{ project_type.description }}"
+        >
+          <i class="bi {{ project_type.icon }}"></i> {{ project_type.label }}
+        </a>
+        {% endfor %}
+      </div>
     </div>
   </div>
 </section>

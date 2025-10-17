@@ -455,7 +455,7 @@ def project_detail(slug):
         Project.project_type == project.project_type,
         Project.is_active == True
     )
-    ).limit(4).all()
+    ).limit(2).all()
 
     return render_template('project_detail.html',
                            project=project,
