@@ -21,9 +21,10 @@ project.description else 'Dự án ' + project.title + ' tại ' + project.locat
 <meta property="og:url" content="{{ request.url }}" />
 <meta property="og:type" content="article" />
 {% endblock %} {% block content %}
-<!-- ==================== BREADCRUMB ==================== -->
-<section class="breadcrumb-section py-4 bg-light">
+<!-- ==================== BREADCRUMB & PAGE HEADER ==================== -->
+<div class="page-header bg-light py-4">
   <div class="container">
+    <h1 class="fw-bold mb-3">{{ project.title }}</h1>
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb mb-0">
         <li class="breadcrumb-item">
@@ -33,12 +34,12 @@ project.description else 'Dự án ' + project.title + ' tại ' + project.locat
           <a href="{{ url_for('main.projects') }}">Dự án tiêu biểu</a>
         </li>
         <li class="breadcrumb-item active" aria-current="page">
-          {{ project.title }}
+          {{ project.title[:50] }}{% if project.title|length > 50 %}...{% endif %}
         </li>
       </ol>
     </nav>
   </div>
-</section>
+</div>
 
 <!-- ==================== PROJECT DETAIL ==================== -->
 <section class="project-detail py-5">
@@ -66,7 +67,7 @@ project.description else 'Dự án ' + project.title + ' tại ' + project.locat
                 class="d-flex justify-content-between align-items-start mb-3 flex-wrap gap-3"
               >
                 <div>
-                  <h1 class="h2 mb-2" itemprop="name">{{ project.title }}</h1>
+                  <h2 class="h3 mb-2" itemprop="name">{{ project.title }}</h2>
                   <p class="text-muted mb-0">
                     <i class="bi bi-geo-alt text-warning"></i>
                     <span itemprop="locationCreated"

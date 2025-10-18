@@ -4,27 +4,23 @@ meta_description %}{{ get_setting('faq_meta_description', 'Các câu hỏi thư�
 gặp về keo dán gạch, chà ron và chống thấm của ' ~ get_setting('website_name',
 'BRICON VIỆT NAM') ~ '. Tìm câu trả lời nhanh chóng cho thắc mắc của bạn.') }}{%
 endblock %} {% block content %}
-<!-- Breadcrumb -->
-<section class="breadcrumb-section py-4 bg-light">
+<!-- ==================== BREADCRUMB & PAGE HEADER ==================== -->
+<div class="page-header bg-light py-4">
   <div class="container">
+    <h1 class="fw-bold mb-3">Câu hỏi thường gặp</h1>
+    <p class="lead text-muted mb-3">
+      Tìm câu trả lời nhanh chóng cho những thắc mắc của bạn
+    </p>
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb mb-0">
         <li class="breadcrumb-item">
           <a href="{{ url_for('main.index') }}">Trang chủ</a>
         </li>
-        <li class="breadcrumb-item active">Câu hỏi thường gặp</li>
+        <li class="breadcrumb-item active" aria-current="page">
+          Câu hỏi thường gặp
+        </li>
       </ol>
     </nav>
-  </div>
-</section>
-
-<!-- Page Header -->
-<div class="page-header bg-light py-5">
-  <div class="container text-center">
-    <h1 class="fw-bold mb-3">Câu hỏi thường gặp</h1>
-    <p class="lead text-muted">
-      Tìm câu trả lời nhanh chóng cho những thắc mắc của bạn
-    </p>
   </div>
 </div>
 

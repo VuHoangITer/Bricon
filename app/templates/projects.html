@@ -5,9 +5,14 @@ meta_description %} Khám phá các dự án keo dán gạch – keo chà ron �
 tiêu biểu của {{ get_setting('website_name', 'BRICON Việt Nam') }}: TTTM,
 resort, khách sạn, nhà máy, chung cư, bệnh viện. {% endblock %} {% block content
 %}
-<!-- ==================== BREADCRUMB ==================== -->
-<section class="breadcrumb-section py-4 bg-light">
+<!-- ==================== BREADCRUMB & PAGE HEADER ==================== -->
+<div class="page-header bg-light py-4">
   <div class="container">
+    <h1 class="fw-bold mb-3">Dự án tiêu biểu</h1>
+    <p class="lead text-muted mb-3">
+      Những công trình ứng dụng giải pháp keo dán gạch, keo chà ron & chống thấm
+      của {{ get_setting('website_name', 'BRICON Việt Nam') }}
+    </p>
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb mb-0">
         <li class="breadcrumb-item">
@@ -19,18 +24,7 @@ resort, khách sạn, nhà máy, chung cư, bệnh viện. {% endblock %} {% blo
       </ol>
     </nav>
   </div>
-</section>
-
-<!-- ==================== PAGE HEADER ==================== -->
-<section class="page-header py-5 bg-white">
-  <div class="container text-center">
-    <h1 class="display-4 fw-bold mb-3">Dự án tiêu biểu</h1>
-    <p class="lead text-muted">
-      Những công trình ứng dụng giải pháp keo dán gạch, keo chà ron & chống thấm
-      của {{ get_setting('website_name', 'BRICON Việt Nam') }}
-    </p>
-  </div>
-</section>
+</div>
 
 <!-- ==================== FILTER SECTION ==================== -->
 <section class="filter-section py-3 bg-light">

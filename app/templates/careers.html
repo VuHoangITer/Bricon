@@ -4,25 +4,25 @@
 {% block meta_description %}{{ get_setting('careers_meta_description', 'Khám phá cơ hội nghề nghiệp tại ' ~ get_setting('website_name', 'BRICON VIỆT NAM') ~ '. Môi trường làm việc chuyên nghiệp, thu nhập hấp dẫn.') }}{% endblock %}
 
 {% block content %}
-<!-- Breadcrumb -->
-<section class="breadcrumb-section py-4 bg-light">
-    <div class="container">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Trang chủ</a></li>
-                <li class="breadcrumb-item active">Tuyển dụng</li>
-            </ol>
-        </nav>
-    </div>
-</section>
-
-<!-- Page Header -->
-<section class="page-header py-5 bg-gradient" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-    <div class="container text-center text-white">
-        <h1 class="display-4 fw-bold mb-3">Cơ hội nghề nghiệp</h1>
-        <p class="lead text-dark">Gia nhập đội ngũ {{ get_setting('website_name', 'BRICON') }} và phát triển cùng chúng tôi</p>
-    </div>
-</section>
+<!-- ==================== BREADCRUMB & PAGE HEADER ==================== -->
+<div class="page-header bg-light py-4">
+  <div class="container">
+    <h1 class="fw-bold mb-3">Cơ hội nghề nghiệp</h1>
+    <p class="lead text-muted mb-3">
+        Gia nhập đội ngũ {{ get_setting('website_name', 'BRICON') }} và phát triển cùng chúng tôi
+    </p>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item">
+          <a href="{{ url_for('main.index') }}">Trang chủ</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+          Tuyển dụng
+        </li>
+      </ol>
+    </nav>
+  </div>
+</div>
 
 <!-- Filter -->
 <section class="filter-section py-4 bg-light">

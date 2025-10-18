@@ -352,8 +352,8 @@ bền lâu, xây dựng niềm tin.') }}{% endblock %} {% block content %}
 
             <!-- Excerpt -->
             <p class="card-text text-muted small mb-4">
-              {{ blog.excerpt[:120] if blog.excerpt else
-              (media_info.caption[:120] if media_info and media_info.caption
+              {{ blog.excerpt[:50] if blog.excerpt else
+              (media_info.caption[:50] if media_info and media_info.caption
               else '') }}...
             </p>
 

@@ -4,9 +4,10 @@
 {% block meta_description %}{{ get_setting('products_meta_description', 'Keo dán gạch, keo chà ron và chống thấm BRICON – Keo của người Việt, kết dính bền lâu.') }}{% endblock %}
 
 {% block content %}
+<!-- ==================== BREADCRUMB & PAGE HEADER ==================== -->
 <div class="page-header bg-light py-4">
     <div class="container">
-        <h1 class="fw-bold">
+        <h1 class="fw-bold mb-3">
             {% if current_category %}
                 {{ current_category.name }}
             {% else %}
@@ -14,13 +15,13 @@
             {% endif %}
         </h1>
         <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Trang chủ</a></li>
                 <li class="breadcrumb-item"><a href="{{ url_for('main.products') }}">Sản phẩm</a></li>
                 {% if current_category %}
-                <li class="breadcrumb-item active">{{ current_category.name }}</li>
+                <li class="breadcrumb-item active" aria-current="page">{{ current_category.name }}</li>
                 {% else %}
-                <li class="breadcrumb-item active">Tất cả</li>
+                <li class="breadcrumb-item active" aria-current="page">Tất cả</li>
                 {% endif %}
             </ol>
         </nav>

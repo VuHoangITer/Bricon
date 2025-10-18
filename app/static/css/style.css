@@ -1691,3 +1691,58 @@ body::-webkit-scrollbar-thumb {
   width: 10px !important;
   height: 10px !important;
 }
+/* ==================== BREADCRUMB STYLES ==================== */
+.page-header h1 {
+  color: #212529;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.breadcrumb {
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.breadcrumb-item {
+  color: #6c757d;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  content: "›";
+  font-size: 1.2em;
+  color: #6c757d;
+  padding: 0 0.5rem;
+}
+
+.breadcrumb-item a {
+  color: #6c757d;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.breadcrumb-item a:hover {
+  color: #ffc107;
+  text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+  color: #495057;
+  font-weight: 500;
+}
+
+/* Responsive breadcrumb */
+@media (max-width: 767px) {
+  .page-header {
+    padding: 1.5rem 0 !important;
+  }
+
+  .page-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .breadcrumb {
+    font-size: 0.8rem;
+  }
+}

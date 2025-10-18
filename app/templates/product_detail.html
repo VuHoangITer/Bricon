@@ -29,9 +29,10 @@
 {% endblock %}
 
 {% block content %}
-<!-- ==================== BREADCRUMB ==================== -->
-<div class="page-header bg-light py-3">
+<!-- ==================== BREADCRUMB & PAGE HEADER ==================== -->
+<div class="page-header bg-light py-4">
   <div class="container">
+    <h1 class="fw-bold mb-3">{{ product.name }}</h1>
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb mb-0">
         <li class="breadcrumb-item">
@@ -46,7 +47,7 @@
           </a>
         </li>
         <li class="breadcrumb-item active" aria-current="page">
-          {{ product.name }}
+          {{ product.name[:50] }}{% if product.name|length > 50 %}...{% endif %}
         </li>
       </ol>
     </nav>
@@ -89,7 +90,7 @@
 
       <!-- Product Info -->
       <div class="col-lg-6">
-        <h1 class="fw-bold mb-3" itemprop="name">{{ product.name }}</h1>
+        <h2 class="h3 mb-3" itemprop="name">{{ product.name }}</h2>
 
         <!-- Badges -->
         <div class="mb-3">
