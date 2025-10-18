@@ -153,9 +153,10 @@
                             <label class="form-label">
                                 <i class="bi bi-box-seam text-warning"></i> Quy cách đóng gói
                             </label>
-                            {{ form.packaging(class="form-control") }}
-                            <small class="text-muted">VD: Bao 25kg, Thùng 20kg</small>
+                            {{ form.packaging(class="form-control", rows="3") }}
+                            <small class="text-muted">Nhập mỗi quy cách trên 1 dòng. VD:<br>Bao 25kg<br>Thùng 20kg</small>
                         </div>
+
 
                         <div class="col-md-4">
                             <label class="form-label">

@@ -117,7 +117,7 @@ class ProductForm(FlaskForm):
                          render_kw={'placeholder': 'VD: 12 tháng kể từ ngày sản xuất'})
 
     # Quy cách đóng gói (string)
-    packaging = StringField('Quy cách đóng gói',
+    packaging = TextAreaField('Quy cách đóng gói',
                             validators=[Optional(), Length(max=500)],
                             render_kw={'placeholder': 'VD: Bao 25kg, Thùng 20kg'})
 
