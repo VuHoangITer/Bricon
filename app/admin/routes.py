@@ -1401,7 +1401,7 @@ def media():
             query = query.filter(Media.seo_score < 50)
 
     media_files = query.order_by(Media.created_at.desc()).paginate(
-        page=page, per_page=24, error_out=False
+        page=page, per_page=12, error_out=False
     )
 
     albums = get_albums()
