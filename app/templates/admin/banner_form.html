@@ -174,74 +174,48 @@ function removeImage(type) {
     }
 
     if (type === 'desktop') {
-        // Xóa preview desktop
         const preview = document.getElementById('imagePreview');
         preview.src = '';
         preview.style.display = 'none';
 
-        // Clear input
         document.getElementById('image').value = '';
         document.getElementById('selectedImagePath').value = '';
-
-        // Đánh dấu để backend xóa
         document.getElementById('deleteDesktopImage').value = '1';
 
-        // Xóa container button
         const container = document.getElementById('desktopImageContainer');
         container.innerHTML = '<img id="imagePreview" src="" alt="Desktop Preview" class="img-thumbnail" style="max-width: 100%; max-height: 200px; display: none;">';
 
     } else if (type === 'mobile') {
-        // Xóa preview mobile
         const preview = document.getElementById('imageMobilePreview');
         preview.src = '';
         preview.style.display = 'none';
 
-        // Clear input
         document.getElementById('image_mobile').value = '';
         document.getElementById('selectedImageMobilePath').value = '';
-
-        // Đánh dấu để backend xóa
         document.getElementById('deleteMobileImage').value = '1';
 
-        // Xóa container button
         const container = document.getElementById('mobileImageContainer');
         container.innerHTML = '<img id="imageMobilePreview" src="" alt="Mobile Preview" class="img-thumbnail" style="max-width: 300px; max-height: 200px; display: none;">';
     }
 }
 
-// ✅ Override openMediaPicker để hỗ trợ cả Desktop và Mobile
-function openMediaPicker(inputId, previewId) {
-    window.currentImageInput = inputId;
-    window.currentImagePreview = previewId;
+// ✅ QUAN TRỌNG: KHÔNG CẦN override openMediaPicker nữa vì đã có trong media_picker_modal.html
+// Chỉ cần đảm bảo media_picker_modal.html được include là đủ
 
-    const modal = new bootstrap.Modal(document.getElementById('mediaPickerModal'));
-    modal.show();
-    loadMediaLibrary();
-}
-
-// ✅ Khi chọn ảnh từ media picker
-function selectMediaImage(filepath) {
-    const inputId = window.currentImageInput;
-    const previewId = window.currentImagePreview;
-
-    // Set hidden input tương ứng
-    if (inputId === 'image') {
-        document.getElementById('selectedImagePath').value = filepath;
-        document.getElementById('deleteDesktopImage').value = '0'; // Reset delete flag
-    } else if (inputId === 'image_mobile') {
-        document.getElementById('selectedImageMobilePath').value = filepath;
-        document.getElementById('deleteMobileImage').value = '0'; // Reset delete flag
+// ✅ THÊM: Đảm bảo hidden input name đúng để backend nhận được
+document.addEventListener('DOMContentLoaded', function() {
+    // Đảm bảo hidden input cho desktop có name đúng
+    const desktopHidden = document.getElementById('selectedImagePath');
+    if (desktopHidden && !desktopHidden.name) {
+        desktopHidden.name = 'selected_image_path';
     }
 
-    // Hiển thị preview
-    const preview = document.getElementById(previewId);
-    preview.src = filepath;
-    preview.style.display = 'block';
-
-    // Đóng modal
-    const modal = bootstrap.Modal.getInstance(document.getElementById('mediaPickerModal'));
-    modal.hide();
-}
+    // Đảm bảo hidden input cho mobile có name đúng
+    const mobileHidden = document.getElementById('selectedImageMobilePath');
+    if (mobileHidden && !mobileHidden.name) {
+        mobileHidden.name = 'selected_image_mobile_path';
+    }
+});
 </script>
 
 <style>
