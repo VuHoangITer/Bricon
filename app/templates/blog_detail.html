@@ -358,6 +358,47 @@ blog.content[:160]|striptags }}{% endblock %}
     font-style: italic;
     color: #666;
   }
+  .blog-content-detail blockquote {
+    border-left: 4px solid #ffc107;
+    padding-left: 1.5rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: #666;
+  }
+
+  /* Caption ảnh - giống CKEditor */
+  .blog-content-detail figure.image {
+    margin: 1.5rem 0;
+  }
+
+  .blog-content-detail figure.image figcaption {
+    text-align: center;
+    font-style: italic;
+    color: #888;
+    padding: 0.35rem 0;
+    margin-top: 0.1rem;
+    font-size: 0.95rem;
+  }
+
+  /* Căn chỉnh ảnh trái/phải */
+  .blog-content-detail .image-style-align-left,
+  .blog-content-detail .image-style-side {
+    float: left;
+    margin-right: 1.5em;
+    max-width: 50%;
+  }
+
+  .blog-content-detail .image-style-align-right {
+    float: right;
+    margin-left: 1.5em;
+    max-width: 50%;
+  }
+
+  .blog-content-detail .image-style-align-center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
 </style>
 
 <!-- Copy Link Script -->
