@@ -1372,7 +1372,7 @@ def media():
         query = query.filter_by(album=album_filter)
 
     media_files = query.order_by(Media.created_at.desc()).paginate(
-        page=page, per_page=24, error_out=False
+        page=page, per_page=12, error_out=False
     )
 
     media_with_seo = []
