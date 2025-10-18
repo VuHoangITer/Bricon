@@ -1,5 +1,5 @@
 /* ===================================================================
-   ADMIN SETTINGS PAGE - ENTERPRISE DESIGN
+   ADMIN SETTINGS PAGE - OPTIMIZED VERSION
    Save this as: static/css/admin-settings.css
    ================================================================ */
 
@@ -21,7 +21,6 @@
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ============ DARK MODE SUPPORT ============ */
@@ -46,123 +45,61 @@
 /* ============ CARD STYLING ============ */
 .settings-card {
   background: var(--card-bg);
-  border-radius: 16px;
-  box-shadow: var(--shadow-lg);
+  border-radius: 8px;
+  box-shadow: var(--shadow-md);
   overflow: hidden;
-  margin-bottom: 2rem;
-  transition: var(--transition);
-}
-
-.settings-card:hover {
-  box-shadow: var(--shadow-xl);
-  transform: translateY(-2px);
+  margin-bottom: 1.5rem;
 }
 
 /* ============ CARD HEADER ============ */
 .settings-card-header {
-  background: linear-gradient(
-    135deg,
-    var(--primary-color) 0%,
-    var(--primary-hover) 100%
-  );
+  background: var(--primary-color);
   color: white;
-  padding: 2rem;
-  position: relative;
-  overflow: hidden;
-}
-
-.settings-card-header::before {
-  content: "";
-  position: absolute;
-  top: -50%;
-  right: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 0.1) 0%,
-    transparent 70%
-  );
-  animation: pulse 4s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    transform: scale(1);
-    opacity: 0.5;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 0.3;
-  }
+  padding: 1.25rem 1.5rem;
 }
 
 .settings-card-header h3 {
-  font-size: 1.75rem;
-  font-weight: 700;
+  font-size: 1.25rem;
+  font-weight: 600;
   margin: 0;
-  position: relative;
-  z-index: 1;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .settings-card-header h3 i {
-  font-size: 2rem;
-  opacity: 0.9;
+  font-size: 1.5rem;
 }
 
 /* ============ NAVIGATION TABS ============ */
 .settings-tabs {
   background: var(--card-bg);
-  border-bottom: 2px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
   padding: 0.5rem 1rem;
   display: flex;
-  gap: 0.5rem;
+  gap: 0.25rem;
   overflow-x: auto;
-  scrollbar-width: thin;
-  scrollbar-color: #bfbfbf #f0f0f0;
-}
-
-.settings-tabs::-webkit-scrollbar {
-  height: 6px;
-}
-
-.settings-tabs::-webkit-scrollbar-track {
-  background: #f0f0f0;
-  border-radius: 3px;
-}
-
-.settings-tabs::-webkit-scrollbar-thumb {
-  background: #bfbfbf;
-  border-radius: 3px;
-}
-
-.settings-tabs::-webkit-scrollbar-thumb:hover {
-  background: #a6a6a6;
+  flex-wrap: wrap;
 }
 
 .settings-tab {
-  padding: 1rem 1.5rem;
+  padding: 0.5rem 1.25rem;
   border: none;
   background: transparent;
   color: var(--text-secondary);
-  font-weight: 600;
-  font-size: 0.95rem;
-  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.8rem;
+  border-radius: 4px;
   cursor: pointer;
-  transition: var(--transition);
-  position: relative;
   white-space: nowrap;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.35rem;
+  flex-shrink: 0;
 }
 
 .settings-tab i {
-  font-size: 1.2rem;
+  font-size: 0.95rem;
 }
 
 .settings-tab:hover {
@@ -173,84 +110,63 @@
 .settings-tab.active {
   background: var(--primary-color);
   color: white;
-  box-shadow: var(--shadow-md);
-}
-
-.settings-tab.active::after {
-  content: "";
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: white;
 }
 
 /* ============ TAB CONTENT ============ */
 .settings-tab-content {
-  padding: 2rem;
+  padding: 1.5rem;
 }
 
 .settings-section-card {
   background: var(--card-bg);
   border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-  transition: var(--transition);
-}
-
-.settings-section-card:hover {
-  border-color: var(--primary-color);
-  box-shadow: var(--shadow-md);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
 }
 
 .settings-section-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--primary-color);
-  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1.25rem;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid var(--border-color);
+  gap: 0.65rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .settings-section-title i {
-  font-size: 1.5rem;
-  width: 36px;
-  height: 36px;
+  font-size: 1.25rem;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(
-    135deg,
-    var(--primary-color),
-    var(--primary-hover)
-  );
+  background: var(--primary-color);
   color: white;
-  border-radius: 8px;
+  border-radius: 6px;
 }
 
 /* ============ FORM GROUPS ============ */
 .settings-form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
 }
 
 .settings-form-label {
-  font-weight: 600;
+  font-weight: 500;
   color: var(--text-primary);
   margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 .settings-form-label i {
   color: var(--primary-color);
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
 .settings-form-label .required {
@@ -260,11 +176,10 @@
 
 .settings-form-control {
   width: 100%;
-  padding: 0.75rem 1rem;
-  border: 2px solid var(--border-color);
-  border-radius: 8px;
-  font-size: 0.95rem;
-  transition: var(--transition);
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 0.9rem;
   background: var(--card-bg);
   color: var(--text-primary);
 }
@@ -272,7 +187,7 @@
 .settings-form-control:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
 }
 
 .settings-form-control:hover {
@@ -304,7 +219,6 @@
   border: 2px dashed var(--border-color);
   border-radius: 8px;
   cursor: pointer;
-  transition: var(--transition);
   background: var(--light-bg);
 }
 
@@ -374,12 +288,10 @@
   border: 2px solid var(--border-color);
   border-radius: 8px;
   cursor: pointer;
-  transition: var(--transition);
 }
 
 .settings-color-input:hover {
   border-color: var(--primary-color);
-  transform: scale(1.05);
 }
 
 .settings-color-preview {
@@ -388,7 +300,6 @@
   border: 2px solid var(--border-color);
   border-radius: 8px;
   box-shadow: var(--shadow-md);
-  transition: var(--transition);
 }
 
 .settings-color-value {
@@ -455,51 +366,44 @@ textarea.settings-form-control {
 /* ============ ACTION BUTTONS ============ */
 .settings-actions {
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
   justify-content: flex-end;
-  padding: 2rem;
+  padding: 1.25rem 1.5rem;
   background: var(--light-bg);
-  border-top: 2px solid var(--border-color);
-  margin-top: 2rem;
-  border-radius: 0 0 16px 16px;
+  border-top: 1px solid var(--border-color);
+  margin-top: 1.5rem;
+  border-radius: 0 0 8px 8px;
 }
 
 .settings-btn {
-  padding: 0.875rem 2rem;
+  padding: 0.65rem 1.5rem;
   border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.9rem;
   cursor: pointer;
-  transition: var(--transition);
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
 .settings-btn i {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
 }
 
 .settings-btn-primary {
-  background: linear-gradient(
-    135deg,
-    var(--primary-color),
-    var(--primary-hover)
-  );
+  background: var(--primary-color);
   color: white;
-  box-shadow: var(--shadow-md);
 }
 
 .settings-btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  background: var(--primary-hover);
 }
 
 .settings-btn-secondary {
   background: var(--card-bg);
   color: var(--text-primary);
-  border: 2px solid var(--border-color);
+  border: 1px solid var(--border-color);
 }
 
 .settings-btn-secondary:hover {
@@ -510,7 +414,7 @@ textarea.settings-form-control {
 /* ============ GRID LAYOUTS ============ */
 .settings-grid {
   display: grid;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .settings-grid-2 {
@@ -521,9 +425,21 @@ textarea.settings-form-control {
   grid-template-columns: repeat(3, 1fr);
 }
 
+/* Grid đặc biệt cho Content tab */
+.settings-content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.settings-content-full {
+  grid-column: 1 / -1;
+}
+
 @media (max-width: 768px) {
   .settings-grid-2,
-  .settings-grid-3 {
+  .settings-grid-3,
+  .settings-content-grid {
     grid-template-columns: 1fr;
   }
 }
@@ -532,12 +448,7 @@ textarea.settings-form-control {
 .settings-hotline-divider {
   border: 0;
   height: 2px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--border-color),
-    transparent
-  );
+  background: linear-gradient(90deg, transparent, var(--border-color), transparent);
   margin: 2rem 0;
 }
 
@@ -562,11 +473,11 @@ textarea.settings-form-control {
   }
 
   .settings-card-header {
-    padding: 1.5rem;
+    padding: 1rem;
   }
 
   .settings-card-header h3 {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
   }
 
   .settings-tab-content {
@@ -587,8 +498,12 @@ textarea.settings-form-control {
   }
 
   .settings-tab {
-    padding: 0.75rem 1rem;
-    font-size: 0.85rem;
+    padding: 0.45rem 0.65rem;
+    font-size: 0.75rem;
+  }
+
+  .settings-tab i {
+    font-size: 0.9rem;
   }
 }
 
@@ -619,19 +534,6 @@ textarea.settings-form-control {
   background: var(--secondary-color);
   color: white;
   border-radius: 50%;
-  animation: checkmark 0.5s ease-in-out;
-}
-
-@keyframes checkmark {
-  0% {
-    transform: scale(0);
-  }
-  50% {
-    transform: scale(1.2);
-  }
-  100% {
-    transform: scale(1);
-  }
 }
 
 /* ============ SCROLLBAR STYLING ============ */

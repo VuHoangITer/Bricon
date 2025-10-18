@@ -717,12 +717,12 @@
 
                     <!-- ============ CONTENT TAB ============ -->
                     <div class="tab-pane fade" id="content" role="tabpanel">
+                        <!-- Cấu hình chung - Full width -->
                         <div class="settings-section-card">
                             <h6 class="settings-section-title">
                                 <i class="bi bi-gear"></i>
                                 Cấu hình chung
                             </h6>
-
                             <div class="settings-form-group">
                                 <label class="settings-form-label">
                                     <i class="bi bi-list-ol"></i>
@@ -736,8 +736,10 @@
                             </div>
                         </div>
 
-                        <div class="settings-grid settings-grid-2">
-                            <div class="settings-section-card">
+                        <!-- Grid 2 cột cho policies -->
+                        <div class="settings-content-grid">
+                            <!-- Điều khoản - Full width -->
+                            <div class="settings-section-card settings-content-full">
                                 <h6 class="settings-section-title">
                                     <i class="bi bi-file-earmark-text"></i>
                                     Điều khoản dịch vụ
@@ -746,98 +748,83 @@
                                     <label class="settings-form-label">
                                         {{ form.terms_of_service.label.text }}
                                     </label>
-                                    {{ form.terms_of_service(class="settings-form-control", rows="8", placeholder="Nội dung điều khoản dịch vụ...") }}
+                                    {{ form.terms_of_service(class="settings-form-control", rows="6") }}
                                     <small class="settings-help-text">
                                         <i class="bi bi-code-slash"></i>
-                                        Hỗ trợ HTML. Sẽ hiển thị trên trang /policy
+                                        Hỗ trợ HTML. Hiển thị trên /policy
                                     </small>
                                 </div>
                             </div>
-                            <!-- Vận chuyển & Đổi trả -->
+
+                            <!-- Vận chuyển -->
                             <div class="settings-section-card">
                                 <h6 class="settings-section-title">
                                     <i class="bi bi-truck"></i>
-                                    Vận chuyển & Đổi trả
+                                    Vận chuyển
                                 </h6>
-
                                 <div class="settings-form-group">
-                                    <label class="settings-form-label">
-                                        {{ form.shipping_policy.label.text }}
-                                    </label>
-                                    {{ form.shipping_policy(class="settings-form-control", rows="5", placeholder="Chính sách vận chuyển...") }}
-                                    <small class="settings-help-text">
-                                        <i class="bi bi-code-slash"></i>
-                                        Hỗ trợ HTML
-                                    </small>
-                                </div>
-
-                                <div class="settings-form-group">
-                                    <label class="settings-form-label">
-                                        {{ form.return_policy.label.text }}
-                                    </label>
-                                    {{ form.return_policy(class="settings-form-control", rows="5", placeholder="Chính sách đổi trả...") }}
-                                    <small class="settings-help-text">
-                                        <i class="bi bi-code-slash"></i>
-                                        Hỗ trợ HTML
-                                    </small>
+                                    <label class="settings-form-label">{{ form.shipping_policy.label.text }}</label>
+                                    {{ form.shipping_policy(class="settings-form-control", rows="4") }}
                                 </div>
                             </div>
 
-                            <!-- Bảo hành & Bảo mật -->
+                            <!-- Đổi trả -->
+                            <div class="settings-section-card">
+                                <h6 class="settings-section-title">
+                                    <i class="bi bi-arrow-repeat"></i>
+                                    Đổi trả
+                                </h6>
+                                <div class="settings-form-group">
+                                    <label class="settings-form-label">{{ form.return_policy.label.text }}</label>
+                                    {{ form.return_policy(class="settings-form-control", rows="4") }}
+                                </div>
+                            </div>
+
+                            <!-- Bảo hành -->
                             <div class="settings-section-card">
                                 <h6 class="settings-section-title">
                                     <i class="bi bi-shield-check"></i>
-                                    Bảo hành & Bảo mật
+                                    Bảo hành
                                 </h6>
-
                                 <div class="settings-form-group">
-                                    <label class="settings-form-label">
-                                        {{ form.warranty_policy.label.text }}
-                                    </label>
-                                    {{ form.warranty_policy(class="settings-form-control", rows="5", placeholder="Chính sách bảo hành...") }}
-                                    <small class="settings-help-text">
-                                        <i class="bi bi-code-slash"></i>
-                                        Hỗ trợ HTML
-                                    </small>
-                                </div>
-
-                                <div class="settings-form-group">
-                                    <label class="settings-form-label">
-                                        {{ form.privacy_policy.label.text }}
-                                    </label>
-                                    {{ form.privacy_policy(class="settings-form-control", rows="5", placeholder="Chính sách bảo mật...") }}
-                                    <small class="settings-help-text">
-                                        <i class="bi bi-code-slash"></i>
-                                        Hỗ trợ HTML
-                                    </small>
+                                    <label class="settings-form-label">{{ form.warranty_policy.label.text }}</label>
+                                    {{ form.warranty_policy(class="settings-form-control", rows="4") }}
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Form liên hệ -->
-                        <div class="settings-section-card">
-                            <h6 class="settings-section-title">
-                                <i class="bi bi-chat-left-text"></i>
-                                Nội dung khác
-                            </h6>
+                            <!-- Bảo mật -->
+                            <div class="settings-section-card">
+                                <h6 class="settings-section-title">
+                                    <i class="bi bi-lock"></i>
+                                    Bảo mật
+                                </h6>
+                                <div class="settings-form-group">
+                                    <label class="settings-form-label">{{ form.privacy_policy.label.text }}</label>
+                                    {{ form.privacy_policy(class="settings-form-control", rows="4") }}
+                                </div>
+                            </div>
 
-                            <div class="settings-form-group">
-                                <label class="settings-form-label">
-                                    {{ form.contact_form.label.text }}
-                                </label>
-                                {{ form.contact_form(class="settings-form-control", rows="8", placeholder="Nội dung giới thiệu form liên hệ...") }}
-                                <small class="settings-help-text">
-                                    <i class="bi bi-info-circle"></i>
-                                    Hiển thị trên trang liên hệ
-                                </small>
+                            <!-- Contact form - Full width -->
+                            <div class="settings-section-card settings-content-full">
+                                <h6 class="settings-section-title">
+                                    <i class="bi bi-chat-left-text"></i>
+                                    Form liên hệ
+                                </h6>
+                                <div class="settings-form-group">
+                                    <label class="settings-form-label">{{ form.contact_form.label.text }}</label>
+                                    {{ form.contact_form(class="settings-form-control", rows="5") }}
+                                    <small class="settings-help-text">
+                                        <i class="bi bi-info-circle"></i>
+                                        Hiển thị trên trang liên hệ
+                                    </small>
+                                </div>
                             </div>
                         </div>
 
                         <div class="settings-alert settings-alert-info">
                             <i class="bi bi-info-circle-fill"></i>
                             <div>
-                                <strong>Lưu ý:</strong> Các chính sách này sẽ hiển thị trên trang <strong>/policy</strong>.
-                                Bạn có thể sử dụng HTML để định dạng nội dung.
+                                <strong>Lưu ý:</strong> Các chính sách hiển thị trên <strong>/policy</strong>. Hỗ trợ HTML.
                             </div>
                         </div>
                     </div>
