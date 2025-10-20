@@ -15,7 +15,7 @@
     />
     <meta name="keywords" content="{{ get_setting('meta_keywords', 'keo dán gạch, keo chà ron, chống thấm, bricon, vật liệu xây dựng') }}" />
 
-    <!-- ==================== META ROBOTS - QUAN TRỌNG CHO SEO ==================== -->
+    <!-- ==================== META ROBOTS  ==================== -->
     <meta
       name="robots"
       content="{% block meta_robots %}index, follow{% endblock %}"
@@ -25,8 +25,7 @@
       content="{% block meta_googlebot %}index, follow{% endblock %}"
     />
 
-    <!-- ==================== FAVICON - MULTIPLE FORMATS ==================== -->
-    <!-- ICO: Ưu tiên mới → fallback cũ → mặc định -->
+    <!-- ==================== FAVICON  ==================== -->
     <link
       rel="icon"
       type="image/x-icon"
@@ -34,14 +33,14 @@
       href="{{ get_setting('favicon_ico_url', get_setting('favicon_url', url_for('static', filename='img/favicon.ico'))) }}"
     />
 
-    <!-- SVG: Tối ưu cho màn hình Retina -->
+    <!-- SVG -->
     <link
       rel="icon"
       type="image/svg+xml"
       href="{{ get_setting('favicon_svg_url', url_for('static', filename='img/favicon.svg')) }}"
     />
 
-    <!-- PNG: Fallback hiện đại -->
+    <!-- PNG -->
     <link
       rel="icon"
       type="image/png"
@@ -330,7 +329,6 @@
                 </a>
               </li>
 
-              <!-- News Dropdown -->
               <li class="nav-item dropdown">
                 <a
                   class="nav-link dropdown-toggle"
@@ -604,22 +602,17 @@
                   {% endfor %}
 
                   {% if valid_branches|length == 0 %}
-                    <!-- Không có chi nhánh: hiển thị mặc định -->
                     <span>171, Đường An Phú Đông 03, Phường An Phú Đông, Quận 12, TP.HCM</span>
 
                   {% elif valid_branches|length == 1 %}
-                    <!-- 1 chi nhánh: hiển thị trực tiếp -->
                     <span>{{ valid_branches[0] }}</span>
-
                   {% else %}
-                    <!-- 2+ chi nhánh: hiển thị tất cả thành list -->
                     <div>
                       {% for branch in valid_branches %}
                         {% if loop.first %}
-                          <!-- Chi nhánh đầu tiên ngang hàng với icon -->
                           <span>{{ branch }}</span>
                         {% else %}
-                          <!-- Các chi nhánh còn lại xuống dòng và indent -->
+                          <!-- Các chi nhánh  -->
                           <div class="mt-2 ms-4">
                             <i class="bi bi-geo-alt-fill text-warning me-2"></i>{{ branch }}
                           </div>
