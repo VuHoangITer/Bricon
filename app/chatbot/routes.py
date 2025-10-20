@@ -327,7 +327,6 @@ def send_message():
                     {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
                     {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
                 ],
-                request_options={'timeout': int(current_app.config.get('GEMINI_TIMEOUT', 30))}
             )
             bot_reply = getattr(response, 'text', '').strip()
             if not bot_reply:
